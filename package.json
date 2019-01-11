@@ -1,0 +1,46 @@
+{
+  "name": "@pika/pack",
+  "version": "0.1.0",
+  "license": "MIT",
+  "distributions": {
+    "src": [
+      true
+    ],
+    "plugins": [
+      ["@pika/node-builder"],
+      ["@pika/add-bin", {"bin": "pika"}]
+    ]
+  },
+  "dependencies": {
+    "@pika/src-builder": "^0.1.2",
+    "@pika/types": "^0.1.2",
+    "camelcase": "^4.0.0",
+    "chalk": "^2.1.0",
+    "commander": "^2.9.0",
+    "detect-indent": "~5.0.0",
+    "file-uri-to-path": "^1.0.0",
+    "glob": "^7.1.1",
+    "import-from": "^2.1.0",
+    "inquirer": "^3.0.1",
+    "invariant": "^2.2.0",
+    "is-builtin-module": "^2.0.0",
+    "is-ci": "^1.0.10",
+    "loud-rejection": "^1.2.0",
+    "mkdirp": "^0.5.1",
+    "read": "^1.0.7",
+    "rimraf": "^2.5.0",
+    "rollup": "^0.67.3",
+    "semver": "^5.1.0",
+    "standard-pkg": "^0.1.0",
+    "strip-ansi": "^4.0.0",
+    "strip-bom": "^3.0.0",
+    "validate-npm-package-license": "^3.0.4"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.2.3",
+    "@pika/add-bin": "^0.1.2",
+    "@pika/node-builder": "^0.1.2",
+    "prettier": "^1.15.3",
+    "typescript": "^3.2.2"
+  }
+}
