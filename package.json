@@ -22,7 +22,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@pika/publish": "^0.1.2",
+    "@pika/publish": "^0.1.3",
     "@pika/src-builder": "^0.1.2",
     "@pika/types": "^0.1.2",
     "camelcase": "^4.0.0",
