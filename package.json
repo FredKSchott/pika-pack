@@ -7,11 +7,19 @@
       true
     ],
     "plugins": [
-      ["@pika/node-builder"],
-      ["@pika/add-bin", {"bin": "pika"}]
+      [
+        "@pika/node-builder"
+      ],
+      [
+        "@pika/add-bin",
+        {
+          "bin": "pika"
+        }
+      ]
     ]
   },
   "dependencies": {
+    "@pika/publish": "^0.1.1",
     "@pika/src-builder": "^0.1.2",
     "@pika/types": "^0.1.2",
     "camelcase": "^4.0.0",
