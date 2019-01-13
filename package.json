@@ -18,6 +18,9 @@
       ]
     ]
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@pika/publish": "^0.1.2",
     "@pika/src-builder": "^0.1.2",
