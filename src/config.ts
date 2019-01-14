@@ -49,6 +49,7 @@ export default class Config {
       this._manifest = info.object;
       this.manifestIndent = detectIndent(info.content).indent || undefined;
       this.manifest = await normalizeManifest(info.object, this.cwd, this, true);
+      return this.manifest;
     } else {
       return null;
     }
@@ -90,7 +91,7 @@ export default class Config {
       }
       if (Array.isArray(rawVal)) {
         let importStr = (rawVal[0].startsWith('./') ||rawVal[0].startsWith('../')) ? path.join(cwd, rawVal[0]) : rawVal[0];
-        return [importFrom(cwd, importStr), rawVal[1] || {}];
+        return [{...importFrom(cwd, importStr), name: rawVal[0]}, rawVal[1] || {}];
       }
       if (rawVal && typeof rawVal === 'object') {
         if (!defaultRunner) {

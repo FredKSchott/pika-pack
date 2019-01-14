@@ -1,27 +1,33 @@
-
-
-import {Reporter} from '../reporters/index';
-import Config from '../config';
-import * as fs from '../util/fs';
-import {generatePublishManifest, generatePrettyManifest} from '../util/normalize-manifest/for-publish';
-import * as nodeFs from 'fs';
-import * as path from 'path';
-import * as rollup from 'rollup';
-import { Command } from 'commander';
-import { BuilderOptions } from '@pika/types';
-import { DEFAULT_INDENT } from '../constants';
-import {Lint} from 'standard-pkg';
+import { Reporter } from "../reporters/index";
+import Config from "../config";
+import * as fs from "../util/fs";
+import {
+  generatePublishManifest,
+  generatePrettyManifest
+} from "../util/normalize-manifest/for-publish";
+import * as nodeFs from "fs";
+import * as path from "path";
+import * as rollup from "rollup";
+import { Command } from "commander";
+import { BuilderOptions } from "@pika/types";
+import { DEFAULT_INDENT } from "../constants";
+import chalk from "chalk";
 
 type Flags = {
-  publish: boolean,
-  out: string,
+  publish?: boolean;
+  out?: string;
 };
 
 export function setFlags(commander: Command) {
-  commander.description('Prepares your package `pkg/` directory for publishing.');
-  commander.usage('build [flags]');
-  commander.option('-O, --out <path>', 'Where to write to');
-  commander.option('-P, --publish', 'Whether to include publish-only builds like unpkg & types.');
+  commander.description(
+    "Prepares your package `pkg/` directory for publishing."
+  );
+  commander.usage("build [flags]");
+  commander.option("-O, --out <path>", "Where to write to");
+  commander.option(
+    "-P, --publish",
+    "Whether to include publish-only builds like unpkg & types."
+  );
 }
 
 export function hasWrapper(commander: Object, args: Array<string>): boolean {
@@ -34,10 +40,12 @@ export class Build {
     this.config = config;
     this.reporter = reporter;
     this.totalNum = 0;
-    this.out = path.resolve(config.cwd, flags.out || 'pkg/');
+    this.out = path.resolve(config.cwd, flags.out || "pkg/");
 
     if (this.out === this.config.cwd) {
-      throw new Error('On publish, you cannot write to cwd because a package.json is created');
+      throw new Error(
+        "On publish, you cannot write to cwd because a package.json is created"
+      );
     }
   }
 
@@ -48,24 +56,24 @@ export class Build {
   totalNum: number;
 
   async cleanup(): Promise<void> {
-    const {out} = this;
-    await fs.unlink(path.join(out, 'package.json'));
-    await fs.unlink(path.join(out, 'assets'));
-    await fs.unlink(path.join(out, 'dist-src'));
-    await fs.unlink(path.join(out, 'dist-node'));
-    await fs.unlink(path.join(out, 'dist-web'));
-    await fs.unlink(path.join(out, 'dist-types'));
-    await fs.unlink(path.join(out, 'dist-deno'));
+    const { out } = this;
+    await fs.unlink(path.join(out, "package.json"));
+    await fs.unlink(path.join(out, "assets"));
+    await fs.unlink(path.join(out, "dist-src"));
+    await fs.unlink(path.join(out, "dist-node"));
+    await fs.unlink(path.join(out, "dist-web"));
+    await fs.unlink(path.join(out, "dist-types"));
+    await fs.unlink(path.join(out, "dist-deno"));
   }
 
   async init(isFull?: boolean): Promise<void> {
-    const {config, flags, reporter, out} = this;
-    const {cwd} = config;
+    const { config, flags, reporter, out } = this;
+    const { cwd } = config;
 
     const manifest = await config.manifest;
     const distRunners = await config.getDistributions();
     const [_, srcRunnerOptions] = distRunners[0];
-    const defaultEnvLoc = path.join(out, 'dist-src/env.js');
+    const defaultEnvLoc = path.join(out, "dist-src/env.js");
     const builderConfig: Partial<BuilderOptions> = {
       out,
       cwd,
@@ -73,103 +81,137 @@ export class Build {
       isFull,
       manifest,
       src: {
-        loc: path.join(out, 'dist-src'),
-        entrypoint: path.join(out, 'dist-src', 'index.js'),
+        loc: path.join(out, "dist-src"),
+        entrypoint: path.join(out, "dist-src", "index.js"),
         options: srcRunnerOptions,
         files: await (async (): Promise<Array<string>> => {
           const files = await fs.glob(`src/**/*`, {
             cwd,
             nodir: true,
             absolute: true,
-            ignore: srcRunnerOptions.exclude && srcRunnerOptions.exclude.map(g => path.join('src', g)),
+            ignore:
+              srcRunnerOptions.exclude &&
+              srcRunnerOptions.exclude.map(g => path.join("src", g))
           });
-          return files.filter(fileAbs => !fileAbs.endsWith('.d.ts'));
-        })(),
+          return files.filter(fileAbs => !fileAbs.endsWith(".d.ts"));
+        })()
       },
       rollup: (distName, options) => {
         const envReplace = `/env.${distName}.`;
-        const envReplaceLoc = defaultEnvLoc.replace('/env.', envReplace);
-        options.input = options.input || path.join(out, 'dist-src/index.js');
+        const envReplaceLoc = defaultEnvLoc.replace("/env.", envReplace);
+        options.input = options.input || path.join(out, "dist-src/index.js");
         options.plugins = options.plugins || [];
         if (nodeFs.existsSync(envReplaceLoc)) {
           options.plugins.unshift({
-            name: 'env-rewrite', // this name will show up in warnings and errors
+            name: "env-rewrite", // this name will show up in warnings and errors
             resolveId: (importee: string, importer: string) => {
               // console.log(importee, importer, envLoc);
               // console.log('  ', envReplace, importer && path.resolve(importer, '..', importee));
-              const resolvedImportee = path.resolve(importer, '..', importee);
+              const resolvedImportee = path.resolve(importer, "..", importee);
               if (defaultEnvLoc && resolvedImportee === defaultEnvLoc) {
                 return envReplaceLoc;
               }
               return null; // other ids should be handled as usually
             },
-            load: () => null,
+            load: () => null
           });
         }
         return rollup.rollup(options);
-      },
+      }
     };
 
-    for (const [runner, options] of distRunners) {
-      if (runner.validate) {
-        const result = await runner.validate({
-          ...builderConfig,
-          options,
-        });
-        if (result instanceof Error) {
-          throw result;
+    const steps: Array<
+      (curr: number, total: number) => Promise<{ bailout: boolean } | void>
+    > = [];
+
+    steps.push(async (curr: number, total: number) => {
+      this.reporter.step(curr, total, "Cleaning Up", "✨");
+      await this.cleanup();
+    });
+
+    steps.push(async (curr: number, total: number) => {
+      this.reporter.step(curr, total, "Validating Source", "✨");
+      for (const [runner, options] of distRunners) {
+        if (runner.validate) {
+          const result = await runner.validate({
+            ...builderConfig,
+            options
+          });
+          if (result instanceof Error) {
+            throw result;
+          }
         }
       }
-    }
-
-    await this.cleanup();
+    });
 
     for (const [runner, options] of distRunners) {
-      try {
-        await runner.build({
-          ...builderConfig,
-          options,
+      steps.push(async (curr: number, total: number) => {
+        this.reporter.step(
+          curr,
+          total,
+          `Running ${chalk.bold(runner.name)}`,
+          "✨"
+        );
+        return Promise.resolve(
+          runner.build({
+            ...builderConfig,
+            options
+          })
+        ).catch(err => {
+          console.log(err);
+          reporter.log(
+            reporter.lang("distFailed", runner.name, err.code, err.message),
+            { force: true }
+          );
+          if (err.forceExit === true) {
+            reporter.log(reporter.lang("distExiting"));
+            return;
+          }
+          reporter.log(reporter.lang("distContinuing"));
         });
-      } catch (err) {
-        console.log(err);
-        reporter.log(reporter.lang('distFailed', runner.name, err.code, err.message), {force: true});
-        if (err.forceExit === true) {
-          reporter.log(reporter.lang('distExiting'));
-          return;
-        }
-        reporter.log(reporter.lang('distContinuing'));
+      });
+    }
+
+    steps.push(async (curr: number, total: number) => {
+      this.reporter.step(curr, total, "Generating Manifest", "✨");
+      if (await fs.exists(path.join(cwd, "README"))) {
+        fs.copyFile(path.join(cwd, "README"), path.join(out, "README"));
+      } else if (await fs.exists(path.join(cwd, "README.md"))) {
+        fs.copyFile(path.join(cwd, "README.md"), path.join(out, "README.md"));
       }
-    }
 
-    if (await fs.exists(path.join(cwd, 'README'))) {
-      fs.copyFile(path.join(cwd, 'README'), path.join(out, 'README'));
-    } else if (await fs.exists(path.join(cwd, 'README.md'))) {
-      fs.copyFile(path.join(cwd, 'README.md'), path.join(out, 'README.md'));
-    }
+      const publishManifest = await generatePublishManifest(
+        manifest,
+        config,
+        distRunners
+      );
+      if (out === cwd) {
+        console.log(`NEW MANIFEST:\n\n`);
+        console.log(generatePrettyManifest(publishManifest));
+        console.log(`\n\n`);
+      } else {
+        await fs.writeFilePreservingEol(
+          path.join(out, "package.json"),
+          JSON.stringify(publishManifest, null, DEFAULT_INDENT) + "\n"
+        );
+      }
+    });
 
-    const publishManifest = await generatePublishManifest(manifest, config, distRunners);
-    if (out === cwd) {
-      console.log(`NEW MANIFEST:\n\n`);
-      console.log(generatePrettyManifest(publishManifest));
-      console.log(`\n\n`);
-    } else {
-      await fs.writeFilePreservingEol(path.join(out, 'package.json'), JSON.stringify(publishManifest, null, DEFAULT_INDENT) + '\n');
+    let currentStep = 0;
+    for (const step of steps) {
+      await step(++currentStep, steps.length);
     }
   }
 }
 
-export async function run(config: Config, reporter: Reporter, flags: Flags, args: Array<string>): Promise<void> {
+export async function run(
+  config: Config,
+  reporter: Reporter,
+  flags: Flags,
+  args: Array<string>
+): Promise<void> {
   const isProduction = flags.publish;
 
   const builder = new Build(flags, config, reporter);
   await builder.init(isProduction);
-
-  // Lint (publish only)
-  if (isProduction) {
-    const validator = new Lint(builder.out, flags, config, reporter);
-    console.log(``);
-    await validator.init();
-    console.log(``);
-    validator.summary();
-  }
 }
