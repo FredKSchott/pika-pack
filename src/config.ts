@@ -87,9 +87,12 @@ export default class Config {
         if (!defaultRunner) {
           throw new Error('no plugin default');
         }
-        return [defaultRunner, {}];
+          return [{...defaultRunner, name: '@pika/src-builder'}, {}];
       }
       if (Array.isArray(rawVal)) {
+        if (rawVal[0] === true && defaultRunner) {
+          return [{...defaultRunner, name: '@pika/src-builder'}, rawVal[1] || {}];
+        }
         let importStr = (rawVal[0].startsWith('./') ||rawVal[0].startsWith('../')) ? path.join(cwd, rawVal[0]) : rawVal[0];
         return [{...importFrom(cwd, importStr), name: rawVal[0]}, rawVal[1] || {}];
       }

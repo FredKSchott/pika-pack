@@ -15,11 +15,14 @@ export function hasWrapper(commander: Command, args: Array<string>): boolean {
   return true;
 }
 
-export async function run(config: Config, reporter: Reporter, flags: Flags, args: Array<string>): Promise<void> {
+export async function run(config: Config, reporter: Reporter, flags: Flags, args: Array<string>): Promise<void | number> {
   const {cwd} = config;
   const dir = args.length > 0 ? path.resolve(cwd, args[0]) : 'pkg/';
   const linter = new Lint(dir, flags, config, reporter);
   await linter.init();
   console.log(``);
   linter.summary();
+  if ((linter as any).exitCode) {
+    return (linter as any).exitCode();
+  }
 }

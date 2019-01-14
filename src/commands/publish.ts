@@ -14,6 +14,7 @@ import {publish} from "../util/publish/publish";
 import {release} from "../util/publish/release";
 import ui from "../util/publish/ui";
 import { Build } from "./build";
+import { MessageError } from "../errors";
 
 type Flags = {
   branch: boolean;
@@ -193,7 +194,6 @@ export class Publish {
 
     steps.push(async (curr: number, total: number) => {
       this.reporter.step(curr, total, "Linting Package", "✨");
-
       const validator = new Lint(out, flags, config, reporter);
       await validator.init();
       validator.summary();
