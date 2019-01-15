@@ -85,13 +85,13 @@ export class Build {
         entrypoint: path.join(out, "dist-src", "index.js"),
         options: srcRunnerOptions,
         files: await (async (): Promise<Array<string>> => {
+          const ignoreSet = new Set<string>(srcRunnerOptions.exclude || []);
+          ignoreSet.add("**/*/README.md");
           const files = await fs.glob(`src/**/*`, {
             cwd,
             nodir: true,
             absolute: true,
-            ignore:
-              srcRunnerOptions.exclude &&
-              srcRunnerOptions.exclude.map(g => path.join("src", g))
+            ignore: Array.from(ignoreSet).map(g => path.join("src", g))
           });
           return files.filter(fileAbs => !fileAbs.endsWith(".d.ts"));
         })()
