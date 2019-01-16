@@ -15,20 +15,21 @@ npm install @pika/pack
 
 - Authoring good packages in 2013 was simple: Write JavaScript and hit `npm publish`.
 - Authoring good packages in 2019 is more complicated: The JavaScript (and TypeScript!) that we write has evolved, but the code that we ship must still be transpiled down to run directly in Node.js. At the same time, web consumers are asking for modern ESM code that works best in their bundlers for treeshaking, smaller files and faster load times.
-- This is only getting more complex as we add support for more languages (like Rust & ReasonML via WASM) and more environments (like Deno). 
+- This is only getting more complex as we add support for more languages (like [Rust](https://github.com/rustwasm/wasm-bindgen) & [ReasonML](https://bucklescript.github.io/) via WASM) and more environments (like [Deno](https://deno.land)). 
 - **@pika/pack is an evolved, holistic approach to package building that replaces complex manual configuration with simple, pluggable package builders.**
 
 ![build screenshot](https://imgur.com/klnYVMA.png)
 
 
-## Getting Started
+## Quickstart
 
 1. `npm install --global @pika/pack`
 1. Add a "distributions" config to your `package.json` manifest, similar to the one in the screenshot above. 
 1. Remove any unneccesary entrypoints from your `package.json` as well. These will be automatically configured for you going forward.
 1. Make sure you have all referenced builders installed as dev dependencies in your package.
-1. Make sure your package follows the standard format:  
+1. Make sure your package follows the standard package format:  
     a. All source files in `src/`  
+    a. Any non-source assets in `assets/`  
     b. Your library entrypoint at `src/index.xx`
 1. Run `pika build`!
 1. See your new `pkg/` build directory containing all distributions and a well-configured `package.json` manifest, ready to run and ready to publish.
@@ -55,6 +56,7 @@ npm install @pika/pack
 - `@pika/node-bundler`: Creates a Node.js build with all code (including dependencies) bundled into a single file. Useful for CLIs.
 - `@pika/web-bundler`: Creates a ESM build with all code (including dependencies) bundled. Useful for unpkg & serving directly to browsers.
 - `@pika/simple-bin`: Generates & configures a bin entrypoint file to run your library.
+- *Write your own!* @pika/pack can load local builders by relative path directly from your repo.
 
 [See a full list of official builders here →](https://github.com/pikapkg/builders/tree/master/packages)
 
