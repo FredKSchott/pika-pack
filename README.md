@@ -15,7 +15,7 @@ npm install @pika/pack
 
 - Authoring good packages in 2013 was simple: Write JavaScript and hit `npm publish`.
 - Authoring good packages in 2019 is more complicated: The JavaScript (and TypeScript!) that we write has evolved, but the code that we ship must still be transpiled down to run directly in Node.js. At the same time, web consumers are asking for modern ESM code that works best in their bundlers for treeshaking, smaller files and faster load times.
-- This is only getting more complex as we add support for more languages (like [Rust](https://github.com/rustwasm/wasm-bindgen) & [ReasonML](https://bucklescript.github.io/) via WASM) and more environments (like [Deno](https://deno.land)). 
+- This is only getting more complex as we add support for more languages (like [Rust](https://github.com/rustwasm/wasm-bindgen) & [ReasonML](https://bucklescript.github.io/) via [WASM](https://webassembly.org/)) and more environments (like [Deno](https://deno.land)). 
 - **@pika/pack is an evolved, holistic approach to package building that replaces complex manual configuration with simple, pluggable package builders.**
 
 ![build screenshot](https://imgur.com/klnYVMA.png)
