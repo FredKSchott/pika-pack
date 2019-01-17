@@ -81,9 +81,9 @@ Authoring packages in 2019 is more complicated: The JavaScript and TypeScript th
 - `@pika/node-bundler`: Creates a Node.js build with all code (including dependencies) bundled into a single file. Useful for CLIs.
 - `@pika/web-bundler`: Creates a ESM build with all code (including dependencies) bundled. Useful for unpkg & serving directly to browsers.
 - `@pika/simple-bin`: Generates & configures a bin entrypoint file to run your library.
+- *Write your own!* @pika/pack can load local builders by relative path directly from your repo.
+- *Publish & Share your own!* These official builders are just the start.
 
-*Write your own!* @pika/pack can load local builders by relative path directly from your repo.  
-*Publish & Share your own!* These official builders are just the start.  
 [See a full list of official builders here →](https://github.com/pikapkg/builders/tree/master/packages)
 
 
