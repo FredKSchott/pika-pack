@@ -2,6 +2,9 @@
   <img alt="Yarn" src="https://i.imgur.com/bUYlxms.png?1" width="420" style="float: left">
 </p>
 
+```
+npm install @pika/pack
+```
 
 <p align="center">
   <strong>@pika/pack</strong> • Package publishing made painless!
@@ -9,14 +12,12 @@
 
 ## tl;dr
 
-```
-npm install @pika/pack
-```
+**@pika/pack is an evolved, holistic approach to package publishing that replaces complex tooling configurations with simple, pluggable builders.**
 
-- Authoring good packages in 2013 was simple: Write JavaScript and hit `npm publish`.
-- Authoring good packages in 2019 is more complicated: The JavaScript (and TypeScript!) that we write has evolved, but the code that we ship must still be transpiled down to run directly in Node.js. At the same time, web consumers are asking for modern ESM code that works best in their bundlers for treeshaking, smaller files and faster load times.
-- This is only getting more complex as we add support for more languages (like [Rust](https://github.com/rustwasm/wasm-bindgen) & [ReasonML](https://bucklescript.github.io/) via [WASM](https://webassembly.org/)) and more environments (like [Deno](https://deno.land)). 
-- **@pika/pack is an evolved, holistic approach to package building that replaces complex manual configuration with simple, pluggable package builders.**
+- Authoring packages in 2013 was simple: Write JavaScript and hit `npm publish`.
+- Authoring packages in 2019 is more complicated: The JavaScript (or TypeScript) that we write has evolved, but the code we ship has to be transpiled down to run directly in Node.js. At the same time, web consumers are asking for modern ESM code that works best in their bundlers for treeshaking, smaller files and faster load times.
+- The result? More work for package maintainers & less optimized packages.
+- This problem is only getting more complex as we add support for more languages (via [WASM](https://webassembly.org/)) and more environments (like [Deno](https://deno.land)). 
 
 ![build screenshot](https://imgur.com/klnYVMA.png)
 
@@ -24,18 +25,43 @@ npm install @pika/pack
 ## Quickstart
 
 1. `npm install --global @pika/pack`
-1. Add a "distributions" config to your `package.json` manifest, similar to the one in the screenshot above. 
-1. Remove any unneccesary entrypoints from your `package.json` as well. These will be automatically configured for you going forward.
-1. Make sure you have all referenced builders installed as dev dependencies in your package.
+1. Add a `"distributions"` config to your `package.json` manifest, similar to the one in the screenshot above:
+
+        "distributions": {
+          "src": [true],
+          "plugins": [
+            ["@pika/node-builder"],
+            ["@pika/web-builder"]
+          ]
+        },
+
+1. In the same file, remove any unneccesary entrypoints from your `package.json`. Pika will configure these for your published package automatically.
+1. Make sure that all referenced builders are installed as dev dependencies in your package:
+
+       npm install --save-dev @pika/node-builder @pika/web-builder
+
 1. Make sure your package follows the standard package format:  
     a. All source files in `src/`  
     a. Any non-source assets in `assets/`  
-    b. Your library entrypoint at `src/index.xx`
-1. Run `pika build`!
-1. See your new `pkg/` build directory containing all distributions and a well-configured `package.json` manifest, ready to run and ready to publish.
+    c. Your library entrypoint at `src/index.js` (or equivilant file extension)
+1. Run `pika build`! Your new `pkg/` build directory will be created with all distributions and a well-configured `package.json` manifest, ready to run locally or publish to npm.
+
+        pkg/                
+        ├── dist-src/        
+        │  └── index.js       // "esnext": Default build
+        ├── dist-node/
+        │  ├── index.js       // "main": Built by @pika/node-builder
+        │  └── index.bin.js   // "bin": Built by @pika/simple-bin (if used)
+        ├── dist-web/
+        │  └── index.js       // "module": Built by @pika/web-builder
+        ├── dist-types/
+        │  └── index.d.ts     // "types": Built by @pika/types-builder (if used)
+        ├── package.json
+        └── README.md
+
 1. When you're ready, run `pika publish` to re-build and then publish your `pkg/` to npm!
 
-[See a full list of example projects here →](https://github.com/pikapkg/examples)
+[See a full collection of example projects here →](https://github.com/pikapkg/examples)
 
 
 ## Available Builders
@@ -44,7 +70,7 @@ npm install @pika/pack
 - `@pika/src-builder`: Compiles JavaScript/TypeScript to ES2018.
 - `@pika/assemblyscript-builder`: Builds WASM from TypeScript.
 - `@pika/bucklescript-builder`: Builds WASM from ReasonML/OCAML.
-- `@pika/simple-wasm-wrapper`: Builds simple JS bindings for a WASM build.
+- `@pika/simple-wasm-wrapper`: Builds simple JS bindings for any WASM build.
 
 #### Dist Builders:
 - `@pika/node-builder`: Builds a distribution that runs on Node LTS (v6+).
@@ -56,8 +82,9 @@ npm install @pika/pack
 - `@pika/node-bundler`: Creates a Node.js build with all code (including dependencies) bundled into a single file. Useful for CLIs.
 - `@pika/web-bundler`: Creates a ESM build with all code (including dependencies) bundled. Useful for unpkg & serving directly to browsers.
 - `@pika/simple-bin`: Generates & configures a bin entrypoint file to run your library.
-- *Write your own!* @pika/pack can load local builders by relative path directly from your repo.
 
+*Write your own!* @pika/pack can load local builders by relative path directly from your repo.  
+*Publish & Share your own!* These official builders are just the start.  
 [See a full list of official builders here →](https://github.com/pikapkg/builders/tree/master/packages)
 
 
