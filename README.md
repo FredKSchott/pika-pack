@@ -12,12 +12,11 @@ npm install @pika/pack
 
 ## tl;dr
 
-**@pika/pack is a new, holistic approach to package publishing that replaces complex tooling configurations with simple, pluggable builders.**
-
 - Authoring packages in 2013 was simple: Write JavaScript and hit `npm publish`.
 - Authoring packages in 2019 is more complicated: The JavaScript (or TypeScript) that we write has evolved, but the code we ship has to be transpiled down to run directly in Node.js. At the same time, web consumers are asking for modern ESM code that works best in their bundlers for treeshaking, smaller files and faster load times.
-- The result? More work for package maintainers & less optimized packages.
 - This problem is only getting more complex as we add support for more languages (via [WASM](https://webassembly.org/)) and more environments (like [Deno](https://deno.land)). 
+
+**@pika/pack is a new, holistic approach to package publishing that replaces complex tooling configurations with simple, pluggable builders.**
 
 ![build screenshot](https://imgur.com/klnYVMA.png)
 
