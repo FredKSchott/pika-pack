@@ -16,7 +16,7 @@ Authoring packages in 2013 was simple: Write JavaScript and hit `npm publish`.
 
 Authoring packages in 2019 is more complicated: The JavaScript and TypeScript that we write has evolved, but the code we ship has to be transpiled backwards to run directly in Node.js. At the same time, web consumers are asking for modern ESM code that works best in their bundlers for better treeshaking, smaller files and faster load times.
 
-**@pika/pack is a new, holistic approach to package publishing that replaces complex tooling configurations with simple, pluggable builders.**
+**@pika/pack is a new, holistic approach to package publishing that replaces complex configuration with simple, pluggable builders.**
 
 ![build screenshot](https://imgur.com/klnYVMA.png)
 
