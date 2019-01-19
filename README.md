@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="Yarn" src="https://i.imgur.com/bUYlxms.png?1" width="420" style="float: left">
+  <img alt="Logo" src="https://i.imgur.com/bUYlxms.png?1" width="420">
 </p>
 
 ```
@@ -12,19 +12,32 @@ npm install @pika/pack
 
 ## tl;dr
 
+<br/>
+<p align="center">
+  <img alt="Logo" src="https://i.imgur.com/k8LIiYY.gif" width="640">
+</p>
+<br/>
 
-![Imgur](https://i.imgur.com/A1Qzm5N.gif)
+## What is Pika?
 
-Authoring packages in 2013 was simple: Write JavaScript and hit `npm publish`.
+**@pika/pack is a new, holistic approach to package building that replaces complex tooling config with simple, pluggable builders.**
 
-Authoring packages in 2019 is more complicated: The JavaScript and TypeScript that we write has evolved, but the code we ship has to be transpiled backwards to run directly in Node.js. At the same time, web consumers are asking for modern ESM code that works best in their bundlers for better treeshaking, smaller files and faster load times.
+Authoring JavaScript in 2013 was simple: Write JavaScript and hit `npm publish`.
 
-**@pika/pack is a new, holistic approach to package publishing that replaces complex configuration with simple, pluggable builders:**
+6 years later and things are more complicated: The modern JavaScript that we write (and TypeScript, and Flow, and Reason, and...) no longer runs natively on Node.js. But compiling for Node.js can leave web users with bloated, slower code.  As a result, package authors are stuck fiddling endlessly with tooling & configuration files hoping to get things just right.
 
+In the words of npm: ["Everybody would like less tooling"](https://medium.com/npm-inc/this-year-in-javascript-2018-in-review-and-npms-predictions-for-2019-3a3d7e5298ef).
+
+**@pika/pack approaches the problem differently: we treat your entire package as the build.** This includes optimized distributions for your package (like `dist-node/` & `dist-web/`) AND a perfectly configured `package.json` manifest for your package, with all entrypoints added automatically.
+
+- Writing JavaScript but want to publish type definitions? Add `@pika/types-builder` to generate them automatically.
+- Want a simple CLI interface for your library? Add `@pika/simple-bin` and your package.json will point to one automatically.
+- Publish WASM to npm with JS bindings using any of our "WASM Builders" below.
+- See the full list of builders below →
 
 ## Quickstart
 
-All you need to do is define a build pipeline in your source repo's `package.json`:
+To get started, all you need to do is define a build pipeline in your source repo's `package.json`:
 
 ```js
 /* ./package.json */
@@ -44,7 +57,7 @@ All you need to do is define a build pipeline in your source repo's `package.jso
 }
 ```
 
-No entrypoints or bundler configuration needed. When you run `pika build`, you'll get a `pkg/` directory optimized for publishing, with an already configured `package.json` manifest:
+No other configuration or tooling needed! When you run `pika build` you'll get a `pkg/` build directory optimized for npm, with `package.json` entrypoints (like `"main"` and `"module"`) added automatically:
 
 ```js
 /* ./pkg/package.json */
