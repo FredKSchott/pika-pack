@@ -12,53 +12,57 @@ npm install @pika/pack
 
 ## tl;dr
 
+
+![Imgur](https://i.imgur.com/A1Qzm5N.gif)
+
 Authoring packages in 2013 was simple: Write JavaScript and hit `npm publish`.
 
 Authoring packages in 2019 is more complicated: The JavaScript and TypeScript that we write has evolved, but the code we ship has to be transpiled backwards to run directly in Node.js. At the same time, web consumers are asking for modern ESM code that works best in their bundlers for better treeshaking, smaller files and faster load times.
 
-**@pika/pack is a new, holistic approach to package publishing that replaces complex configuration with simple, pluggable builders.**
-
-![build screenshot](https://imgur.com/klnYVMA.png)
+**@pika/pack is a new, holistic approach to package publishing that replaces complex configuration with simple, pluggable builders:**
 
 
 ## Quickstart
 
-1. `npm install --global @pika/pack`
-1. Add a `"distributions"` config to your `package.json` manifest, similar to the one in the screenshot above:
+All you need to do is define a build pipeline in your source repo's `package.json`:
 
-        "distributions": {
-          "src": [true],
-          "plugins": [
-            ["@pika/node-builder"],
-            ["@pika/web-builder"]
-          ]
-        },
+```js
+/* ./package.json */
 
-1. In the same file, remove any unneccesary entrypoints from your `package.json`. Pika will configure these for your published package automatically.
-1. Make sure that all referenced builders are installed as dev dependencies in your package:
+{
+  "name": "simple-package",
+  "version": "1.0.0",
+  "@pika/pack": {
+    "pipeline": [
+      ["@pika/plugin-standard-pkg", {"exclude": ["__tests__/*"]}],
+      ["@pika/node-builder"],
+      ["@pika/web-builder"],
+      ["@pika/types-builder"]
+    ]
+  },
+  // ...
+}
+```
 
-       npm install --save-dev @pika/node-builder @pika/web-builder
+No entrypoints or bundler configuration needed. When you run `pika build`, you'll get a `pkg/` directory optimized for publishing, with an already configured `package.json` manifest:
 
-1. Make sure your package follows the standard package format:  
-    a. All source files in `src/`  
-    a. Any non-source assets in `assets/`  
-    c. Your library entrypoint at `src/index.js` (or equivilant file extension)
-1. Run `pika build`! Your new `pkg/` build directory will be created with all distributions and a well-configured `package.json` manifest, ready to run locally or publish to npm.
-
-        pkg/                
-        ├── dist-src/        
-        │  └── index.js       // "esnext": Default build
-        ├── dist-node/
-        │  ├── index.js       // "main": Built by @pika/node-builder
-        │  └── index.bin.js   // "bin": Built by @pika/simple-bin (if used)
-        ├── dist-web/
-        │  └── index.js       // "module": Built by @pika/web-builder
-        ├── dist-types/
-        │  └── index.d.ts     // "types": Built by @pika/types-builder (if used)
-        ├── package.json
-        └── README.md
-
-1. When you're ready, run `pika publish` to re-build and then publish your `pkg/` to npm!
+```js
+/* ./pkg/package.json */
+{
+  "name": "simple-package",
+  "version": "1.0.0",
+  "esnext": "dist-src/index.js",
+  "main": "dist-node/index.js",
+  "module": "dist-web/index.js",
+  "types": "dist-types/index.d.ts",
+  "sideEffects": false,
+  "files": [
+    "dist-*/",
+    "assets/",
+    "bin/"
+  ]
+}
+```
 
 [See a full collection of example projects here →](https://github.com/pikapkg/examples)
 
@@ -66,16 +70,19 @@ Authoring packages in 2019 is more complicated: The JavaScript and TypeScript th
 ## Available Builders
 
 #### Source Builders:
-- `@pika/src-builder`: Compiles JavaScript/TypeScript to ES2018.
-- `@pika/assemblyscript-builder`: Builds WASM from TypeScript.
-- `@pika/bucklescript-builder`: Builds WASM from ReasonML/OCAML.
-- `@pika/simple-wasm-wrapper`: Builds simple JS bindings for any WASM build.
+- `@pika/plugin-standard-pkg`: Compiles JavaScript/TypeScript to ES2018.
+- `@pika/plugin-ts-standard-pkg`: Compiles TypeScript to ES2018 (Uses `tsc` instead of Babel, includes type definitions).
 
 #### Dist Builders:
 - `@pika/node-builder`: Builds a distribution that runs on Node LTS (v6+).
 - `@pika/web-builder`: Builds an ESM distribution optimized for browsers & bundlers.
 - `@pika/types-builder`: Builds TypeScript definitions from your TS, or automatically generate them from your JS.
 - `@pika/deno-builder`: Builds a distribution that runs on Deno.
+
+#### WASM Builders:
+- `@pika/assemblyscript-builder`: Builds WASM from TypeScript.
+- `@pika/bucklescript-builder`: Builds WASM from ReasonML/OCAML.
+- `@pika/simple-wasm-wrapper`: Builds simple JS binding for any WASM build.
 
 #### Advanced Builders:
 - `@pika/node-bundler`: Creates a Node.js build with all code (including dependencies) bundled into a single file. Useful for CLIs.
