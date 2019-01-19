@@ -77,7 +77,12 @@ export class Build {
     const builderConfig: Partial<BuilderOptions> = {
       out,
       cwd,
-      reporter,
+      reporter: {
+        info: (msg) => console.log(chalk.dim(`      » ${msg}`)),
+        warning: (msg) => console.log(chalk.yellow(`      » ${msg}`)),
+        success: (msg) => console.log(chalk.green(`      » ${msg}`)),
+        created: (filename: string, entrypoint?: string) => console.log(`      📝 `, (entrypoint ? chalk.dim(`[${entrypoint}] `) : '') + chalk.green(path.relative(cwd, filename))),
+      },
       isFull,
       manifest,
       src: {
@@ -125,12 +130,7 @@ export class Build {
     > = [];
 
     steps.push(async (curr: number, total: number) => {
-      this.reporter.step(curr, total, "Cleaning Up", "✨");
-      await this.cleanup();
-    });
-
-    steps.push(async (curr: number, total: number) => {
-      this.reporter.step(curr, total, "Validating Source", "✨");
+      this.reporter.step(curr, total, "Validating source");
       for (const [runner, options] of distRunners) {
         if (runner.validate) {
           const result = await runner.validate({
@@ -144,13 +144,18 @@ export class Build {
       }
     });
 
+    steps.push(async (curr: number, total: number) => {
+      this.reporter.step(curr, total, `Preparing build`);
+      await this.cleanup();
+      console.log(`      🚿 `,chalk.green('pkg/'));
+    });
+
     for (const [runner, options] of distRunners) {
       steps.push(async (curr: number, total: number) => {
         this.reporter.step(
           curr,
           total,
-          `Running ${chalk.bold(runner.name)}`,
-          "✨"
+          `Running ${chalk.bold(runner.name)}`
         );
         return Promise.resolve(
           runner.build({
@@ -173,12 +178,12 @@ export class Build {
     }
 
     steps.push(async (curr: number, total: number) => {
-      this.reporter.step(curr, total, "Generating Manifest", "✨");
+      this.reporter.step(curr, total, `Generating manifest & metadata`);
       if (await fs.exists(path.join(cwd, "README"))) {
         fs.copyFile(path.join(cwd, "README"), path.join(out, "README"));
-      } else if (await fs.exists(path.join(cwd, "README.md"))) {
+    } else if (await fs.exists(path.join(cwd, "README.md"))) {
         fs.copyFile(path.join(cwd, "README.md"), path.join(out, "README.md"));
-      }
+    }
 
       const publishManifest = await generatePublishManifest(
         manifest,
@@ -195,6 +200,7 @@ export class Build {
           JSON.stringify(publishManifest, null, DEFAULT_INDENT) + "\n"
         );
       }
+      console.log(`      📦 `,chalk.green('pkg/package.json'));
     });
 
     let currentStep = 0;
