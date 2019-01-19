@@ -28,7 +28,7 @@ Authoring JavaScript in 2013 was simple: Write JavaScript and hit `npm publish`.
 
 In the words of npm: ["Everybody would like less tooling"](https://medium.com/npm-inc/this-year-in-javascript-2018-in-review-and-npms-predictions-for-2019-3a3d7e5298ef).
 
-**@pika/pack approaches the problem differently: we treat your entire package as the build.** Simple, pluggable builders create optimized distributions for your package (like `dist-node/` & `dist-web/`) AND perfectly configure your published `package.json` manifest, with all entrypoints added automatically.
+**@pika/pack approaches the problem differently: we treat your entire package as the build.** Simple, pluggable builders generate your package AND configure your `package.json` manifest, with all entrypoints added automatically.
 
 - Writing JavaScript but want to publish type definitions? Add `@pika/types-builder` to generate them automatically.
 - Want a simple CLI interface for your library? Add `@pika/simple-bin` and your `package.json` will point to one automatically.
@@ -37,7 +37,7 @@ In the words of npm: ["Everybody would like less tooling"](https://medium.com/np
 
 ## Quickstart
 
-To get started, all you need to do is define a build pipeline in your source repo's `package.json`:
+All you need to do is define a build pipeline in your source project's `package.json` manifest:
 
 ```js
 /* ./package.json */
@@ -60,7 +60,7 @@ To get started, all you need to do is define a build pipeline in your source rep
 No other configuration or tooling needed! When you run `pika build` you'll get a `pkg/` build directory optimized for npm, with `package.json` entrypoints (like `"main"` and `"module"`) added automatically:
 
 ```js
-/* ./pkg/package.json */
+/* pkg/package.json */
 {
   "name": "simple-package",
   "version": "1.0.0",
