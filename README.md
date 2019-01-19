@@ -18,9 +18,9 @@ npm install @pika/pack
 </p>
 <br/>
 
-## What is Pika?
+## What is @pika/pack?
 
-**@pika/pack is a new, holistic approach to package building that replaces complex tooling config with simple, pluggable builders.**
+**Pack is a new, holistic approach to package building that replaces complex tooling config with simple, pluggable builders.**
 
 Authoring JavaScript in 2013 was simple: Write JavaScript and hit `npm publish`.
 
