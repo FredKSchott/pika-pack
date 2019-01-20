@@ -2,12 +2,8 @@
   <img alt="Logo" src="https://i.imgur.com/bUYlxms.png?1" width="420">
 </p>
 
-```
-npm install @pika/pack
-```
-
 <p align="center">
-  <strong>@pika/pack</strong> • Package publishing made painless!
+  <strong>@pika/pack</strong> • A simple, holistic approach to package building & publishing.
 </p>
 
 ## tl;dr
