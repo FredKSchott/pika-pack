@@ -22,18 +22,16 @@ Authoring JavaScript in 2013 was simple: Write JavaScript and hit `npm publish`.
 
 In the words of npm: ["Everybody would like less tooling"](https://medium.com/npm-inc/this-year-in-javascript-2018-in-review-and-npms-predictions-for-2019-3a3d7e5298ef).
 
-**@pika/pack approaches the problem differently by focusing on the entire package.** Pika provides a set of simple, pluggable builders that compile your code AND configure your `package.json` manifest for you. The result is a self-contained ready-to-publish `pkg/` subdirectory, optimized and small by default (so no more `"files"` or `.npmignore` configuration to worry about).
+**@pika/pack approaches the problem differently: we focus on the entire package.** Pack uses simple, pluggable builders that compile your code AND configure your `package.json` manifest for you. The result is a self-contained ready-to-publish `pkg/` directory, optimized and small by default (so no more `"files"` or `.npmignore` configuration to worry about).
 
 
 ## Quickstart
-
-To get started, first install @pika/pack:
 
 ```
 npm install --global @pika/pack
 ```
 
-Then, all you need to do is define a build pipeline in your source project's `package.json` manifest:
+To set up your project for @pika/pack, all you need to do is define a build pipeline in your source project's `package.json` manifest:
 
 ```js
 /* ./package.json */
