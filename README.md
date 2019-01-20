@@ -16,20 +16,24 @@
 
 ## What is @pika/pack?
 
-**Pack is a new, holistic approach to package building using simple, pluggable builders.**
-
 Authoring JavaScript in 2013 was simple: Write JavaScript and hit `npm publish`.
 
-6 years later and things are more complicated: The modern JavaScript that we write (and TypeScript, and Flow, and Reason, and...) no longer runs natively on Node.js. But compiling for Node.js can leave web users with bloated, slower libraries.  As a result, package authors are stuck forever fiddling with tooling & configuration files hoping to get everything just right.
+6 years later and things are more complicated: The modern JavaScript that we write (and TypeScript, and Flow, and Reason, and...) no longer runs natively on Node.js. But compiling for Node.js can leave web users with bloated, slower libraries.  As a result, package authors are stuck forever fiddling with tooling & configuration files hoping to get everything just right. 
 
 In the words of npm: ["Everybody would like less tooling"](https://medium.com/npm-inc/this-year-in-javascript-2018-in-review-and-npms-predictions-for-2019-3a3d7e5298ef).
 
-**@pika/pack approaches the problem differently: we build the entire package.** Simple, pluggable builders process your code into a ready-to-run `pkg/` subdirectory, complete with a `package.json` manifest with all entrypoints configured automatically.
+**@pika/pack approaches the problem differently: we build the entire package.** Each build plugin compiles your code AND configure your `package.json` manifest for you. The result is a ready-to-publish `pkg/` subdirectory, optimized and small by default (so no more `"files"` or `.npmignore` configuration to worry about).
 
 
 ## Quickstart
 
-All you need to do is define a build pipeline in your source project's `package.json` manifest:
+To get started, first install @pika/pack:
+
+```
+npm install --global @pika/pack
+```
+
+Then, all you need to do is define a build pipeline in your source project's `package.json` manifest:
 
 ```js
 /* ./package.json */
@@ -56,7 +60,7 @@ All you need to do is define a build pipeline in your source project's `package.
 No other configuration or tooling needed! When you run `pika build` you'll get a `pkg/` build directory optimized for npm, with `package.json` entrypoints (like `"main"` and `"module"`) added automatically:
 
 ```js
-/* pkg/package.json */
+/* Your generated `pkg/` package.json manifest: */
 {
   "name": "simple-package",
   "version": "1.0.0",
