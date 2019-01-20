@@ -30,13 +30,6 @@ In the words of npm: ["Everybody would like less tooling"](https://medium.com/np
 
 **@pika/pack approaches the problem differently: we build the entire package.** Simple, pluggable builders process your code into a ready-to-run `pkg/` subdirectory, complete with a `package.json` manifest with all entrypoints configured automatically.
 
-Some of our favorite pluggable builders include: 
-
-- `@pika/node-builder`: Compiles your ESM package to Common.js, guarenteed to run on all supported versions of Node.js.
-- `@pika/types-builder`: Automatically generates type definitions for non-TypeScript projects.
-- `@pika/deno-builder`: Publishes TypeScript directly to run on [Deno](https://deno.land/).
-- `@pika/simple-bin`: Adds a simple CLI wrapper for your published library, connected to the "bin" `package.json` entrypoint.
-- WASM Builders: Publish WASM to npm with JS bindings using any of our "WASM Builders" below →
 
 ## Quickstart
 
@@ -50,9 +43,13 @@ All you need to do is define a build pipeline in your source project's `package.
   "version": "1.0.0",
   "@pika/pack": {
     "pipeline": [
+      // Compiles your source to standard ES2018+
       ["@pika/plugin-standard-pkg", {"exclude": ["__tests__/*"]}],
+      // Creates a distribution to run on Node.js
       ["@pika/node-builder"],
+      // Creates a distribution to run on browsers (optimized for bundlers)
       ["@pika/web-builder"],
+      // Generates type definitions automatically from your JavaScript
       ["@pika/types-builder"]
     ]
   },
