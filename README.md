@@ -43,13 +43,13 @@ All you need to do is define a build pipeline in your source project's `package.
   "version": "1.0.0",
   "@pika/pack": {
     "pipeline": [
-      // Compiles your source to standard ES2018+
+      // 1. Compiles your source to standard ES2018+
       ["@pika/plugin-standard-pkg", {"exclude": ["__tests__/*"]}],
-      // Creates a distribution to run on Node.js
+      // 2. Creates a distribution to run on Node.js
       ["@pika/node-builder"],
-      // Creates a distribution to run on browsers (optimized for bundlers)
+      // 3. Creates a distribution to run on browsers (optimized for bundlers)
       ["@pika/web-builder"],
-      // Generates type definitions automatically from your JavaScript
+      // 4. Generates type definitions automatically from your JavaScript
       ["@pika/types-builder"]
     ]
   },
