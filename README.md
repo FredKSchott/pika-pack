@@ -24,16 +24,19 @@ npm install @pika/pack
 
 Authoring JavaScript in 2013 was simple: Write JavaScript and hit `npm publish`.
 
-6 years later and things are more complicated: The modern JavaScript that we write (and TypeScript, and Flow, and Reason, and...) no longer runs natively on Node.js. But compiling for Node.js can leave web users with bloated, slower code.  As a result, package authors are stuck fiddling endlessly with tooling & configuration files hoping to get things just right.
+6 years later and things are more complicated: The modern JavaScript that we write (and TypeScript, and Flow, and Reason, and...) no longer runs natively on Node.js. But compiling for Node.js can leave web users with bloated, slower libraries.  As a result, package authors are stuck forever fiddling with tooling & configuration files hoping to get everything just right.
 
 In the words of npm: ["Everybody would like less tooling"](https://medium.com/npm-inc/this-year-in-javascript-2018-in-review-and-npms-predictions-for-2019-3a3d7e5298ef).
 
-**@pika/pack approaches the problem differently: we build the entire package.** Simple, pluggable builders compile your code, process any assets, AND configure your `package.json` manifest with all entrypoints added automatically.
+**@pika/pack approaches the problem differently: we build the entire package.** Simple, pluggable builders process your code into a ready-to-run `pkg/` subdirectory, complete with a `package.json` manifest with all entrypoints configured automatically.
 
-- Writing JavaScript but want to publish type definitions? Add `@pika/types-builder` to generate them automatically.
-- Want a simple CLI interface for your library? Add `@pika/simple-bin` and your `package.json` will point to one automatically.
-- Publish WASM to npm with JS bindings using any of our "WASM Builders" below.
-- See the full list of builders below →
+Some of our favorite pluggable builders include: 
+
+- `@pika/node-builder`: Compiles your ESM package to Common.js, guarenteed to run on all supported versions of Node.js.
+- `@pika/types-builder`: Automatically generates type definitions for non-TypeScript projects.
+- `@pika/deno-builder`: Publishes TypeScript directly to run on [Deno](https://deno.land/).
+- `@pika/simple-bin`: Adds a simple CLI wrapper for your published library, connected to the "bin" `package.json` entrypoint.
+- WASM Builders: Publish WASM to npm with JS bindings using any of our "WASM Builders" below →
 
 ## Quickstart
 
