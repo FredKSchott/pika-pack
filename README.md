@@ -18,11 +18,11 @@
 
 Authoring JavaScript in 2013 was simple: Write JavaScript and hit `npm publish`.
 
-6 years later and things are more complicated: The modern JavaScript that we write (and TypeScript, and Flow, and Reason, and...) no longer runs natively on Node.js. But compiling for Node.js can leave web users with bloated, slower libraries.  As a result, package authors are stuck forever fiddling with tooling & configuration files hoping to get everything just right. 
+6 years later and things are more complicated: The modern JavaScript that we write (and TypeScript, and Flow, and Reason, and...) no longer runs natively on Node.js. But compiling only for Node.js leaves web users with code that is less reliably optimized.  As a result, package authors are stuck forever fiddling with tooling & configuration files trying to get everything just right. 
 
 In the words of npm: ["Everybody would like less tooling"](https://medium.com/npm-inc/this-year-in-javascript-2018-in-review-and-npms-predictions-for-2019-3a3d7e5298ef).
 
-**@pika/pack approaches the problem differently by focusing on the entire package.** Pika provides a set of pluggable builders that compile your code AND configure your `package.json` manifest for you. The result is a self-contained ready-to-publish `pkg/` subdirectory, optimized and small by default (so no more `"files"` or `.npmignore` configuration to worry about).
+**@pika/pack approaches the problem differently by focusing on the entire package.** Pika provides a set of simple, pluggable builders that compile your code AND configure your `package.json` manifest for you. The result is a self-contained ready-to-publish `pkg/` subdirectory, optimized and small by default (so no more `"files"` or `.npmignore` configuration to worry about).
 
 
 ## Quickstart
