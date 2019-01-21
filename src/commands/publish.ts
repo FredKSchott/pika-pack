@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import { Command } from "commander";
 import execa from "execa";
 import githubUrlFromGit from "github-url-from-git";
@@ -10,11 +11,10 @@ import { Reporter } from "../reporters/index";
 import * as fs from "../util/fs";
 import { hasUpstream } from "../util/publish/git-util";
 import prerequisiteTasks from "../util/publish/prerequisite";
-import {publish} from "../util/publish/publish";
-import {release} from "../util/publish/release";
+import { publish } from "../util/publish/publish";
+import { release } from "../util/publish/release";
 import ui from "../util/publish/ui";
 import { Build } from "./build";
-import { MessageError } from "../errors";
 
 type Flags = {
   branch: boolean;
@@ -139,23 +139,10 @@ export class Publish {
         await fs.unlink("node_modules");
         await fs.unlink("pkg");
 
-        if (!options.yarn) {
-          await execa("npm", ["install", "--no-production"]);
-          return;
-        }
-
-        try {
-          await execa("yarn", ["install", "--production=false"]);
-        } catch (err) {
-          if (
-            err.stderr.startsWith("error Your lockfile needs to be updated")
-          ) {
-            throw new Error(
-              "yarn.lock file is outdated. Run yarn, commit the updated lockfile and try again."
-            );
-          }
-
-          throw err;
+        if (options.yarn) {
+          return execa("yarn", ["install", "--production=false"]);
+        } else {
+          return  execa("npm", ["install", "--no-production"]);
         }
       });
     }
@@ -239,6 +226,7 @@ export async function run(config, reporter, flags, args) {
   await publish.init(options.version);
   const newManifest = await config.loadPackageManifest();
   console.log(`\n ${newManifest.name} ${newManifest.version} published 🎉`);
+  console.log(`You can see it at: ${chalk.underline(`https://unpkg.com/${newManifest.name}@${newManifest.version}/`)}`);
 }
 
 // type Flags = {};

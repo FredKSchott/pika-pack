@@ -32,7 +32,7 @@ async function handleError(error, pkgManager, task, options, input) {
   if (
     error.stderr.includes("one-time pass") ||
     error.message.includes("user TTY") ||
-    error.message.include("One-Time-Password")
+    error.message.includes("One-Time-Password")
   ) {
     const answers = await inquirer.prompt([
       {

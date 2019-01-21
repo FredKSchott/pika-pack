@@ -2,28 +2,18 @@
   "name": "@pika/pack",
   "version": "0.1.8",
   "license": "MIT",
-  "distributions": {
-    "src": [
-      true
-    ],
-    "plugins": [
-      [
-        "@pika/node-builder"
-      ],
-      [
-        "@pika/add-bin",
-        {
-          "bin": "pika"
-        }
-      ]
+  "@pika/pack": {
+    "pipeline": [
+      ["../pika-builders/packages/plugin-ts-standard-pkg/pkg"],
+      ["@pika/node-builder"],
+      ["@pika/simple-bin", {"bin": "pika"}]
     ]
   },
   "publishConfig": {
     "access": "public"
   },
   "dependencies": {
-    "@pika/src-builder": "^0.1.2",
-    "@pika/types": "^0.1.2",
+    "@pika/types": "^0.2.7",
     "camelcase": "^4.0.0",
     "chalk": "^2.1.0",
     "commander": "^2.9.0",
@@ -57,8 +47,9 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.2.3",
-    "@pika/add-bin": "^0.1.2",
-    "@pika/node-builder": "^0.1.2",
+    "@pika/node-builder": "^0.2.7",
+    "@pika/simple-bin": "^0.2.7",
+    "@pika/src-builder": "^0.2.7",
     "prettier": "^1.15.3",
     "typescript": "^3.2.2"
   }

@@ -11,7 +11,6 @@ import BaseReporter from './reporters/base-reporter';
 import detectIndent from 'detect-indent';
 import executeLifecycleScript from './util/execute-lifecycle-script';
 import importFrom from 'import-from';
-import * as srcBuilder from '@pika/src-builder';
 
 export type ConfigOptions = {
   cwd?: string,
@@ -78,29 +77,14 @@ export default class Config {
   }
 
   async getDistributions(): Promise<Array<[any, any]>> {
-    const raw = this.manifest.distributions || {};
+    const raw = this.manifest[`@pika/pack`] || {};
     raw.defaults = raw.defaults || {};
     raw.plugins = raw.plugins || [];
 
-    async function cleanRawDistObject(rawVal, defaultRunner, cwd, canBeFalsey): Promise<false | any[]> {
-      if (rawVal === undefined || rawVal === true) {
-        if (!defaultRunner) {
-          throw new Error('no plugin default');
-        }
-          return [{...defaultRunner, name: '@pika/src-builder'}, {}];
-      }
+    async function cleanRawDistObject(rawVal, cwd, canBeFalsey): Promise<false | any[]> {
       if (Array.isArray(rawVal)) {
-        if (rawVal[0] === true && defaultRunner) {
-          return [{...defaultRunner, name: '@pika/src-builder'}, rawVal[1] || {}];
-        }
         let importStr = (rawVal[0].startsWith('./') ||rawVal[0].startsWith('../')) ? path.join(cwd, rawVal[0]) : rawVal[0];
         return [{...importFrom(cwd, importStr), name: rawVal[0]}, rawVal[1] || {}];
-      }
-      if (rawVal && typeof rawVal === 'object') {
-        if (!defaultRunner) {
-          throw new Error('no plugin default');
-        }
-        return [defaultRunner, rawVal];
       }
       if (typeof rawVal === 'string') {
         return [{build: ({cwd}) => {
@@ -117,14 +101,8 @@ export default class Config {
       return false;
     }
     return (await Promise.all([
-      ...(raw.assets || []).map(rawVal => {
-        return cleanRawDistObject(rawVal, false, this.cwd, false);
-      }),
-      ...(raw.src || []).map(rawVal => {
-        return cleanRawDistObject(rawVal, srcBuilder, this.cwd, false);
-      }),
-      ...(raw.plugins || []).map(rawVal => {
-        return cleanRawDistObject(rawVal, false, this.cwd, false);
+      ...(raw.pipeline || []).map(rawVal => {
+        return cleanRawDistObject(rawVal, this.cwd, false);
       }),
     ])).filter(Boolean);
   }

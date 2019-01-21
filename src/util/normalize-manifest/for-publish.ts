@@ -14,7 +14,7 @@ export async function generatePublishManifest(
     version: manifest.version,
     license: manifest.license,
     pika: true,
-    keywords: Array.from(new Set([...(manifest.keywords || []), 'pika-pkg'])),
+    keywords: manifest.keywords,
     files: ['dist-*/', 'assets/', 'bin/'],
     sideEffects: manifest.sideEffects || false,
     dependencies: manifest.dependencies || {},

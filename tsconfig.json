@@ -1,12 +1,10 @@
 {
     "compilerOptions": {
-      "target": "esnext",
+      "target": "es2018",
       "module": "esnext",
       "moduleResolution": "node",
-      "declaration": true,
-      "outDir": "./lib",
       "esModuleInterop": true
     },
-    "include": ["src"],
+    "include": ["src/**/*"],
     "exclude": ["node_modules"]
   }

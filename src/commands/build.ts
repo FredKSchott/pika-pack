@@ -9,9 +9,9 @@ import * as nodeFs from "fs";
 import * as path from "path";
 import * as rollup from "rollup";
 import { Command } from "commander";
-import { BuilderOptions } from "@pika/types";
 import { DEFAULT_INDENT } from "../constants";
 import chalk from "chalk";
+import {BuilderOptions} from '@pika/types';
 
 type Flags = {
   publish?: boolean;
@@ -81,7 +81,7 @@ export class Build {
         info: (msg) => console.log(chalk.dim(`      » ${msg}`)),
         warning: (msg) => console.log(chalk.yellow(`      » ${msg}`)),
         success: (msg) => console.log(chalk.green(`      » ${msg}`)),
-        created: (filename: string, entrypoint?: string) => console.log(`      📝 `, (entrypoint ? chalk.dim(`[${entrypoint}] `) : '') + chalk.green(path.relative(cwd, filename))),
+        created: (filename: string, entrypoint?: string) => console.log(`      📝 `, chalk.green(path.relative(cwd, filename)), (entrypoint ? chalk.dim(`[${entrypoint}]`) : '')),
       },
       isFull,
       manifest,
@@ -145,9 +145,15 @@ export class Build {
     });
 
     steps.push(async (curr: number, total: number) => {
-      this.reporter.step(curr, total, `Preparing build`);
+      this.reporter.step(curr, total, `Preparing package`);
       await this.cleanup();
       console.log(`      🚿 `,chalk.green('pkg/'));
+      for (const [runner, options] of distRunners) {
+        await (runner.beforeBuild && runner.beforeBuild({
+          ...builderConfig,
+          options
+        }));
+      }
     });
 
     for (const [runner, options] of distRunners) {
@@ -157,28 +163,44 @@ export class Build {
           total,
           `Running ${chalk.bold(runner.name)}`
         );
-        return Promise.resolve(
-          runner.build({
+        // return Promise.resolve(
+          await (runner.beforeJob && runner.beforeJob({
             ...builderConfig,
             options
-          })
-        ).catch(err => {
-          console.log(err);
-          reporter.log(
-            reporter.lang("distFailed", runner.name, err.code, err.message),
-            { force: true }
-          );
-          if (err.forceExit === true) {
-            reporter.log(reporter.lang("distExiting"));
-            return;
-          }
-          reporter.log(reporter.lang("distContinuing"));
-        });
+          }));
+          await (runner.build && runner.build({
+            ...builderConfig,
+            options
+          }))
+          await (runner.afterJob && runner.afterJob({
+            ...builderConfig,
+            options
+          }))
+        // ).catch(err => {
+          // console.log(chalk.red(err.message));
+          // reporter.log(
+          //   reporter.lang("distFailed", runner.name, err.code, err.message),
+          //   { force: true }
+          // );
+          // if (err.forceExit === true) {
+            // reporter.log(reporter.lang("distExiting"));
+            // throw err;
+            // return;
+          // }
+          // reporter.log(reporter.lang("distContinuing"));
+        // });
       });
     }
 
     steps.push(async (curr: number, total: number) => {
-      this.reporter.step(curr, total, `Generating manifest & metadata`);
+      this.reporter.step(curr, total, `Finalizing package`);
+      for (const [runner, options] of distRunners) {
+        await (runner.afterBuild && runner.afterBuild({
+          ...builderConfig,
+          options
+        }));
+      }
+
       if (await fs.exists(path.join(cwd, "README"))) {
         fs.copyFile(path.join(cwd, "README"), path.join(out, "README"));
     } else if (await fs.exists(path.join(cwd, "README.md"))) {
