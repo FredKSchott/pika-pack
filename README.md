@@ -8,7 +8,7 @@
 
 <br/>
 <p align="center">
-  <img alt="Logo" src="https://i.imgur.com/k8LIiYY.gif" width="640">
+  <img alt="Logo" src="https://i.imgur.com/D6DTl2m.gif" width="640">
 </p>
 <br/>
 
@@ -16,11 +16,18 @@
 
 Authoring JavaScript in 2013 was simple: Write JavaScript and hit `npm publish`.
 
-6 years later and things are more complicated: The modern JavaScript that we write (and TypeScript, and Flow, and Reason, and...) no longer runs natively on Node.js. But compiling only for Node.js leaves web users with code that is less reliably optimized.  As a result, package authors are stuck forever fiddling with tooling & configuration files trying to get everything just right. 
+6 years later and things are more complicated: Modern JavaScript (and TypeScript, and Flow, and Reason, and...) no longer runs everywhere. Today, the best libraries ship legacy code for Node.js alongside modern code for web bundlers, type definition files for TypeScript/VSCode and bundled code for UNPKG (if applicable). 
 
-In the words of npm: ["Everybody would like less tooling"](https://medium.com/npm-inc/this-year-in-javascript-2018-in-review-and-npms-predictions-for-2019-3a3d7e5298ef).
+Of course it's up to you as the author to figure all of this out on your own, with almost no direct feedback or guidance. I hope you have your PhD in Bundler Configuration handy!
 
-**@pika/pack approaches the problem differently: we focus on the entire package.** Pack uses simple, pluggable builders that compile your code for different environments (like Node.js, ESM, Deno) AND configure your `package.json` manifest to point to each entrypoint. The result is a self-contained ready-to-publish `pkg/` dir, optimized and small by default (so no more `"files"` or `.npmignore` configuration to worry about).
+**@pika/pack approaches the problem differently:** 
+
+- **Use simple, pluggable builders to build your package.**
+- Each builder compiles your modern code for a single environment (like Node.js, ESM, UNPKG, Deno). 
+- Each builder configures your `package.json` entrypoints (like `"main"` and `"module"`) automatically.
+- Most builders require zero configuration to run.
+
+The result is a self-contained, ready-to-run `pkg/` dir, optimized and small by default (so no more `"files"` or `.npmignore` configuration to worry about when you decide to publish).
 
 
 ## Quickstart
@@ -29,7 +36,7 @@ In the words of npm: ["Everybody would like less tooling"](https://medium.com/np
 npm install --global @pika/pack
 ```
 
-To set up your project for @pika/pack, all you need to do is define a build pipeline in your source project's `package.json` manifest:
+To use @pika/pack, define a build `"pipeline"` in your source project's `package.json` manifest (similar to the "plugins" section of a `.babelrc` file):
 
 ```js
 /* ./package.json */
@@ -39,13 +46,13 @@ To set up your project for @pika/pack, all you need to do is define a build pipe
   "version": "1.0.0",
   "@pika/pack": {
     "pipeline": [
-      // 1. Compiles your source to standard ES2018+
+      // 1. Compile your source to standard ES2018+
       ["@pika/plugin-standard-pkg", {"exclude": ["__tests__/*"]}],
-      // 2. Creates a distribution to run on Node.js
+      // 2. Create a distribution to run on Node.js
       ["@pika/node-builder"],
-      // 3. Creates a distribution to run on browsers (optimized for bundlers)
+      // 3. Create a distribution to run on web browsers (optimized for bundlers)
       ["@pika/web-builder"],
-      // 4. Generates type definitions automatically from your JavaScript
+      // 4. Generate type definitions automatically from your JavaScript
       ["@pika/types-builder"]
     ]
   },
@@ -53,7 +60,7 @@ To set up your project for @pika/pack, all you need to do is define a build pipe
 }
 ```
 
-No other configuration or tooling needed! When you run `pika build` you'll get a `pkg/` build directory optimized for npm, with `package.json` entrypoints (like `"main"` and `"module"`) added automatically:
+No other configuration or tooling needed! When you run `pika build` in your project you'll get a built `pkg/` directory, with all `package.json` entrypoints (like `"main"` and `"module"`) added automatically:
 
 ```js
 /* Your generated `pkg/` package.json manifest: */
@@ -65,11 +72,7 @@ No other configuration or tooling needed! When you run `pika build` you'll get a
   "module": "dist-web/index.js",
   "types": "dist-types/index.d.ts",
   "sideEffects": false,
-  "files": [
-    "dist-*/",
-    "assets/",
-    "bin/"
-  ]
+  "files": ["dist-*/", "assets/", "bin/"]
 }
 ```
 
