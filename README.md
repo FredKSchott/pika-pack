@@ -18,14 +18,13 @@ Authoring JavaScript in 2013 was simple: Write JavaScript and hit `npm publish`.
 
 6 years later and things are more complicated: Modern JavaScript (and TypeScript, and Flow, and Reason, and...) no longer runs everywhere. Today, the best libraries ship legacy code for Node.js alongside modern code for web bundlers, type definition files for TypeScript/VSCode and bundled code for UNPKG (if applicable). 
 
-Of course it's up to you as the author to figure all of this out on your own, with almost no direct feedback or guidance. I hope you have your PhD in Bundler Configuration handy!
+Of course it's up to you as the author to figure all of this out on your own, with almost no direct feedback or guidance. I hope you have your PhD in package publishing & bundler configuration handy!
 
 **@pika/pack approaches the problem differently:** 
 
-- **Use simple, pluggable builders to build your package.**
+- **Use simple, pluggable, zero-configuration builders to build your package.**
 - Each builder compiles your modern code for a single environment (like Node.js, ESM, UNPKG, Deno). 
 - Each builder configures your `package.json` entrypoints (like `"main"` and `"module"`) automatically.
-- Most builders require zero configuration to run.
 
 The result is a self-contained, ready-to-run `pkg/` dir, optimized and small by default (so no more `"files"` or `.npmignore` configuration to worry about when you decide to publish).
 
