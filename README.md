@@ -12,7 +12,7 @@
 
 ## @pika/pack is a completely new approach to package building.
 
-- 🏋️‍♀️ **Easy to Use:** Compose your build out of pluggable, zero-configuration builders.
+- 🏋️‍♀️ **Easy to Use:** Compose your package build out of pluggable, zero-configuration builders.
   - Say goodbye to complex bundlers and config files!
   - Simple enough for anyone to pick up, but expressive enough to handle the trickiest scenarios.
 - ⚡️ **Optimized by Default:** Each builder plugin optimizes your code for one specific environment.
