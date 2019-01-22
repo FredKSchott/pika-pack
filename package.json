@@ -15,6 +15,12 @@
         {
           "bin": "pika"
         }
+      ],
+      [
+        "@pika/plugin-simple-bin",
+        {
+          "bin": "pack"
+        }
       ]
     ]
   },
