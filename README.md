@@ -14,8 +14,9 @@
 
 **@pika/pack is a completely new approach to package building and bundling:**
 
-- **Easy:** Say goodbye to bundlers and complex config files! 
-  - Pack lets you compose build pipelines out of pluggable, zero-configuration builders.
+- **Easy to Use:** Say goodbye to complex bundlers and config files! 
+  - Pack lets you compose build pipelines out of pluggable, zero-configuration plugins.
+  - Think Babel plugins for your entire package.
 - **Optimized:** Each builder plugin optimizes your code for one specific environment.
   - Use `plugin-build-node` for a Node.js build, `plugin-build-web` for an web-optimized ESM build, and more.
 - **Holistic:** Each builder configures your `package.json` entrypoints (like `"main"` and `"module"`) for you as well.
@@ -43,12 +44,12 @@ To use @pika/pack, define a build `"pipeline"` in your source project's `package
     "pipeline": [
       // 1. Compiles your source to standard ES2018+
       ["@pika/plugin-standard-pkg", {"exclude": ["__tests__/*"]}],
-      // 2. Creates a distribution to run on Node.js
-      ["@pika/node-builder"],
-      // 3. Creates a distribution to run on web browsers (optimized for bundlers)
-      ["@pika/web-builder"],
-      // 4. Generates type definitions from your JavaScript automatically
-      ["@pika/types-builder"]
+      // 2. Creates a distribution optimized to run on Node.js
+      ["@pika/plugin-build-node"],
+      // 3. Creates a distribution optimized for web browsers & bundlers
+      ["@pika/plugin-build-web"],
+      // 4. Automatically generates type definitions from your JavaScript
+      ["@pika/plugin-build-types"]
     ]
   },
   // ...
