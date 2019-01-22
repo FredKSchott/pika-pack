@@ -14,7 +14,7 @@
 
 Authoring JavaScript in 2013 was simple: Write JavaScript and hit `npm publish`.
 
-6 years later and things are more complicated: Modern JavaScript (and TypeScript, and Flow, and Reason, and...) no longer runs everywhere. To get around this, the best libraries ship legacy code for Node.js alongside modern code for web bundlers, type definitions for TypeScript/VSCode users, bundled code for UNPKG, and more. 
+6 years later and things are more complicated: Modern JavaScript (and TypeScript, and Flow, and Reason, and...) no longer runs everywhere. To get around this, libraries ship legacy code for Node.js alongside modern code for web bundlers, type definitions for TypeScript/VSCode users, bundled code for UNPKG/CDNs, and more. 
 
 Of course it's up to you as the package author to figure all of this out on your own.
 
