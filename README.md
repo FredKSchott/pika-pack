@@ -14,9 +14,9 @@
 
 ⚡️ @pika/pack is a completely new approach to package building and bundling:
 
-- **Easy to Use:** Say goodbye to complex bundlers and config files! 
-  - Pack lets you compose build pipelines out of pluggable, zero-configuration plugins.
-  - Simple enough for anyone to pick up, but expressive enough to handle the most complex packages.
+- **Easy to Use:** Compose your build out of pluggable, zero-configuration builders.
+  - Say goodbye to complex bundlers and config files!
+  - Simple enough for anyone to pick up, but expressive enough to handle the most complex scenarios.
 - **Optimized by Default:** Each builder plugin optimizes your code for one specific environment.
   - Create a Node.js-ready build, a web-optimized ESM build, auto-generate TypeScript definitions...
 - **Holistic:** Builder plugins configure your `package.json` entrypoints (like `"main"` &`"module"`) as well.
