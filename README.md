@@ -12,9 +12,9 @@
 
 ## What is @pika/pack?
 
-Authoring JavaScript in 2013 was simple: Write JavaScript and hit `npm publish`.
+Authoring JavaScript used to be simple: Write JavaScript and hit `npm publish`.
 
-6 years later and things are more complicated: Modern JavaScript (and TypeScript, and Flow, and Reason, and...) no longer runs everywhere. To get around this, libraries ship legacy code for Node.js alongside modern code for web bundlers, type definitions for TypeScript/VSCode users, bundled code for UNPKG/CDNs, and more. 
+Today things are more complicated: Modern JavaScript (and TypeScript, and Flow, and Reason, and...) no longer runs everywhere. To get around this, libraries ship legacy code for Node.js alongside modern code for web bundlers, type definitions for TypeScript/VSCode users, bundled code for UNPKG/CDNs, and more. 
 
 Of course it's up to you as the package author to figure all of this out on your own.
 
@@ -42,6 +42,7 @@ To use @pika/pack, define a build `"pipeline"` in your source project's `package
   "name": "simple-package",
   "version": "1.0.0",
   "@pika/pack": {
+    // Define the pipeline that will build your package:
     "pipeline": [
       // 1. Compiles your source to standard ES2018+
       ["@pika/plugin-standard-pkg", {"exclude": ["__tests__/*"]}],
