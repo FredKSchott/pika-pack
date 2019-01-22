@@ -14,9 +14,9 @@
 
 Authoring JavaScript in 2013 was simple: Write JavaScript and hit `npm publish`.
 
-6 years later and things are more complicated: Modern JavaScript (and TypeScript, and Flow, and Reason, and...) no longer runs everywhere. Today, the best libraries ship legacy code for Node.js alongside modern code for web bundlers, type definition files for TypeScript/VSCode and bundled code for UNPKG (if applicable). 
+6 years later and things are more complicated: Modern JavaScript (and TypeScript, and Flow, and Reason, and...) no longer runs everywhere. The best libraries ship legacy code for Node.js alongside modern code for web bundlers, type definitions for TypeScript/VSCode users, bundled code for UNPKG, and more. 
 
-Of course it's up to you as the author to figure all of this out on your own, with almost no direct feedback or guidance. Make sure you have your PhD in package publishing & bundler configuration handy.
+Of course it's up to you as the package author to figure all of this out on your own.
 
 **@pika/pack approaches the problem differently:** 
 
