@@ -14,14 +14,16 @@
 
 - 🏋️‍♀️ **Easy to Use:** Compose your package build out of pluggable, zero-configuration builders.
   - Say goodbye to complex bundlers and config files!
-  - Simple enough for anyone to pick up, but expressive enough to handle the trickiest scenarios.
-- ⚡️ **Optimized by Default:** Each builder plugin optimizes your code for one specific environment.
+  - Simple enough for anyone to pick up, but expressive enough to handle the trickiest packages.
+- ⚡️ **Optimized by Default:** Each build plugin optimizes your code for one specific environment.
   - Stop publishing bloated, transpiled, Node.js-specific JavaScript to all consumers.
-  - Create a web-optimized ESM build, auto-generate TypeScript definitions, a Deno-ready build...
+  - Create a web-optimized ESM build, auto-generate TypeScript definitions, build for [Deno](https://deno.land/)...
 - ⚛️ **Holistic:** @pika/pack handles everything, including `package.json` entrypoints (like "main" & "module").
   - Really, when we say simple, we mean it!
+  - Just add a one-line build plugin and it handles the rest, from compilation to configuration.
+  - Builds only include needed files by default: no more `"files"`/`.npmignore` settings to worry about out.
 
-The result of running @pika/pack is a self-contained, ready-to-run `pkg/` dir. Link it, run it locally, and publish it to npm when you're ready. Your package build directory only includes neccessary files by default, so no more `"files"` or `.npmignore` configuration to worry about either.
+The result of running @pika/pack is a self-contained, ready-to-run `pkg/` dir. Link it, run it locally, and publish it to npm when you're ready!
 
 
 ## Quickstart
@@ -30,7 +32,9 @@ The result of running @pika/pack is a self-contained, ready-to-run `pkg/` dir. L
 npm install --global @pika/pack
 ```
 
-Just define a build `"pipeline"` in your source project's `package.json` manifest (similar to the "plugins" section of a `.babelrc` file). No other configuration or tooling needed! When you run `pika build` your code will be built into a self-contained `pkg/` directory, fully configured with all `package.json` entrypoints (like `"main"` and `"module"`) added automatically.
+To get started, just define a build `"pipeline"` in your source project's `package.json` manifest (similar to the `"plugins"` section of a `.babelrc` file). Add the build plugins for the enivornments/features you care about, aaaaaand... that's it! 
+
+When you run `pika build` your code will be built into a self-contained `pkg/` directory, compiled for each environment & automatically configured with all `package.json` entrypoints (like `"main"` and `"module"`).
 
 ```js
 /* Before: Your Project package.json */
