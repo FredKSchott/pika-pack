@@ -12,19 +12,16 @@
 
 ## What is @pika/pack?
 
-Authoring JavaScript used to be simple: Write JavaScript and hit `npm publish`.
+**@pika/pack is a new approach to package building and bundling:**
 
-Today things are more complicated: Modern JavaScript (and TypeScript, and Flow, and Reason, and...) no longer runs everywhere. To get around this, libraries ship legacy code for Node.js alongside modern code for web bundlers, type definitions for TypeScript/VSCode users, bundled code for UNPKG/CDNs, and more. 
+- **Easy:** Say goodbye to bundlers and complex config files! 
+  - Pack lets you compose build pipelines out of pluggable, zero-configuration builders.
+- **Optimized:** Each builder plugin optimizes your code for one specific environment.
+  - Use `plugin-build-node` for a Node.js build, `plugin-build-web` for an web-optimized ESM build, and more.
+- **Holistic:** Each builder configures your `package.json` entrypoints (like `"main"` and `"module"`) for you as well.
+  - Really, when we say simple, we mean it!
 
-Of course it's up to you as the package author to figure all of this out on your own.
-
-**@pika/pack tries to solve this problem differently:** 
-
-- **Use simple, pluggable, zero-configuration builders to build your package.**
-- Each builder compiles your modern code for a single environment (like Node.js, ESM, UNPKG, Deno). 
-- Each builder configures your built `package.json` entrypoints (like `"main"` and `"module"`) automatically.
-
-The result is a self-contained, ready-to-run `pkg/` dir, optimized and small by default (so no more `"files"` or `.npmignore` configuration to worry about when you decide to publish).
+Running @pika/pack will build your package as a self-contained, ready-to-run `pkg/` dir, optimized and small by default (so no more `"files"` or `.npmignore` configuration to worry about when you decide to publish).
 
 
 ## Quickstart
