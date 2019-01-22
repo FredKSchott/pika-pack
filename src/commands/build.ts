@@ -32,7 +32,6 @@ export class Build {
     this.reporter = reporter;
     this.totalNum = 0;
     this.out = path.resolve(config.cwd, flags.out || 'pkg/');
-
     if (this.out === this.config.cwd) {
       throw new Error('On publish, you cannot write to cwd because a package.json is created');
     }

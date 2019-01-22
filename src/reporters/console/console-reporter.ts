@@ -116,7 +116,6 @@ export default class ConsoleReporter extends BaseReporter {
     } else {
       msg += '...';
     }
-
     this.log(`${this.format.dim(`[${current}/${total}]`)} ${msg}`);
   }
 

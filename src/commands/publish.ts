@@ -163,8 +163,8 @@ export class Publish {
       const oldIsSilent = reporter.isSilent;
       reporter.isSilent = true;
       const builder = new Build({out, publish: true, silent: true}, config, reporter);
-      reporter.isSilent = oldIsSilent;
       await builder.init(true);
+      reporter.isSilent = oldIsSilent;
     });
 
     if (runPublish && !manifest.private) {
