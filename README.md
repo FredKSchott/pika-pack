@@ -16,12 +16,13 @@
 
 - **Easy to Use:** Say goodbye to complex bundlers and config files! 
   - Pack lets you compose build pipelines out of pluggable, zero-configuration plugins.
+  - Simple enough for anyone to pick up, but expressive enough to handle even the most complex packages.
 - **Optimized by Default:** Each builder plugin optimizes your code for one specific environment.
-  - Create a Node.js-ready build, a web-optimized ESM build, auto-generate TypeScript definitions... all with simple builders.
-- **Holistic:** Each builder configures your `package.json` entrypoints (like `"main"` and `"module"`) for you as well.
+  - Create a Node.js-ready build, a web-optimized ESM build, auto-generate TypeScript definitions...
+- **Holistic:** Builder plugins configure your `package.json` entrypoints (like `"main"` &`"module"`) as well.
   - Really, when we say simple, we mean it!
 
-Running @pika/pack will build your package as a self-contained, ready-to-run `pkg/` dir, optimized and small by default (so no more `"files"` or `.npmignore` configuration to worry about when you decide to publish).
+The result of running @pika/pack is a self-contained, ready-to-run `pkg/` dir. Link it, run it locally, and publish it to npm when you're ready. Your package build only includes neccessary files by default, so no more `"files"` or `.npmignore` configuration to worry about either.
 
 
 ## Quickstart
