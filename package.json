@@ -4,16 +4,25 @@
   "license": "MIT",
   "@pika/pack": {
     "pipeline": [
-      ["../pika-builders/packages/node-builder/pkg"],
-      ["../pika-builders/packages/plugin-ts-standard-pkg/pkg"],
-      ["@pika/simple-bin", {"bin": "pika"}]
+      [
+        "@pika/plugin-ts-standard-pkg"
+      ],
+      [
+        "@pika/plugin-build-node"
+      ],
+      [
+        "@pika/plugin-simple-bin",
+        {
+          "bin": "pika"
+        }
+      ]
     ]
   },
   "publishConfig": {
     "access": "public"
   },
   "dependencies": {
-    "@pika/types": "^0.2.7",
+    "@pika/types": "^0.3.3",
     "camelcase": "^4.0.0",
     "chalk": "^2.1.0",
     "commander": "^2.9.0",
@@ -38,18 +47,16 @@
     "p-timeout": "^2.0.1",
     "read": "^1.0.7",
     "rimraf": "^2.5.0",
-    "rollup": "^0.67.3",
     "semver": "^5.6.0",
-    "standard-pkg": "^0.1.0",
     "strip-ansi": "^4.0.0",
     "strip-bom": "^3.0.0",
     "validate-npm-package-license": "^3.0.4"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.2.3",
-    "@pika/node-builder": "^0.2.7",
-    "@pika/simple-bin": "^0.2.7",
-    "@pika/src-builder": "^0.2.7",
+    "@pika/plugin-build-node": "^0.3.3",
+    "@pika/plugin-simple-bin": "^0.3.3",
+    "@pika/plugin-ts-standard-pkg": "^0.3.3",
     "prettier": "^1.15.3",
     "typescript": "^3.2.2"
   }

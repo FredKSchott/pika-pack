@@ -5,7 +5,6 @@ import githubUrlFromGit from 'github-url-from-git';
 import hasYarn from 'has-yarn';
 import hostedGitInfo from 'hosted-git-info';
 import * as path from 'path';
-import {Lint} from 'standard-pkg';
 import Config from '../config.js';
 import {Reporter} from '../reporters/index.js';
 import * as fs from '../util/fs.js';
@@ -160,16 +159,8 @@ export class Publish {
 
     steps.push(async (curr: number, total: number) => {
       this.reporter.step(curr, total, 'Building Package', '✨');
-
       const builder = new Build({out, publish: true}, config, reporter);
       await builder.init(true);
-    });
-
-    steps.push(async (curr: number, total: number) => {
-      this.reporter.step(curr, total, 'Linting Package', '✨');
-      const validator = new Lint(out, flags, config, reporter);
-      await validator.init();
-      validator.summary();
     });
 
     if (runPublish && !manifest.private) {

@@ -1,9 +1,7 @@
 import {BuilderOptions} from '@pika/types';
 import chalk from 'chalk';
 import {Command} from 'commander';
-import * as nodeFs from 'fs';
 import * as path from 'path';
-import * as rollup from 'rollup';
 import Config from '../config.js';
 import {DEFAULT_INDENT} from '../constants.js';
 import {Reporter} from '../reporters/index.js';
@@ -57,7 +55,7 @@ export class Build {
   }
 
   async init(isFull?: boolean): Promise<void> {
-    const {config, flags, reporter, out} = this;
+    const {config, out} = this;
     const {cwd} = config;
 
     const manifest = await config.manifest;
@@ -95,28 +93,6 @@ export class Build {
           });
           return files.filter(fileAbs => !fileAbs.endsWith('.d.ts'));
         })(),
-      },
-      rollup: (distName, options) => {
-        const envReplace = `/env.${distName}.`;
-        const envReplaceLoc = defaultEnvLoc.replace('/env.', envReplace);
-        options.input = options.input || path.join(out, 'dist-src/index.js');
-        options.plugins = options.plugins || [];
-        if (nodeFs.existsSync(envReplaceLoc)) {
-          options.plugins.unshift({
-            name: 'env-rewrite', // this name will show up in warnings and errors
-            resolveId: (importee: string, importer: string) => {
-              // console.log(importee, importer, envLoc);
-              // console.log('  ', envReplace, importer && path.resolve(importer, '..', importee));
-              const resolvedImportee = path.resolve(importer, '..', importee);
-              if (defaultEnvLoc && resolvedImportee === defaultEnvLoc) {
-                return envReplaceLoc;
-              }
-              return null; // other ids should be handled as usually
-            },
-            load: () => null,
-          });
-        }
-        return rollup.rollup(options);
       },
     };
     const steps: Array<(curr: number, total: number) => Promise<{bailout: boolean} | void>> = [];
