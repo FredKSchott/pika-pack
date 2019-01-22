@@ -203,7 +203,7 @@ export async function run(config, reporter, flags, args) {
   const publish = new Publish(flags, config, reporter);
   await publish.init(options.version);
   const newManifest = await config.loadPackageManifest();
-  console.log(`\n ${newManifest.name} ${newManifest.version} published 🎉`);
+  console.log(chalk.bold(`\n🎉  ${newManifest.name} v${newManifest.version} published!`));
   console.log(`You can see it at: ${chalk.underline(`https://unpkg.com/${newManifest.name}@${newManifest.version}/`)}`);
 }
 // type Flags = {};
