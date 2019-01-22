@@ -1,8 +1,27 @@
-
+/* @flow */
 
 import _camelCase from 'camelcase';
 
-export function entries<T>(obj?: {[key: string]: T}): Array<[string, T]> {
+export function sortAlpha(a: string, b: string): number {
+  // sort alphabetically in a deterministic way
+  const shortLen = Math.min(a.length, b.length);
+  for (let i = 0; i < shortLen; i++) {
+    const aChar = a.charCodeAt(i);
+    const bChar = b.charCodeAt(i);
+    if (aChar !== bChar) {
+      return aChar - bChar;
+    }
+  }
+  return a.length - b.length;
+}
+
+export function sortOptionsByFlags(a: any, b: any): number {
+  const aOpt = a.flags.replace(/-/g, '');
+  const bOpt = b.flags.replace(/-/g, '');
+  return sortAlpha(aOpt, bOpt);
+}
+
+export function entries<T>(obj: {[key: string]: T}): Array<[string, T]> {
   const entries = [];
   if (obj) {
     for (const key in obj) {
@@ -42,12 +61,24 @@ export function hyphenate(str: string): string {
   });
 }
 
-export function camelCase(str: string): string {
+export function camelCase(str: string): string | null {
   if (/[A-Z]/.test(str)) {
     return null;
   } else {
     return _camelCase(str);
   }
+}
+
+export function compareSortedArrays<T>(array1: Array<T>, array2: Array<T>): boolean {
+  if (array1.length !== array2.length) {
+    return false;
+  }
+  for (let i = 0, len = array1.length; i < len; i++) {
+    if (array1[i] !== array2[i]) {
+      return false;
+    }
+  }
+  return true;
 }
 
 export function sleep(ms: number): Promise<void> {

@@ -11,6 +11,7 @@ import {generatePrettyManifest, generatePublishManifest} from '../util/normalize
 type Flags = {
   publish?: boolean,
   out?: string,
+  silent?: boolean,
 };
 
 export function setFlags(commander: Command) {
@@ -55,8 +56,14 @@ export class Build {
   }
 
   async init(isFull?: boolean): Promise<void> {
-    const {config, out} = this;
+    const {config, out, flags} = this;
     const {cwd} = config;
+
+    function log(...args: string[]) {
+      if (!flags.silent) {
+        console.log.apply(console, args);
+      }
+    }
 
     const manifest = await config.manifest;
     const distRunners = await config.getDistributions();
@@ -66,11 +73,11 @@ export class Build {
       out,
       cwd,
       reporter: {
-        info: msg => console.log(chalk.dim(`      » ${msg}`)),
-        warning: msg => console.log(chalk.yellow(`      » ${msg}`)),
-        success: msg => console.log(chalk.green(`      » ${msg}`)),
+        info: msg => log(chalk.dim(`      » ${msg}`)),
+        warning: msg => log(chalk.yellow(`      » ${msg}`)),
+        success: msg => log(chalk.green(`      » ${msg}`)),
         created: (filename: string, entrypoint?: string) =>
-          console.log(
+          log(
             `      📝 `,
             chalk.green(path.relative(cwd, filename)),
             entrypoint ? chalk.dim(`[${entrypoint}]`) : '',
@@ -114,7 +121,7 @@ export class Build {
     steps.push(async (curr: number, total: number) => {
       this.reporter.step(curr, total, `Preparing pipeline`);
       await this.cleanup();
-      console.log(`      🚿 `, chalk.green('pkg/'));
+      log(`      🚿 `, chalk.green('pkg/'));
       for (const [runner, options] of distRunners) {
         await (runner.beforeBuild &&
           runner.beforeBuild({
@@ -143,7 +150,7 @@ export class Build {
             options,
           }));
         // ).catch(err => {
-        // console.log(chalk.red(err.message));
+        // log(chalk.red(err.message));
         // reporter.log(
         //   reporter.lang("distFailed", runner.name, err.code, err.message),
         //   { force: true }
@@ -168,26 +175,26 @@ export class Build {
       }
       if (await fs.exists(path.join(cwd, 'README'))) {
         fs.copyFile(path.join(cwd, 'README'), path.join(out, 'README'));
-        console.log(`      📝 `, chalk.green('pkg/README'));
+        log(`      📝 `, chalk.green('pkg/README'));
       } else if (await fs.exists(path.join(cwd, 'README.md'))) {
         fs.copyFile(path.join(cwd, 'README.md'), path.join(out, 'README.md'));
-        console.log(`      📝 `, chalk.green('pkg/README.md'));
+        log(`      📝 `, chalk.green('pkg/README.md'));
       }
 
       const publishManifest = await generatePublishManifest(manifest, config, distRunners);
       if (out === cwd) {
-        console.log(`NEW MANIFEST:\n\n`);
-        console.log(generatePrettyManifest(publishManifest));
-        console.log(`\n\n`);
+        log(`NEW MANIFEST:\n\n`);
+        log(generatePrettyManifest(publishManifest));
+        log(`\n\n`);
       } else {
         await fs.writeFilePreservingEol(
           path.join(out, 'package.json'),
           JSON.stringify(publishManifest, null, DEFAULT_INDENT) + '\n',
         );
-        console.log(`      📝 `, chalk.green('pkg/package.json'));
+        log(`      📝 `, chalk.green('pkg/package.json'));
       }
 
-      console.log(`      📦 `, chalk.green('pkg/'));
+      log(`      📦 `, chalk.green('pkg/'));
     });
     let currentStep = 0;
     for (const step of steps) {

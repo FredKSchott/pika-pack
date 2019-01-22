@@ -9,6 +9,7 @@ import semver from 'semver';
 
 import {ConsoleReporter, JSONReporter} from './reporters/index.js';
 import {commands} from './commands/index.js';
+import * as helpCommand from './commands/help.js';
 import * as constants from './constants.js';
 import {MessageError} from './errors.js';
 import Config from './config.js';
@@ -133,7 +134,7 @@ export async function main({
     args.unshift(commandName);
     commandName = 'help';
   }
-  const command = commands[commandName];
+  const command = commandName === 'help' ? helpCommand : commands[commandName];
 
   commander.originalArgs = args;
   args = [...preCommandArgs, ...args];

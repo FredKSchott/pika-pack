@@ -160,7 +160,10 @@ export class Publish {
 
     steps.push(async (curr: number, total: number) => {
       this.reporter.step(curr, total, 'Building Package', '✨');
-      const builder = new Build({out, publish: true}, config, reporter);
+      const oldIsSilent = reporter.isSilent;
+      reporter.isSilent = true;
+      const builder = new Build({out, publish: true, silent: true}, config, reporter);
+      reporter.isSilent = oldIsSilent;
       await builder.init(true);
     });
 
@@ -206,7 +209,3 @@ export async function run(config, reporter, flags, args) {
   console.log(chalk.bold(`\n🎉  ${newManifest.name} v${newManifest.version} published!`));
   console.log(`You can see it at: ${chalk.underline(`https://unpkg.com/${newManifest.name}@${newManifest.version}/`)}`);
 }
-// type Flags = {};
-// export function setFlags(commander: Command) { //   commander.description('Validates a package for issues before publishing to npm.'); // }
-// export function hasWrapper(commander: Command, args: Array<string>): boolean { //   return true; // }
-// export async function run(config: Config, reporter: Reporter, flags: Flags, args: Array<string>): Promise<void> { //   const {cwd} = config; //   const dir = args.length > 0 ? path.resolve(cwd, args[0]) : 'pkg/'; //   const linter = new Lint(dir, flags, config, reporter); //   await linter.init(); //   console.log(``); //   linter.summary(); // }
