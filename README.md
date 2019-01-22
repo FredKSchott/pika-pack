@@ -16,7 +16,7 @@
 
 - **Easy to Use:** Say goodbye to complex bundlers and config files! 
   - Pack lets you compose build pipelines out of pluggable, zero-configuration plugins.
-- **Optimized:** Each builder plugin optimizes your code for one specific environment.
+- **Optimized by Default:** Each builder plugin optimizes your code for one specific environment.
   - Create a Node.js-ready build, a web-optimized ESM build, auto-generate TypeScript definitions... all with simple builders.
 - **Holistic:** Each builder configures your `package.json` entrypoints (like `"main"` and `"module"`) for you as well.
   - Really, when we say simple, we mean it!
