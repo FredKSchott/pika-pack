@@ -12,7 +12,7 @@
 
 ## What is @pika/pack?
 
-**@pika/pack is a new approach to package building and bundling:**
+**@pika/pack is a completely new approach to package building and bundling:**
 
 - **Easy:** Say goodbye to bundlers and complex config files! 
   - Pack lets you compose build pipelines out of pluggable, zero-configuration builders.
