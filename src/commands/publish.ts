@@ -155,6 +155,7 @@ export class Publish {
     steps.push(async (curr: number, total: number) => {
       this.reporter.step(curr, total, 'Bump Version', '✨');
       await execa('npm', ['version', input, '--force']);
+      await config.loadPackageManifest();
     });
 
     steps.push(async (curr: number, total: number) => {
