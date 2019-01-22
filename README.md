@@ -18,7 +18,7 @@
 - ⚡️ **Optimized by Default:** Each build plugin optimizes your code for one specific environment.
   - Stop publishing bloated, transpiled, Node.js-specific JavaScript to all consumers.
   - Create a web-optimized ESM build, auto-generate TypeScript definitions, build for [Deno](https://deno.land/)...
-- ⚛️ **Holistic:** @pika/pack handles everything, including `package.json` entrypoints (like "main" & "module").
+- ⚛️ **Holistic:** @pika/pack handles everything, including `package.json` entry-points (like "main" & "module").
   - Really, when we say simple, we mean it!
   - Just add a one-line build plugin and it handles the rest, from compilation to configuration.
   - Builds only include needed files by default: no more `"files"`/`.npmignore` settings to worry about out.
@@ -32,9 +32,9 @@ The result of running @pika/pack is a self-contained, ready-to-run `pkg/` dir. L
 npm install --global @pika/pack
 ```
 
-To get started, just define a build `"pipeline"` in your source project's `package.json` manifest (similar to the `"plugins"` section of a `.babelrc` file). Add the build plugins for the enivornments/features you care about, aaaaaand... that's it! 
+To get started, just define a build `"pipeline"` in your source project's `package.json` manifest (similar to the `"plugins"` section of a `.babelrc` file). Add the build plugins for the environments/features you care about, aaaaaand... that's it! 
 
-When you run `pika build` your code will be built into a self-contained `pkg/` directory, compiled for each environment & automatically configured with all `package.json` entrypoints (like `"main"` and `"module"`).
+When you run `pika build` your code will be built into a self-contained `pkg/` directory, compiled for each environment & automatically configured with all `package.json` entry-points (like `"main"` and `"module"`).
 
 ```js
 /* Before: Your Project package.json */
@@ -80,8 +80,11 @@ When you run `pika build` your code will be built into a self-contained `pkg/` d
 ## Available Builders
 
 #### Source Builders:
- - `@pika/plugin-standard-pkg`: Compiles JavaScript/TypeScript to ES2018.
- - `@pika/plugin-ts-standard-pkg`: Compiles TypeScript to ES2018 (Uses `tsc` instead of Babel, and builds type definitions automatically).
+
+> **NOTE: Make sure include a source builder early in your pipeline.** Source builders take your modern, custom JS/TS code and compile it to standard, ES2018 JavaScript. Other builders will use this standardized build target to base their own work off of.
+
+ - `@pika/plugin-standard-pkg`: Compiles JavaScript/TypeScript to ES2018. Supports personalized, top-level `.babelrc` plugins/config.
+ - `@pika/plugin-ts-standard-pkg`: Compiles TypeScript to ES2018 (Uses `tsc` internally instead of Babel, and builds type definitions automatically).
 
 #### Distribution Builders:
 
