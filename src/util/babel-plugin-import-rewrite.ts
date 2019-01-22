@@ -3,7 +3,7 @@ import * as nodeFs from 'fs';
 import * as nodePath from 'path';
 import * as url from 'url';
 import chalk from 'chalk';
-import {validateDynamicImportArguments} from './babel-validate-specifier';
+import {validateDynamicImportArguments} from './babel-validate-specifier.js';
 
 const BareIdentifierFormat = /^((?:@[^\/]+\/)?[^\/]+)(\/.*)?$/;
 

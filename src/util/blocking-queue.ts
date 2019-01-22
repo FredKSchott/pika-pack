@@ -1,6 +1,6 @@
 
 
-import map from './map';
+import map from './map.js';
 
 export default class BlockingQueue {
   constructor(alias: string, maxConcurrency: number = Infinity) {

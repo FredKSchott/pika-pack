@@ -3,10 +3,10 @@ import inquirer from 'inquirer';
 import chalk from 'chalk';
 import githubUrlFromGit from 'github-url-from-git';
 import isScoped from 'is-scoped';
-import * as util from './util';
-import {latestTagOrFirstCommit} from './git-util';
-import * as version from './version';
-import {prettyVersionDiff} from './pretty-version-diff';
+import * as util from './util.js';
+import {latestTagOrFirstCommit} from './git-util.js';
+import * as version from './version.js';
+import {prettyVersionDiff} from './pretty-version-diff.js';
 
 const printCommitLog = async repoUrl => {
 	const latest = await latestTagOrFirstCommit();

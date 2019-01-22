@@ -9,11 +9,11 @@ import {
   QuestionOptions,
   PromptOptions,
 } from './types';
-import {LanguageKeys} from './lang/en';
-import {Formatter} from './format';
+import {LanguageKeys} from './lang/en.js';
+import {Formatter} from './format.js';
 
-import {defaultFormatter} from './format';
-import * as languages from './lang/index';
+import {defaultFormatter} from './format.js';
+import * as languages from './lang/index.js';
 import * as isCI from 'is-ci';
 import * as os from 'os';
 

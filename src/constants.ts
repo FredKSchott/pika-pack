@@ -2,8 +2,8 @@
 
 // import os from 'os';
 // import * as path from 'path';
-// import userHome from './util/user-home-dir';
-// import {getCacheDir, getConfigDir, getDataDir} from './util/user-dirs';
+// import userHome from './util/user-home-dir.js';
+// import {getCacheDir, getConfigDir, getDataDir} from './util/user-dirs.js';
 
 export const DEPENDENCY_TYPES = ['devDependencies', 'dependencies', 'legacyDependencies'];
 // export const OWNED_DEPENDENCY_TYPES = ['devDependencies', 'dependencies', 'legacyDependencies'];

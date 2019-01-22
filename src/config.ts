@@ -2,14 +2,14 @@
 declare function __non_webpack_require__(m: string): any;
 
 import * as path from 'path';
-import * as constants from './constants';
-import { MessageError } from './errors';
-import { Manifest } from './types';
-import * as fs from './util/fs';
-import normalizeManifest from './util/normalize-manifest/index';
-import BaseReporter from './reporters/base-reporter';
+import * as constants from './constants.js';
+import { MessageError } from './errors.js';
+import { Manifest } from './types.js';
+import * as fs from './util/fs.js';
+import normalizeManifest from './util/normalize-manifest/index.js';
+import BaseReporter from './reporters/base-reporter.js';
 import detectIndent from 'detect-indent';
-import executeLifecycleScript from './util/execute-lifecycle-script';
+import executeLifecycleScript from './util/execute-lifecycle-script.js';
 import importFrom from 'import-from';
 
 export type ConfigOptions = {

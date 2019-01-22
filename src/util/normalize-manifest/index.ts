@@ -1,9 +1,9 @@
 
 
-import {Manifest} from '../../types';
-import Config from '../../config';
-import validate from './validate';
-import fix from './fix';
+import {Manifest} from '../../types.js';
+import Config from '../../config.js';
+import validate from './validate.js';
+import fix from './fix.js';
 
 import * as path from 'path';
 

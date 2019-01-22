@@ -1,7 +1,7 @@
 
 
-import {Reporter} from './reporters/index';
-import Config from './config';
+import {Reporter} from './reporters/index.js';
+import Config from './config.js';
 
 export type CLIFunction = (config: Config, reporter: Reporter, flags: Object, args: Array<string>) => CLIFunctionReturn;
 

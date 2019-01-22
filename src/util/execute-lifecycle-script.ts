@@ -1,8 +1,8 @@
 import { StdioOptions } from 'child_process';
-import Config from '../config';
-import { MessageError, ProcessTermError } from '../errors';
-import * as child from './child';
-import { fixCmdWinSlashes } from './fix-cmd-win-slashes';
+import Config from '../config.js';
+import { MessageError, ProcessTermError } from '../errors.js';
+import * as child from './child.js';
+import { fixCmdWinSlashes } from './fix-cmd-win-slashes.js';
 
 // import path from 'path';
 

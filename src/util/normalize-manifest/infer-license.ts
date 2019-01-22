@@ -1,6 +1,6 @@
 
 
-import LICENSES from './licenses';
+import LICENSES from './licenses.js';
 
 function clean(str: string): string {
   return str.replace(/[^A-Za-z\s]/g, ' ').replace(/[\s]+/g, ' ').trim().toLowerCase();

@@ -7,14 +7,14 @@ import * as readline from 'readline';
 import stripAnsi from 'strip-ansi';
 import * as tty from 'tty';
 import { inspect } from 'util';
-import { removeSuffix } from '../../util/misc';
-import BaseReporter, { ReporterOptions } from '../base-reporter';
-import { FormatKeys, Formatter } from '../format';
-import { Package, PromptOptions, QuestionOptions, ReporterSelectOption, ReporterSetSpinner, ReporterSpinner, ReporterSpinnerSet, Trees } from '../types';
-import { getFormattedOutput, recurseTree, sortTrees } from './helpers/tree-helper';
-import Progress from './progress-bar';
-import Spinner from './spinner-progress';
-import { clearLine } from './util';
+import { removeSuffix } from '../../util/misc.js';
+import BaseReporter, { ReporterOptions } from '../base-reporter.js';
+import { FormatKeys, Formatter } from '../format.js';
+import { Package, PromptOptions, QuestionOptions, ReporterSelectOption, ReporterSetSpinner, ReporterSpinner, ReporterSpinnerSet, Trees } from '../types.js';
+import { getFormattedOutput, recurseTree, sortTrees } from './helpers/tree-helper.js';
+import Progress from './progress-bar.js';
+import Spinner from './spinner-progress.js';
+import { clearLine } from './util.js';
 
 
 const AUDIT_COL_WIDTHS = [15, 62];

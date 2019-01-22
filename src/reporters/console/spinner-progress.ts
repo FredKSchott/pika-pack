@@ -1,7 +1,7 @@
 
 
-import {Stdout} from '../types';
-import {writeOnNthLine, clearNthLine} from './util';
+import {Stdout} from '../types.js';
+import {writeOnNthLine, clearNthLine} from './util.js';
 
 export default class Spinner {
   constructor(stdout: Stdout = process.stderr, lineNumber: number = 0) {

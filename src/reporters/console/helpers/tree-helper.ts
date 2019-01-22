@@ -1,7 +1,7 @@
 
 
 // types
-import {Trees} from '../../types';
+import {Trees} from '../../types.js';
 
 export type FormattedOutput = {
   prefix: string,

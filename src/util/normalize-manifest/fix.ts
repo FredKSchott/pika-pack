@@ -1,11 +1,11 @@
 
 
-import {MANIFEST_FIELDS} from '../../constants';
-import {Reporter} from '../../reporters/index';
-import {isValidLicense} from './util';
-import {normalizePerson, extractDescription} from './util';
-import inferLicense from './infer-license';
-import * as fs from '../fs';
+import {MANIFEST_FIELDS} from '../../constants.js';
+import {Reporter} from '../../reporters/index.js';
+import {isValidLicense} from './util.js';
+import {normalizePerson, extractDescription} from './util.js';
+import inferLicense from './infer-license.js';
+import * as fs from '../fs.js';
 
 import semver from 'semver';
 import * as path from 'path';

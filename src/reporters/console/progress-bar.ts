@@ -1,7 +1,7 @@
 
 
-import {Stdout} from '../types';
-import {clearLine, toStartOfLine} from './util';
+import {Stdout} from '../types.js';
+import {clearLine, toStartOfLine} from './util.js';
 
 export default class ProgressBar {
   constructor(total: number, stdout: Stdout = process.stderr, callback?: (progressBar: ProgressBar) => void) {

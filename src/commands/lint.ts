@@ -2,8 +2,8 @@ import * as path from 'path';
 import { Command } from 'commander';
 import {Lint} from 'standard-pkg';
 
-import {Reporter} from '../reporters/index';
-import Config from '../config';
+import {Reporter} from '../reporters/index.js';
+import Config from '../config.js';
 
 type Flags = {};
 

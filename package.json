@@ -4,8 +4,8 @@
   "license": "MIT",
   "@pika/pack": {
     "pipeline": [
+      ["../pika-builders/packages/node-builder/pkg"],
       ["../pika-builders/packages/plugin-ts-standard-pkg/pkg"],
-      ["@pika/node-builder"],
       ["@pika/simple-bin", {"bin": "pika"}]
     ]
   },

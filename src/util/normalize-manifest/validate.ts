@@ -1,9 +1,9 @@
 
 
-import {Reporter} from '../../reporters/index';
-import {MessageError} from '../../errors';
-import {isValidLicense} from './util';
-import typos from './typos';
+import {Reporter} from '../../reporters/index.js';
+import {MessageError} from '../../errors.js';
+import {isValidLicense} from './util.js';
+import typos from './typos.js';
 
 import isBuiltinModule from 'is-builtin-module';
 

@@ -3,9 +3,9 @@
 // // This module serves as a wrapper for file operations that are inconsistant across node and OS versions.
 
 // import fs from 'fs';
-// import {promisify} from './promise';
+// import {promisify} from './promise.js';
 
-// import {constants} from './fs';
+// import {constants} from './fs.js';
 
 // export type CopyFileAction = {
 //   src: string,

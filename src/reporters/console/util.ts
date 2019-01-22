@@ -1,7 +1,7 @@
 
 
 import * as tty from 'tty';
-import {Stdout} from '../types';
+import {Stdout} from '../types.js';
 
 import * as readline from 'readline';
 import chalk from 'chalk';

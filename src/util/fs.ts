@@ -10,16 +10,16 @@ export const mkdirp: (path: string) => Promise<void> = promisify(_mkdirp);
 //
 
 // import {ReadStream} from 'fs';
-// import Reporter from '../reporters/base-reporter';
-// import {CopyFileAction} from './fs-normalized';
+// import Reporter from '../reporters/base-reporter.js';
+// import {CopyFileAction} from './fs-normalized.js';
 
 import * as os from 'os';
 import * as path from 'path';
 
-// import BlockingQueue from './blocking-queue';
-// import * as promise from './promise';
-import map from './map';
-// import {copyFile, fileDatesEqual, unlink} from './fs-normalized';
+// import BlockingQueue from './blocking-queue.js';
+// import * as promise from './promise.js';
+import map from './map.js';
+// import {copyFile, fileDatesEqual, unlink} from './fs-normalized.js';
 
 // export const constants =
 //   typeof fs.constants !== 'undefined'

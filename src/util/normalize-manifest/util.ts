@@ -1,6 +1,6 @@
 
 
-import {PersonObject} from '../../types';
+import {PersonObject} from '../../types.js';
 
 import validateLicense from 'validate-npm-package-license';
 

@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import * as version from './version';
+import * as version from './version.js';
 
 export function prettyVersionDiff(oldVersion, inc) {
 
