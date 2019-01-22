@@ -14,15 +14,15 @@
 
 Authoring JavaScript in 2013 was simple: Write JavaScript and hit `npm publish`.
 
-6 years later and things are more complicated: Modern JavaScript (and TypeScript, and Flow, and Reason, and...) no longer runs everywhere. The best libraries ship legacy code for Node.js alongside modern code for web bundlers, type definitions for TypeScript/VSCode users, bundled code for UNPKG, and more. 
+6 years later and things are more complicated: Modern JavaScript (and TypeScript, and Flow, and Reason, and...) no longer runs everywhere. To get around this, the best libraries ship legacy code for Node.js alongside modern code for web bundlers, type definitions for TypeScript/VSCode users, bundled code for UNPKG, and more. 
 
 Of course it's up to you as the package author to figure all of this out on your own.
 
-**@pika/pack approaches the problem differently:** 
+**@pika/pack tries to solve this problem differently:** 
 
 - **Use simple, pluggable, zero-configuration builders to build your package.**
 - Each builder compiles your modern code for a single environment (like Node.js, ESM, UNPKG, Deno). 
-- Each builder configures your `package.json` entrypoints (like `"main"` and `"module"`) automatically.
+- Each builder configures your built `package.json` entrypoints (like `"main"` and `"module"`) automatically.
 
 The result is a self-contained, ready-to-run `pkg/` dir, optimized and small by default (so no more `"files"` or `.npmignore` configuration to worry about when you decide to publish).
 
@@ -36,7 +36,7 @@ npm install --global @pika/pack
 To use @pika/pack, define a build `"pipeline"` in your source project's `package.json` manifest (similar to the "plugins" section of a `.babelrc` file):
 
 ```js
-/* ./package.json */
+/* Project package.json */
 
 {
   "name": "simple-package",
@@ -61,6 +61,7 @@ No other configuration or tooling needed! When you run `pika build` in your proj
 
 ```js
 /* Your generated `pkg/` package.json manifest: */
+
 {
   "name": "simple-package",
   "version": "1.0.0",
