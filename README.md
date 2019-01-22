@@ -23,8 +23,9 @@
   - Just add a one-line build plugin and it handles the rest, from compilation to configuration.
   - Builds only include needed files by default: no more `"files"`/`.npmignore` settings to worry about out.
 
+<!--
 The result of running @pika/pack is a self-contained, ready-to-run `pkg/` dir. Link it, run it locally, and publish it to npm when you're ready!
-
+-->
 
 ## Quickstart
 
@@ -32,9 +33,7 @@ The result of running @pika/pack is a self-contained, ready-to-run `pkg/` dir. L
 npm install --global @pika/pack
 ```
 
-To get started, just define a build `"pipeline"` in your source project's `package.json` manifest (similar to the `"plugins"` section of a `.babelrc` file). Add the build plugins for the environments/features you care about, aaaaaand... that's it! 
-
-When you run `pika build` your code will be built into a self-contained `pkg/` directory, compiled for each environment & automatically configured with all `package.json` entry-points (like `"main"` and `"module"`).
+To get started, just define a build `"pipeline"` in your source project's `package.json` manifest (similar to the `"plugins"` section of a `.babelrc` file). Add the build plugins for the environments/features you care about, aaaaaand... that's it! Run `pika build` to build your package into a self-contained `pkg/` directory, compiled for each environment and automatically configured with all neccessary `package.json` entry-points (like `"main"` and `"module"`).
 
 ```js
 /* Before: Your Project package.json */
