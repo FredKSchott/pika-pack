@@ -12,13 +12,12 @@
 
 ## What is @pika/pack?
 
-⚡️ **@pika/pack** is a completely new approach to package building and bundling:
+⚡️ @pika/pack is a completely new approach to package building and bundling:
 
 - **Easy to Use:** Say goodbye to complex bundlers and config files! 
   - Pack lets you compose build pipelines out of pluggable, zero-configuration plugins.
-  - Think Babel plugins for your entire package.
 - **Optimized:** Each builder plugin optimizes your code for one specific environment.
-  - Use `plugin-build-node` for a Node.js build, `plugin-build-web` for an web-optimized ESM build, and more.
+  - Create a Node.js-ready build, a web-optimized ESM build, auto-generate TypeScript definitions... all with simple builders.
 - **Holistic:** Each builder configures your `package.json` entrypoints (like `"main"` and `"module"`) for you as well.
   - Really, when we say simple, we mean it!
 
@@ -34,7 +33,7 @@ npm install --global @pika/pack
 To use @pika/pack, define a build `"pipeline"` in your source project's `package.json` manifest (similar to the "plugins" section of a `.babelrc` file):
 
 ```js
-/* Project package.json */
+/* Before: Your Project package.json */
 
 {
   "name": "simple-package",
@@ -59,7 +58,7 @@ To use @pika/pack, define a build `"pipeline"` in your source project's `package
 No other configuration or tooling needed! When you run `pika build` in your project you'll get a built `pkg/` directory, with all `package.json` entrypoints (like `"main"` and `"module"`) added automatically:
 
 ```js
-/* Your generated `pkg/` package.json manifest: */
+/* After: Your generated `pkg/` package.json manifest: */
 
 {
   "name": "simple-package",
