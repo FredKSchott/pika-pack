@@ -16,13 +16,15 @@
 
 - **Easy to Use:** Compose your build out of pluggable, zero-configuration builders.
   - Say goodbye to complex bundlers and config files!
-  - Simple enough for anyone to pick up, but expressive enough to handle the most complex scenarios.
+  - Simple enough for anyone to pick up, but expressive enough to handle the trickiest scenarios.
 - **Optimized by Default:** Each builder plugin optimizes your code for one specific environment.
+  - Stop publishing bloated, transpiled, Node.js-specific JavaScript to all consumers.
   - Create a Node.js-ready build, a web-optimized ESM build, auto-generate TypeScript definitions...
 - **Holistic:** Builder plugins configure your `package.json` entrypoints (like `"main"` &`"module"`) as well.
   - Really, when we say simple, we mean it!
+  - All you need to do is include the build plugin, and then it handles the rest.
 
-The result of running @pika/pack is a self-contained, ready-to-run `pkg/` dir. Link it, run it locally, and publish it to npm when you're ready. Your package build only includes neccessary files by default, so no more `"files"` or `.npmignore` configuration to worry about either.
+The result of running @pika/pack is a self-contained, ready-to-run `pkg/` dir. Link it, run it locally, and publish it to npm when you're ready. Your package build directory only includes neccessary files by default, so no more `"files"` or `.npmignore` configuration to worry about either.
 
 
 ## Quickstart
