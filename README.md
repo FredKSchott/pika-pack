@@ -33,7 +33,7 @@ The result of running @pika/pack is a self-contained, ready-to-run `pkg/` dir. L
 npm install --global @pika/pack
 ```
 
-To use @pika/pack, define a build `"pipeline"` in your source project's `package.json` manifest (similar to the "plugins" section of a `.babelrc` file):
+First, define a build `"pipeline"` in your source project's `package.json` manifest (similar to the "plugins" section of a `.babelrc` file):
 
 ```js
 /* Before: Your Project package.json */
