@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-  <img alt="Logo" src="https://i.imgur.com/rSY77ks.gif" width="680">
+  <img alt="Logo" src="https://i.imgur.com/T5dGOMa.gif" width="680">
 </p>
 
 ## What is @pika/pack?
