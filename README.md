@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-  <img alt="Logo" src="https://i.imgur.com/T5dGOMa.gif" width="680">
+  <img alt="Logo" src="https://i.imgur.com/AcceGHG.gif" width="720">
 </p>
 
 ## @pika/pack is a completely new approach to package building.
@@ -111,10 +111,17 @@ To get started, just define a build `"pipeline"` in your source project's `packa
 
 ### pika build
 
-![Imgur](https://i.imgur.com/rSY77ks.gif)
+<p align="center">
+  <img alt="Logo" src="https://i.imgur.com/AcceGHG.gif" width="720">
+</p>
 
 
 ### pika publish
 
 Based on the popular [`np`](https://github.com/sindresorhus/np) package! Validates your directory before running you through the publish process step-by-step to publish your `pkg/` sub-directory package.
-![publish screenshot](https://imgur.com/SPjSRGN.png)
+
+
+<p align="center">
+  <img alt="Logo" src="https://i.imgur.com/jDuCvhg.gif" width="720">
+</p>
+
