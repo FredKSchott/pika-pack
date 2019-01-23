@@ -180,6 +180,7 @@ export class Publish {
       isOnGitHub === true && release(options);
     });
 
+    console.log('');
     let currentStep = 0;
     for (const step of steps) {
       await step(++currentStep, steps.length);

@@ -55,14 +55,8 @@ export class Build {
   }
 
   async init(isFull?: boolean): Promise<void> {
-    const {config, out, flags} = this;
+    const {config, out, reporter} = this;
     const {cwd} = config;
-
-    function log(...args: string[]) {
-      if (!flags.silent) {
-        console.log.apply(console, args);
-      }
-    }
 
     const manifest = await config.manifest;
     const distRunners = await config.getDistributions();
@@ -72,14 +66,12 @@ export class Build {
       out,
       cwd,
       reporter: {
-        info: msg => log(chalk.dim(`      » ${msg}`)),
-        warning: msg => log(chalk.yellow(`      » ${msg}`)),
-        success: msg => log(chalk.green(`      » ${msg}`)),
+        info: msg => reporter.log(chalk.dim(`      » ${msg}`)),
+        warning: msg => reporter.log(chalk.yellow(`      » ${msg}`)),
+        success: msg => reporter.log(chalk.green(`      » ${msg}`)),
         created: (filename: string, entrypoint?: string) =>
-          log(
-            `      📝 `,
-            chalk.green(path.relative(cwd, filename)),
-            entrypoint ? chalk.dim(`[${entrypoint}]`) : '',
+          reporter.log(
+            `      📝  ${chalk.green(path.relative(cwd, filename))} ${entrypoint ? chalk.dim(`[${entrypoint}]`) : ''}`,
           ),
       },
       isFull,
@@ -120,7 +112,7 @@ export class Build {
     steps.push(async (curr: number, total: number) => {
       this.reporter.step(curr, total, `Preparing pipeline`);
       await this.cleanup();
-      log(`      🚿 `, chalk.green('pkg/'));
+      reporter.log(`      ❇️  ${chalk.green('pkg/')}`);
       for (const [runner, options] of distRunners) {
         await (runner.beforeBuild &&
           runner.beforeBuild({
@@ -174,26 +166,26 @@ export class Build {
       }
       if (await fs.exists(path.join(cwd, 'README'))) {
         fs.copyFile(path.join(cwd, 'README'), path.join(out, 'README'));
-        log(`      📝 `, chalk.green('pkg/README'));
+        reporter.log(`      📝  ` + chalk.green('pkg/README'));
       } else if (await fs.exists(path.join(cwd, 'README.md'))) {
         fs.copyFile(path.join(cwd, 'README.md'), path.join(out, 'README.md'));
-        log(`      📝 `, chalk.green('pkg/README.md'));
+        reporter.log(`      📝  ` + chalk.green('pkg/README.md'));
       }
 
       const publishManifest = await generatePublishManifest(manifest, config, distRunners);
       if (out === cwd) {
-        log(`NEW MANIFEST:\n\n`);
-        log(generatePrettyManifest(publishManifest));
-        log(`\n\n`);
+        reporter.log(`NEW MANIFEST:\n\n`);
+        reporter.log(generatePrettyManifest(publishManifest));
+        reporter.log(`\n\n`);
       } else {
         await fs.writeFilePreservingEol(
           path.join(out, 'package.json'),
           JSON.stringify(publishManifest, null, DEFAULT_INDENT) + '\n',
         );
-        log(`      📝 `, chalk.green('pkg/package.json'));
+        reporter.log(`      📝  ` + chalk.green('pkg/package.json'));
       }
 
-      log(`      📦 `, chalk.green('pkg/'));
+      reporter.log(`      📦  ` + chalk.green('pkg/'));
     });
     let currentStep = 0;
     for (const step of steps) {
