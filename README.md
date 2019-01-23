@@ -80,7 +80,7 @@ To get started, just define a build `"pipeline"` in your source project's `packa
 
 #### Source Builders:
 
-> **NOTE: Make sure include a source builder early in your pipeline.** Source builders take your modern, custom JS/TS code and compile it to standard, ES2018 JavaScript. Other builders will use this standardized build target to base their own work off of.
+> **NOTE: Make sure include a source builder early in your pipeline.** Source builders take your modern source code (ESNext, TS, etc.) and compile it to standard, ES2018 JavaScript. Other builders will then use this standardized build to base their own work off of.
 
  - `@pika/plugin-standard-pkg`: Compiles JavaScript/TypeScript to ES2018. Supports personalized, top-level `.babelrc` plugins/config.
  - `@pika/plugin-ts-standard-pkg`: Compiles TypeScript to ES2018 (Uses `tsc` internally instead of Babel, and builds type definitions automatically).
