@@ -10,22 +10,22 @@
   <img alt="Logo" src="https://i.imgur.com/T5dGOMa.gif" width="680">
 </p>
 
-## What is @pika/pack?
+## @pika/pack is a completely new approach to package building.
 
-Authoring JavaScript used to be simple: Write JavaScript and hit `npm publish`.
+- 🏋️‍♀️ **Easy to Use:** Compose your package build out of pluggable, zero-configuration builders.
+  - Say goodbye to complex bundlers and config files!
+  - Simple enough for anyone to pick up, but expressive enough to handle the trickiest packages.
+- ⚡️ **Optimized by Default:** Each build plugin optimizes your code for one specific environment.
+  - Stop publishing bloated, transpiled, Node.js-specific JavaScript to all consumers.
+  - Create a web-optimized ESM build, auto-generate TypeScript definitions, build for [Deno](https://deno.land/)...
+- ⚛️ **Holistic:** @pika/pack handles everything, including `package.json` entry-points (like "main" & "module").
+  - Really, when we say simple, we mean it!
+  - Just add a one-line build plugin and it handles the rest, from compilation to configuration.
+  - Builds only include needed files by default: no more `"files"`/`.npmignore` settings to worry about out.
 
-Today things are more complicated: Modern JavaScript (and TypeScript, and Flow, and Reason, and...) no longer runs everywhere. To get around this, libraries ship legacy code for Node.js alongside modern code for web bundlers, type definitions for TypeScript/VSCode users, bundled code for UNPKG/CDNs, and more. 
-
-Of course it's up to you as the package author to figure all of this out on your own.
-
-**@pika/pack tries to solve this problem differently:** 
-
-- **Use simple, pluggable, zero-configuration builders to build your package.**
-- Each builder compiles your modern code for a single environment (like Node.js, ESM, UNPKG, Deno). 
-- Each builder configures your built `package.json` entrypoints (like `"main"` and `"module"`) automatically.
-
-The result is a self-contained, ready-to-run `pkg/` dir, optimized and small by default (so no more `"files"` or `.npmignore` configuration to worry about when you decide to publish).
-
+<!--
+The result of running @pika/pack is a self-contained, ready-to-run `pkg/` dir. Link it, run it locally, and publish it to npm when you're ready!
+-->
 
 ## Quickstart
 
@@ -33,10 +33,10 @@ The result is a self-contained, ready-to-run `pkg/` dir, optimized and small by 
 npm install --global @pika/pack
 ```
 
-To use @pika/pack, define a build `"pipeline"` in your source project's `package.json` manifest (similar to the "plugins" section of a `.babelrc` file):
+To get started, just define a build `"pipeline"` in your source project's `package.json` manifest (similar to the `"plugins"` section of a `.babelrc` file). Add the build plugins for the environments/features you care about, aaaaaand... that's it! Run `pika build` to build your package into a self-contained `pkg/` directory, compiled for each environment and automatically configured with all neccessary `package.json` entry-points (like `"main"` and `"module"`).
 
 ```js
-/* Project package.json */
+/* Before: Your Project package.json */
 
 {
   "name": "simple-package",
@@ -46,22 +46,20 @@ To use @pika/pack, define a build `"pipeline"` in your source project's `package
     "pipeline": [
       // 1. Compiles your source to standard ES2018+
       ["@pika/plugin-standard-pkg", {"exclude": ["__tests__/*"]}],
-      // 2. Creates a distribution to run on Node.js
-      ["@pika/node-builder"],
-      // 3. Creates a distribution to run on web browsers (optimized for bundlers)
-      ["@pika/web-builder"],
-      // 4. Generates type definitions from your JavaScript automatically
-      ["@pika/types-builder"]
+      // 2. Creates a distribution optimized to run on Node.js
+      ["@pika/plugin-build-node"],
+      // 3. Creates a distribution optimized for web browsers & bundlers
+      ["@pika/plugin-build-web"],
+      // 4. Automatically generates type definitions from your JavaScript
+      ["@pika/plugin-build-types"]
     ]
   },
   // ...
 }
 ```
 
-No other configuration or tooling needed! When you run `pika build` in your project you'll get a built `pkg/` directory, with all `package.json` entrypoints (like `"main"` and `"module"`) added automatically:
-
 ```js
-/* Your generated `pkg/` package.json manifest: */
+/* After: Your generated `pkg/` package.json manifest: */
 
 {
   "name": "simple-package",
@@ -81,8 +79,11 @@ No other configuration or tooling needed! When you run `pika build` in your proj
 ## Available Builders
 
 #### Source Builders:
- - `@pika/plugin-standard-pkg`: Compiles JavaScript/TypeScript to ES2018.
- - `@pika/plugin-ts-standard-pkg`: Compiles TypeScript to ES2018 (Uses `tsc` instead of Babel, and builds type definitions automatically).
+
+> **NOTE: Make sure include a source builder early in your pipeline.** Source builders take your modern source code (ESNext, TS, etc.) and compile it to standard, ES2018 JavaScript. Other builders will then use this standardized build to base their own work off of.
+
+ - `@pika/plugin-standard-pkg`: Compiles JavaScript/TypeScript to ES2018. Supports personalized, top-level `.babelrc` plugins/config.
+ - `@pika/plugin-ts-standard-pkg`: Compiles TypeScript to ES2018 (Uses `tsc` internally instead of Babel, and builds type definitions automatically).
 
 #### Distribution Builders:
 
