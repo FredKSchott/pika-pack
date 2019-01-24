@@ -4,24 +4,10 @@
   "license": "MIT",
   "@pika/pack": {
     "pipeline": [
-      [
-        "@pika/plugin-ts-standard-pkg"
-      ],
-      [
-        "@pika/plugin-build-node"
-      ],
-      [
-        "@pika/plugin-simple-bin",
-        {
-          "bin": "pika"
-        }
-      ],
-      [
-        "@pika/plugin-simple-bin",
-        {
-          "bin": "pack"
-        }
-      ]
+      ["@pika/plugin-ts-standard-pkg"],
+      ["@pika/plugin-build-node"],
+      ["@pika/plugin-simple-bin",  {"bin": "pika"}],
+      ["@pika/plugin-simple-bin",  {"bin": "pack"}]
     ]
   },
   "publishConfig": {
