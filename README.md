@@ -10,7 +10,7 @@
   <img alt="Logo" src="https://i.imgur.com/AcceGHG.gif" width="720">
 </p>
 
-## @pika/pack is a simple, completely new approach to package building.
+## @pika/pack is a simple, new approach to building npm packages.
 
 - 🏋️‍♀️ **Easy to Use:** Compose your package build out of pluggable, zero-configuration builders.
   - Say goodbye to complex bundlers and configuration files!
