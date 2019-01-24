@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="Logo" src="https://i.imgur.com/bUYlxms.png?1" width="420">
+  <img alt="Logo" src="https://next.pikapkg.com/static/img/new-logo1.png" width="280">
 </p>
 
 <p align="center">
