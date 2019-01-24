@@ -110,7 +110,7 @@ The result is a self-contained, ready-to-run `pkg/` build, with only the minimum
 [See a full list of official builders here →](https://github.com/pikapkg/builders/tree/master/packages)
 
 
-### Bonus Command: `publish`
+## Bonus Command: `publish`
 
 <p align="center" style="margin-bottom: 0rem;">
   <img alt="Logo" src="https://i.imgur.com/jDuCvhg.gif" width="720">
