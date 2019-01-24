@@ -16,9 +16,10 @@
   - Say goodbye to complex bundlers and configuration files!
 - ⚡️ **Optimized by Default:** Each build plugin optimizes your code for one specific environment.
   - Stop publishing bloated, transpiled, Node.js-specific JavaScript to all consumers.
-- ⚛️ **Holistic:** @pika/pack handles everything, including `package.json` entry-points (like "main" & "module").
+- ⚛️ **Holistic:** @pika/pack handles everything, including `package.json` entrypoints like "main" & "module".
   - Builds only include necessary files: no more `"files"`/`.npmignore` configuration to worry about out.
-  - Really, when we say simple, we mean it!
+
+Really, when we say simple, we mean it!
 
 <!--
 The result of running @pika/pack is a self-contained, ready-to-run `pkg/` dir. Link it, run it locally, and publish it to npm when you're ready!
