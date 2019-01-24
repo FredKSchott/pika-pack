@@ -3,14 +3,14 @@
 </p>
 
 <p align="center">
-  <strong>@pika/pack</strong> • A simple, holistic approach to package building & publishing.
+  <strong>@pika/pack</strong> • package building, reimagined.
 </p>
 
 <p align="center">
   <img alt="Logo" src="https://i.imgur.com/AcceGHG.gif" width="720">
 </p>
 
-## @pika/pack is a completely new approach to package building.
+## @pika/pack is a simple, completely new approach to package building.
 
 - 🏋️‍♀️ **Easy to Use:** Compose your package build out of pluggable, zero-configuration builders.
   - Say goodbye to complex bundlers and configuration files!
