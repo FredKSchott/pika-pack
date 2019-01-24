@@ -109,21 +109,12 @@ The result is a self-contained, ready-to-run `pkg/` build, with only the minimum
 [See a full list of official builders here →](https://github.com/pikapkg/builders/tree/master/packages)
 
 
-## Commands
+### Bonus Command: `publish`
 
-### pika build
-
-<p align="center">
-  <img alt="Logo" src="https://i.imgur.com/AcceGHG.gif" width="720">
-</p>
-
-
-### pika publish
-
-Based on the popular [`np`](https://github.com/sindresorhus/np) package! Validates your directory before running you through the publish process step-by-step to publish your `pkg/` sub-directory package.
-
-
-<p align="center">
+<p align="center" style="margin-bottom: 0rem;">
   <img alt="Logo" src="https://i.imgur.com/jDuCvhg.gif" width="720">
 </p>
 
+Now that your package is built, what do you do? npm's "publish" command has also always left a lot to be desired. We're big fans of Sindre Sorhus's [np](https://github.com/sindresorhus/np) (a self-described "better npm publish") which adds an easy-to-follow, step-by-step flow to package publishing.
+
+To make it as easy to publish pika-built packages as it is to build them, we've brought our favorite parts of [np](https://github.com/sindresorhus/np) into the new `pack publish` command. Running this in your top-level project will prompt you through version bumping, tagging, and finally releasing your self-contained `pkg/` sub-directory.
