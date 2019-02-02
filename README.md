@@ -10,13 +10,11 @@
   <img alt="Logo" src="https://i.imgur.com/AcceGHG.gif" width="720">
 </p>
 
-## @pika/pack is a new approach to building npm packages:
+## @pika/pack is a new approach to building npm packages
 
-- ⚡️ **Simple:** Use pre-configured plugins to build your package for you.
-- 🏋️‍♀️ **Flexible:** Choose the plugins and optimizations that make sense for your package.
-- ⚛️ **Holistic:** Let us build & configure your entire package... *including package.json manifest.*
-
-Really, when we say simple, we mean it!
+⚡️ **Simple:** Use pre-configured plugins to build your package for you.  
+🏋️‍♀️ **Flexible:** Choose the plugins and optimizations that make sense for your package.  
+⚛️ **Holistic:** Let us build & configure your entire package... *including package.json manifest.* . 
 
 
 ## Quickstart
@@ -34,7 +32,7 @@ $ npm install -g @pika/pack
 $ pack build
 ```
 
-🆒❗️ ... but now what? If you run `pack build` with an empty pipeline like that, the result will be an empty package build. 
+🆒❗️ ... but now what? If you run `pack build` with an empty pipeline like that, you'll get an empty package build. 
 
 **1. Create a project pipeline out of simple, pluggable builders.** Builders are simple, single-purpose build plugins defined in your `package.json`. For example, `@pika/plugin-build-node` & `@pika/plugin-build-web` build your package for those different environments. Other, more interesting builders can bundle your web build for [unpkg](https://unpkg.com), generate TypeScript definitions from your JavaScript, addon a standard CLI wrapper for Node.js builds, and even compile non-JS languages to WASM (with JS bindings added).
 
