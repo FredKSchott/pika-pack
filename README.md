@@ -10,68 +10,73 @@
   <img alt="Logo" src="https://i.imgur.com/AcceGHG.gif" width="720">
 </p>
 
-## @pika/pack is a simple, new approach to building npm packages.
+## @pika/pack is a new approach to building npm packages:
 
-- 🏋️‍♀️ **Easy to Use:** Compose your package build out of pluggable, zero-configuration builders.
-  - Say goodbye to complex bundlers and configuration files!
-- ⚡️ **Optimized by Default:** Each build plugin optimizes your code for one specific environment.
-  - Stop publishing bloated, transpiled, Node.js-specific JavaScript to all consumers.
-- ⚛️ **Holistic:** @pika/pack handles everything, including `package.json` entrypoints like "main" & "module".
-  - Builds only include necessary files: no more `"files"`/`.npmignore` configuration to worry about out.
+- ⚡️ **Simple:** Use pre-configured plugins to build your package for you.
+- 🏋️‍♀️ **Flexible:** Choose the plugins and optimizations that make sense for your package.
+- ⚛️ **Holistic:** Let us build & configure your entire package... *including package.json manifest.*
 
 Really, when we say simple, we mean it!
 
-<!--
-The result of running @pika/pack is a self-contained, ready-to-run `pkg/` dir. Link it, run it locally, and publish it to npm when you're ready!
--->
 
 ## Quickstart
 
-1. **@pika/pack manages your build for you.** Say goodbye to complex bundlers and configuration files. The `pack build` command builds your modern JavaScript or TypeScript source code for any number of environments (Node.js, Web, and even Deno):
-    ```bash
-    $ npm install -g @pika/pack
-    $ pack build
-    ```
+Getting started is easy:
 
-1. **You create a project pipeline out of simple, pluggable builders.** Builders are simple, single-purpose build plugins defined in your `package.json`. For example, `@pika/plugin-build-node` & `@pika/plugin-build-web` build your package for those different environments. Other, more interesting builders can bundle your web build for [unpkg](https://unpkg.com), generate TypeScript definitions from your JavaScript, addon a standard CLI wrapper for Node.js builds, and even compile non-JS languages to WASM (with JS bindings added).<br/><br/> Each builder is laser focused on just one task, which keeps builder configuration to a minimum (and in most cases, non-existent).
-    ```js
-    // Before: your top-level package.json manifest:
-    {
-      "name": "simple-package",
-      "version": "1.0.0",
-      "@pika/pack": {
-        // Define the pipeline that will build your package:
-        "pipeline": [
-          // 1. (dist-src/) Compiles your source to standard ES2018
-          ["@pika/plugin-standard-pkg", {"exclude": ["__tests__/*"]}],
-          // 2. (dist-node/) Build optimized to run on Node.js LTS+
-          ["@pika/plugin-build-node"],
-          // 3. (dist-web/) Build ESM for web browsers & bundlers
-          ["@pika/plugin-build-web"],
-          // 4. (dist-types/) `d.ts` files generated from JS automatically
-          ["@pika/plugin-build-types"]
-        ]
-      },
-      // ...
-    }
-    ```
+```js
+// 1. Install it!
+$ npm install -g @pika/pack
+// 2. Add this to your package.json manifest:
+"@pika/pack": {
+  "pipeline": []
+}
+// 3. Run it!
+$ pack build
+```
 
-1. **Builders handle everything, including package configuration.** Entrypoints like "main" & "module" are handled for you automatically, along with with sensible `package.json` defaults for things like "sideEffects" & "files".
-    ```js
-    // After: your built "pkg/" package.json manifest:
-    {
-      "name": "simple-package",
-      "version": "1.0.0",
-      // Multiple distributions, built & configured automatically:
-      "esnext": "dist-src/index.js",
-      "main": "dist-node/index.js",
-      "module": "dist-web/index.js",
-      "types": "dist-types/index.d.ts",
-      // With sensible package defaults:
-      "sideEffects": false,
-      "files": ["dist-*/", "assets/", "bin/"]
-    }
-    ```
+🆒❗️ ... but now what? If you run `pack build` with an empty pipeline like that, the result will be an empty package build. 
+
+**1. Create a project pipeline out of simple, pluggable builders.** Builders are simple, single-purpose build plugins defined in your `package.json`. For example, `@pika/plugin-build-node` & `@pika/plugin-build-web` build your package for those different environments. Other, more interesting builders can bundle your web build for [unpkg](https://unpkg.com), generate TypeScript definitions from your JavaScript, addon a standard CLI wrapper for Node.js builds, and even compile non-JS languages to WASM (with JS bindings added).
+
+```js
+// Before: your top-level package.json manifest:
+{
+  "name": "simple-package",
+  "version": "1.0.0",
+  "@pika/pack": {
+    // Define the pipeline that will build your package:
+    "pipeline": [
+      // 1. (dist-src/) Compiles your source to standard ES2018
+      ["@pika/plugin-standard-pkg", {"exclude": ["__tests__/*"]}],
+      // 2. (dist-node/) Build optimized to run on Node.js LTS+
+      ["@pika/plugin-build-node"],
+      // 3. (dist-web/) Build ESM for web browsers & bundlers
+      ["@pika/plugin-build-web"],
+      // 4. (dist-types/) `d.ts` files generated from JS automatically
+      ["@pika/plugin-build-types"]
+    ]
+  },
+  // ...
+}
+```
+
+**2. Builders handle everything, including package configuration.** Entrypoints like "main" & "module" are handled for you automatically, along with with sensible `package.json` defaults for things like "sideEffects" & "files".
+
+```js
+// After: your built "pkg/" package.json manifest:
+{
+  "name": "simple-package",
+  "version": "1.0.0",
+  // Multiple distributions, built & configured automatically:
+  "esnext": "dist-src/index.js",
+  "main": "dist-node/index.js",
+  "module": "dist-web/index.js",
+  "types": "dist-types/index.d.ts",
+  // With sensible package defaults:
+  "sideEffects": false,
+  "files": ["dist-*/", "assets/", "bin/"]
+}
+```
 
 
 The result is a self-contained, ready-to-run `pkg/` build, with only the minimum set of required files included. Link it, run it locally, rebuild it, and publish it to npm when you're ready!
@@ -116,6 +121,6 @@ The result is a self-contained, ready-to-run `pkg/` build, with only the minimum
   <img alt="Logo" src="https://i.imgur.com/jDuCvhg.gif" width="720">
 </p>
 
-Now that your package is built, what do you do? npm's "publish" command has also always left a lot to be desired. We're big fans of Sindre Sorhus's [np](https://github.com/sindresorhus/np) (a self-described "better npm publish") which adds an easy-to-follow, step-by-step flow to package publishing.
+We've brought our favorite parts of [np](https://github.com/sindresorhus/np) (a self-described "better npm publish") into @pika/pack. With the `publish` command there's no need to worry about how to publish your package once you've built it.
 
-To make it as easy to publish pika-built packages as it is to build them, we've brought our favorite parts of [np](https://github.com/sindresorhus/np) into the new `pack publish` command. Running this in your top-level project will prompt you through version bumping, tagging, and finally releasing your self-contained `pkg/` sub-directory.
+Run `pack publish` in your project and @pika/pack will walk you through version bumping, tagging your release, generating a fresh build, and finally publishing your package.
