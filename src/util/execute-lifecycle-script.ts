@@ -1,6 +1,7 @@
 import { StdioOptions } from 'child_process';
 import Config from '../config.js';
-import { MessageError, ProcessTermError } from '../errors.js';
+import { MessageError } from '@pika/types';
+import {  ProcessTermError } from '../errors.js';
 import * as child from './child.js';
 import { fixCmdWinSlashes } from './fix-cmd-win-slashes.js';
 

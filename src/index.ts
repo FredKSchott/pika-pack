@@ -11,7 +11,7 @@ import {ConsoleReporter, JSONReporter} from './reporters/index.js';
 import {commands} from './commands/index.js';
 import * as helpCommand from './commands/help.js';
 import * as constants from './constants.js';
-import {MessageError} from './errors.js';
+import { MessageError } from '@pika/types';
 import Config from './config.js';
 import handleSignals from './util/signal-handler.js';
 import {boolify, boolifyWithDefault} from './util/conversion.js';

@@ -1,20 +1,13 @@
-
-
-export class MessageError extends Error {
-  constructor(msg: string, code?: string) {
-    super(msg);
-    this.code = code;
-  }
-
-  code?: string;
-}
+import {MessageError} from '@pika/types';
 
 export class ProcessSpawnError extends MessageError {
   constructor(msg: string, code?: string, process?: string) {
-    super(msg, code);
+    super(msg);
+    this.code = code;
     this.process = process;
   }
 
+  code?: string;
   process?: string;
 }
 

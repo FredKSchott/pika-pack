@@ -29,8 +29,8 @@ const printCommitLog = async repoUrl => {
 		});
 
 	const history = commits.map(commit => {
-		const commitMessage = util.linkifyIssues(repoUrl, commit.message);
-		const commitId = util.linkifyCommit(repoUrl, commit.id);
+		const commitMessage = commit.message; // util.linkifyIssues(repoUrl, commit.message);
+		const commitId = ''; //util.linkifyCommit(repoUrl, commit.id);
 		return `- ${commitMessage}  ${commitId}`;
 	}).join('\n');
 

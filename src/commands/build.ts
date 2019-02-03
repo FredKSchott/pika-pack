@@ -12,12 +12,14 @@ type Flags = {
   publish?: boolean,
   out?: string,
   silent?: boolean,
+  force?: boolean,
 };
 
 export function setFlags(commander: Command) {
-  commander.description('Prepares your package `pkg/` directory for publishing.');
+  commander.description('Prepares your package out directory (pkg/) for publishing.');
   commander.usage('build [flags]');
   commander.option('-O, --out <path>', 'Where to write to');
+  commander.option('--force', 'Whether to ignore failed build plugins and continue through errors.');
   commander.option('-P, --publish', 'Whether to include publish-only builds like unpkg & types.');
 }
 
@@ -45,18 +47,13 @@ export class Build {
 
   async cleanup(): Promise<void> {
     const {out} = this;
-    await fs.unlink(path.join(out, 'package.json'));
-    await fs.unlink(path.join(out, 'assets'));
-    await fs.unlink(path.join(out, 'dist-src'));
-    await fs.unlink(path.join(out, 'dist-node'));
-    await fs.unlink(path.join(out, 'dist-web'));
-    await fs.unlink(path.join(out, 'dist-types'));
-    await fs.unlink(path.join(out, 'dist-deno'));
+    await fs.unlink(path.join(out, '*'));
   }
 
   async init(isFull?: boolean): Promise<void> {
-    const {config, out, reporter} = this;
+    const {config, out, reporter, flags} = this;
     const {cwd} = config;
+    const outPretty = path.relative(cwd, out) + path.sep;
 
     const manifest = await config.manifest;
     const distRunners = await config.getDistributions();
@@ -112,7 +109,7 @@ export class Build {
     steps.push(async (curr: number, total: number) => {
       this.reporter.step(curr, total, `Preparing pipeline`);
       await this.cleanup();
-      reporter.log(`      ❇️  ${chalk.green('pkg/')}`);
+      reporter.log(`      ❇️  ${chalk.green(outPretty)}`);
       for (const [runner, options] of distRunners) {
         await (runner.beforeBuild &&
           runner.beforeBuild({
@@ -125,21 +122,29 @@ export class Build {
       steps.push(async (curr: number, total: number) => {
         this.reporter.step(curr, total, `Running ${chalk.bold(runner.name)}`);
         // return Promise.resolve(
-        await (runner.beforeJob &&
-          runner.beforeJob({
-            ...builderConfig,
-            options,
-          }));
-        await (runner.build &&
-          runner.build({
-            ...builderConfig,
-            options,
-          }));
-        await (runner.afterJob &&
-          runner.afterJob({
-            ...builderConfig,
-            options,
-          }));
+        try {
+          await (runner.beforeJob &&
+            runner.beforeJob({
+              ...builderConfig,
+              options,
+            }));
+          await (runner.build &&
+            runner.build({
+              ...builderConfig,
+              options,
+            }));
+          await (runner.afterJob &&
+            runner.afterJob({
+              ...builderConfig,
+              options,
+            }));
+          } catch (err) {
+            if (flags.force) {
+              console.log('      ❗️  ', chalk.red(err.message), chalk.dim('--force, continuing...'));
+            } else {
+              throw err;
+            }
+          }
         // ).catch(err => {
         // log(chalk.red(err.message));
         // reporter.log(
@@ -166,13 +171,13 @@ export class Build {
       }
       if (await fs.exists(path.join(cwd, 'README'))) {
         fs.copyFile(path.join(cwd, 'README'), path.join(out, 'README'));
-        reporter.log(`      📝  ` + chalk.green('pkg/README'));
+        reporter.log(`      📝  ` + chalk.green(outPretty + 'README'));
       } else if (await fs.exists(path.join(cwd, 'README.md'))) {
         fs.copyFile(path.join(cwd, 'README.md'), path.join(out, 'README.md'));
-        reporter.log(`      📝  ` + chalk.green('pkg/README.md'));
+        reporter.log(`      📝  ` + chalk.green(outPretty + 'README.md'));
       }
 
-      const publishManifest = await generatePublishManifest(manifest, config, distRunners);
+      const publishManifest = await generatePublishManifest(config._manifest, config, distRunners);
       if (out === cwd) {
         reporter.log(`NEW MANIFEST:\n\n`);
         reporter.log(generatePrettyManifest(publishManifest));
@@ -182,10 +187,10 @@ export class Build {
           path.join(out, 'package.json'),
           JSON.stringify(publishManifest, null, DEFAULT_INDENT) + '\n',
         );
-        reporter.log(`      📝  ` + chalk.green('pkg/package.json'));
+        reporter.log(`      📝  ` + chalk.green(outPretty + 'package.json'));
       }
 
-      reporter.log(`      📦  ` + chalk.green('pkg/'));
+      reporter.log(`      📦  ` + chalk.green(outPretty));
     });
     let currentStep = 0;
     for (const step of steps) {

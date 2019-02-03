@@ -177,7 +177,7 @@ export class Publish {
     steps.push(async (curr: number, total: number) => {
       this.reporter.step(curr, total, 'Pushing Changes', '✨');
       !(await hasUpstream()) && (await execa('git', ['push', '--follow-tags']));
-      isOnGitHub === true && release(options);
+      // isOnGitHub === true && release(options);
     });
 
     console.log('');

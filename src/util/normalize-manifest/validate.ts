@@ -1,8 +1,7 @@
 
 
 import {Reporter} from '../../reporters/index.js';
-import {MessageError} from '../../errors.js';
-import {isValidLicense} from './util.js';
+import { MessageError } from '@pika/types';
 import typos from './typos.js';
 
 import isBuiltinModule from 'is-builtin-module';

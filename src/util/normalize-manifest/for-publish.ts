@@ -1,26 +1,44 @@
-import { Manifest } from "../../types";
-import Config from "../../config";
-
-
+import {Manifest} from '../../types';
+import Config from '../../config';
 
 export async function generatePublishManifest(
-  manifest: Manifest,
+  manifest: any,
   config: Config,
   _dists?: Array<[Function, any]>,
 ): Promise<object> {
+  const {
+    name,
+    version,
+    description,
+    keywords,
+    homepage,
+    bugs,
+    bin,
+    license,
+    authors,
+    contributors,
+    man,
+    repository,
+    dependencies,
+    peerDependencies,
+    devDependencies,
+    bundledDependencies,
+    optionalDependencies,
+    engines,
+    enginesStrict,
+    private: priv,
+    publishConfig,
+  } = manifest;
+
   const newManifest = {
-    name: manifest.name,
-    description: manifest.description,
-    version: manifest.version,
-    license: manifest.license,
-    pika: true,
-    keywords: manifest.keywords,
-    files: ['dist-*/', 'assets/', 'bin/'],
-    sideEffects: manifest.sideEffects || false,
-    dependencies: manifest.dependencies || {},
+    name,
+    description,
+    version,
+    license,
+    bin,
   };
 
-  const dists = _dists || await config.getDistributions();
+  const dists = _dists || (await config.getDistributions());
   for (const [runner, options] of dists) {
     if (runner.manifest) {
       await runner.manifest(newManifest, {
@@ -31,7 +49,29 @@ export async function generatePublishManifest(
       });
     }
   }
-  return newManifest;
+
+  return {
+    ...newManifest,
+    pika: true,
+    sideEffects: manifest.sideEffects || false,
+    keywords,
+    files: ['dist-*/', 'assets/', 'bin/'],
+    homepage,
+    bugs,
+    authors,
+    contributors,
+    man,
+    repository,
+    dependencies: manifest.dependencies || {},
+    peerDependencies,
+    devDependencies,
+    bundledDependencies,
+    optionalDependencies,
+    engines,
+    enginesStrict,
+    private: priv,
+    publishConfig,
+  }
 }
 
 export function generatePrettyManifest(manifest) {
