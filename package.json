@@ -1,14 +1,28 @@
 {
   "name": "@pika/pack",
   "description": "package building, reimagined.",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "license": "MIT",
   "@pika/pack": {
     "pipeline": [
-      ["@pika/plugin-ts-standard-pkg"],
-      ["@pika/plugin-build-node"],
-      ["@pika/plugin-simple-bin", {"bin": "pika-pack"}],
-      ["@pika/plugin-simple-bin", {"bin": "pack"}]
+      [
+        "@pika/plugin-ts-standard-pkg"
+      ],
+      [
+        "@pika/plugin-build-node"
+      ],
+      [
+        "@pika/plugin-simple-bin",
+        {
+          "bin": "pika-pack"
+        }
+      ],
+      [
+        "@pika/plugin-simple-bin",
+        {
+          "bin": "pack"
+        }
+      ]
     ]
   },
   "publishConfig": {
