@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <strong>@pika/pack</strong> • package building, reimagined.
+  <strong>@pika/pack</strong> • npm package building, reimagined.
 </p>
 
 <p align="center">
