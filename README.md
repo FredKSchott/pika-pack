@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-  <img alt="Logo" src="https://i.imgur.com/AcceGHG.gif" width="720">
+  <img alt="Demo" src="https://next.pikapkg.com/static/img/pack-build-demo.gif?" width="720">
 </p>
 
 ## @pika/pack is a new approach to building npm packages
@@ -116,7 +116,7 @@ The result is a self-contained, ready-to-run `pkg/` build, with only the minimum
 ## Bonus Command: `publish`
 
 <p align="center" style="margin-bottom: 0rem;">
-  <img alt="Logo" src="https://i.imgur.com/jDuCvhg.gif" width="720">
+  <img alt="Demo" src="https://next.pikapkg.com/static/img/publish-demo.gif" width="720">
 </p>
 
 We've brought our favorite parts of [np](https://github.com/sindresorhus/np) (a self-described "better npm publish") into @pika/pack. With the `publish` command there's no need to worry about how to publish your package once you've built it.
