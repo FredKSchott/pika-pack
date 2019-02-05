@@ -101,9 +101,9 @@ export default class Config {
       return false;
     }
     return (await Promise.all([
-      ...(raw.pipeline || []).map(rawVal => {
+      ...((raw.pipeline || []).map(rawVal => {
         return cleanRawDistObject(rawVal, this.cwd, false);
-      }),
+      })),
     ])).filter(Boolean);
   }
 }

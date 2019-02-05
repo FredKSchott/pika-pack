@@ -42,7 +42,7 @@ export function setFlags(commander: Command) {
 }
 
 export function hasWrapper() {
-  return true;
+  return false;
 }
 
 export class Publish {

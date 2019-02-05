@@ -57,8 +57,6 @@ export class Build {
 
     const manifest = await config.manifest;
     const distRunners = await config.getDistributions();
-    const [_, srcRunnerOptions] = distRunners[0];
-    const defaultEnvLoc = path.join(out, 'dist-src/env.js');
     const builderConfig: Partial<BuilderOptions> = {
       out,
       cwd,
@@ -76,9 +74,11 @@ export class Build {
       src: {
         loc: path.join(out, 'dist-src'),
         entrypoint: path.join(out, 'dist-src', 'index.js'),
-        options: srcRunnerOptions,
+        // TODO: Deprecated, remove
+        options: {},
+        // TODO: Deprecated, remove
         files: await (async (): Promise<Array<string>> => {
-          const ignoreSet = new Set<string>(srcRunnerOptions.exclude || []);
+          const ignoreSet = new Set<string>([]);
           ignoreSet.add('**/*/README.md');
           const files = await fs.glob(`src/**/*`, {
             cwd,
@@ -118,6 +118,13 @@ export class Build {
           }));
       }
     });
+
+    if (distRunners.length === 0) {
+      steps.push(async (curr: number, total: number) => {
+        this.reporter.step(curr, total, `Pipeline is empty! See ${chalk.underline('https://github.com/pikapkg/pack')} for help getting started`);
+      });
+    }
+
     for (const [runner, options] of distRunners) {
       steps.push(async (curr: number, total: number) => {
         this.reporter.step(curr, total, `Running ${chalk.bold(runner.name)}`);

@@ -177,9 +177,9 @@ export async function main({
   const outputWrapperEnabled = boolifyWithDefault(process.env.PIKA_WRAP_OUTPUT, true);
   const shouldWrapOutput = outputWrapperEnabled && !commander.json && command.hasWrapper(commander, commander.args);
 
-  if (shouldWrapOutput) {
-    reporter.header(commandName, {name: '@pika/pack', version});
-  }
+  // if (shouldWrapOutput) {
+  reporter.header(commandName, {name: '@pika/pack', version});
+  // }
 
   if (commander.nodeVersionCheck && !semver.satisfies(process.versions.node, constants.SUPPORTED_NODE_VERSIONS)) {
     reporter.warn(reporter.lang('unsupportedNodeVersion', process.versions.node, constants.SUPPORTED_NODE_VERSIONS));
