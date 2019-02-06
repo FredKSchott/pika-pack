@@ -10,11 +10,12 @@
   <img alt="Demo" src="https://next.pikapkg.com/static/img/pack-build-demo.gif?" width="720">
 </p>
 
-## @pika/pack is a new approach to building npm packages
 
-⚡️ **Simple:** Use pre-configured plugins to build your package for you.  
-🏋️‍♀️ **Flexible:** Choose the plugins and optimizations that make sense for your package.  
-⚛️ **Holistic:** Let us build & configure your entire package... *including package.json manifest.* . 
+## @pika/pack helps you build amazing packages without the hassle:
+
+- **Simple** &nbsp;⚡️&nbsp; Use pre-configured plugins to build your package for you.
+- **Flexible** &nbsp;🏋️‍♀️&nbsp; Choose plugins and optimizations to match your needs.
+- **Holistic** &nbsp;⚛️&nbsp; Let us build the entire package... *including package.json.*
 
 
 ## Quickstart
@@ -32,33 +33,31 @@ $ npm install -g @pika/pack
 $ pack build
 ```
 
-🆒❗️ ... but now what? If you run `pack build` with an empty pipeline like that, you'll get an empty package build. 
+### 😎 🆒
 
-**1. Create a project pipeline out of simple, pluggable builders.** Builders are simple, single-purpose build plugins defined in your `package.json`. For example, `@pika/plugin-build-node` & `@pika/plugin-build-web` build your package for those different environments. Other, more interesting builders can bundle your web build for [unpkg](https://unpkg.com), generate TypeScript definitions from your JavaScript, addon a standard CLI wrapper for Node.js builds, and even compile non-JS languages to WASM (with JS bindings added).
+So now what? If you run `pack build` with an empty pipeline, you'll get an empty package build. [@pika/pack](https://github.com/pikapkg/pack) lets you connect pre-configured plugins to build and optimize your package for you. Plugins wrap already-popular tools like Babel and Rollup with npm-optimized config options, removing the need to fiddle with much (if any) configuration yourself. You even get a generated package.json manifest configured for you ***automatically***.
+
+### 1. Create a project pipeline out of simple, pluggable builders.
 
 ```js
-// Before: your top-level package.json manifest:
+// Before: Your top-level package.json manifest:
 {
   "name": "simple-package",
   "version": "1.0.0",
   "@pika/pack": {
-    // Define the pipeline that will build your package:
     "pipeline": [
-      // 1. (dist-src/) Compiles your source to standard ES2018
       ["@pika/plugin-standard-pkg", {"exclude": ["__tests__/*"]}],
-      // 2. (dist-node/) Build optimized to run on Node.js LTS+
       ["@pika/plugin-build-node"],
-      // 3. (dist-web/) Build ESM for web browsers & bundlers
       ["@pika/plugin-build-web"],
-      // 4. (dist-types/) `d.ts` files generated from JS automatically
       ["@pika/plugin-build-types"]
     ]
-  },
-  // ...
+  }
 }
 ```
 
-**2. Builders handle everything, including package configuration.** Entrypoints like "main" & "module" are handled for you automatically, along with with sensible `package.json` defaults for things like "sideEffects" & "files".
+Builders are simple, single-purpose build plugins defined in your `package.json`. For example, `@pika/plugin-build-node` & `@pika/plugin-build-web` build your package for those different environments. Other, more interesting builders can bundle your web build for [unpkg](https://unpkg.com), generate TypeScript definitions from your JavaScript, addon a standard CLI wrapper for Node.js builds, and even compile non-JS languages to WASM (with JS bindings added).
+
+### 2. Builders handle everything, including package configuration.
 
 ```js
 // After: your built "pkg/" package.json manifest:
@@ -76,10 +75,7 @@ $ pack build
 }
 ```
 
-
-The result is a self-contained, ready-to-run `pkg/` build, with only the minimum set of required files included. Link it, run it locally, rebuild it, and publish it to npm when you're ready!
-
-[See a full collection of example projects here →](https://github.com/pikapkg/examples)
+This is all possible because [@pika/pack](https://github.com/pikapkg/pack) builds your entire package: code, assets, and even package.json manifest. By building the entire package, you end up with a fully-built `pkg/` directory, ready to publish. Entry points like "main", "module", "umd:main", "types", "unpkg", "files", and even advanced options like "sideEffects" are all handled by your build pipeline.
 
 
 ## Available Builders
@@ -88,25 +84,25 @@ The result is a self-contained, ready-to-run `pkg/` build, with only the minimum
 
 > **NOTE: Include a source builder early in your pipeline.** Source builders take your modern source code (ESNext, TS, etc.) and compile it to standard, ES2018 JavaScript. Other builders will then use this standardized build to base their own work off of.
 
- - `@pika/plugin-standard-pkg`: Compiles JavaScript/TypeScript to ES2018. Supports personalized, top-level `.babelrc` plugins/config.
- - `@pika/plugin-ts-standard-pkg`: Compiles TypeScript to ES2018 (Uses `tsc` internally instead of Babel, and builds type definitions automatically).
+ - [`@pika/plugin-standard-pkg`](https://github.com/pikapkg/builders/tree/master/packages/plugin-standard-pkg/): Compiles JavaScript/TypeScript to ES2018. Supports personalized, top-level `.babelrc` plugins/config.
+ - [`@pika/plugin-ts-standard-pkg`](https://github.com/pikapkg/builders/tree/master/packages/plugin-ts-standard-pkg/): Compiles TypeScript to ES2018 (Uses `tsc` internally instead of Babel, and builds type definitions automatically).
 
 #### Distribution Builders:
 
- - `@pika/plugin-build-deno`: Builds a distribution that runs on Deno (TS projects only).
- - `@pika/plugin-build-node`: Builds a distribution that runs on Node LTS (v6+).
- - `@pika/plugin-build-types`: Builds TypeScript definitions from your TS, or automatically generate them from your JS. Not required if you use `@pika/plugin-ts-standard-pkg`.
- - `@pika/plugin-build-web`: Builds an ESM distribution optimized for browsers & bundlers.
+ - [`@pika/plugin-build-deno`](https://github.com/pikapkg/builders/tree/master/packages/plugin-build-deno/): Builds a distribution that runs on Deno (TS projects only).
+ - [`@pika/plugin-build-node`](https://github.com/pikapkg/builders/tree/master/packages/plugin-build-node/): Builds a distribution that runs on Node LTS (v6+).
+ - [`@pika/plugin-build-types`](https://github.com/pikapkg/builders/tree/master/packages/plugin-build-types/): Builds TypeScript definitions from your TS, or automatically generate them from your JS. Not required if you use `@pika/plugin-ts-standard-pkg`.
+ - [`@pika/plugin-build-web`](https://github.com/pikapkg/builders/tree/master/packages/plugin-build-web/): Builds an ESM distribution optimized for browsers & bundlers.
 
 #### WASM Builders:
- - `@pika/plugin-wasm-assemblyscript`: Builds WASM from TypeScript using [AssemblyScript](https://github.com/AssemblyScript/assemblyscript).
- - `@pika/plugin-wasm-bucklescript`: Builds WASM from ReasonML/OCAML using [BuckleScript](https://bucklescript.github.io/).
- - `@pika/plugin-wasm-bindings`: Builds a simple JS wrapper for any WASM build.
+ - [`@pika/plugin-wasm-assemblyscript`](https://github.com/pikapkg/builders/tree/master/packages/plugin-wasm-assemblyscript/): Builds WASM from TypeScript using [AssemblyScript](https://github.com/AssemblyScript/assemblyscript).
+ - [`@pika/plugin-wasm-bucklescript`](https://github.com/pikapkg/builders/tree/master/packages/plugin-wasm-bucklescript/): Builds WASM from ReasonML/OCAML using [BuckleScript](https://bucklescript.github.io/).
+ - [`@pika/plugin-wasm-bindings`](https://github.com/pikapkg/builders/tree/master/packages/plugin-wasm-bindings/): Builds a simple JS wrapper for any WASM build.
 
 #### Advanced Builders:
- - `@pika/plugin-bundle-node`: Creates a Node.js build with all code (including dependencies) bundled into a single file. Useful for CLIs.
- - `@pika/plugin-bundle-web`: Creates a ESM build with all code (including dependencies) bundled. Useful for unpkg & serving code directly to browsers.
- - `@pika/plugin-simple-bin`:  Generates & configures a CLI wrapper to run your library from the command line.
+ - [`@pika/plugin-bundle-node`](https://github.com/pikapkg/builders/tree/master/packages/plugin-bundle-node/): Creates a Node.js build with all code (including dependencies) bundled into a single file. Useful for CLIs.
+ - [`@pika/plugin-bundle-web`](https://github.com/pikapkg/builders/tree/master/packages/plugin-bundle-web/): Creates a ESM build with all code (including dependencies) bundled. Useful for unpkg & serving code directly to browsers.
+ - [`@pika/plugin-simple-bin`](https://github.com/pikapkg/builders/tree/master/packages/plugin-simple-bin/):  Generates & configures a CLI wrapper to run your library from the command line.
 - **Write your own!** @pika/pack can load local builders by relative path directly from your repo.
 - **Publish & Share your own!** These official builders are just the start. Create a PR to add your community plugin to this list.
 
