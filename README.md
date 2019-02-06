@@ -35,7 +35,7 @@ $ pack build
 
 ### 😎 🆒
 
-So now what? If you run `pack build` with an empty pipeline, you'll get an empty package build. [@pika/pack](https://github.com/pikapkg/pack) lets you connect pre-configured plugins to build and optimize your package for you. Plugins wrap already-popular tools like Babel and Rollup with npm-optimized config options, removing the need to fiddle with much (if any) configuration yourself. You even get a generated package.json manifest configured for you ***automatically***.
+So now what? If you run `pack build` with an empty pipeline, you'll get an empty package build. **@pika/pack** lets you connect pre-configured plugins to build and optimize your package for you. Plugins wrap already-popular tools like Babel and Rollup with npm-optimized config options, removing the need to fiddle with much (if any) configuration yourself. You even get a generated package.json manifest configured for you ***automatically***.
 
 ### 1. Create a project pipeline out of simple, pluggable builders.
 
@@ -75,7 +75,7 @@ Builders are simple, single-purpose build plugins defined in your `package.json`
 }
 ```
 
-This is all possible because [@pika/pack](https://github.com/pikapkg/pack) builds your entire package: code, assets, and even package.json manifest. By building the entire package, you end up with a fully-built `pkg/` directory, ready to publish. Entry points like "main", "module", "umd:main", "types", "unpkg", "files", and even advanced options like "sideEffects" are all handled by your build pipeline.
+This is all possible because **@pika/pack** builds your entire package: code, assets, and even package.json manifest. By building the entire package, you end up with a fully-built `pkg/` directory, ready to publish. Entry points like "main", "module", "umd:main", "types", "unpkg", "files", and even advanced options like "sideEffects" are all handled by your build pipeline.
 
 
 ## Available Builders
@@ -115,6 +115,6 @@ This is all possible because [@pika/pack](https://github.com/pikapkg/pack) build
   <img alt="Demo" src="https://next.pikapkg.com/static/img/publish-demo.gif" width="720">
 </p>
 
-We've brought our favorite parts of [np](https://github.com/sindresorhus/np) (a self-described "better npm publish") into @pika/pack. With the `publish` command there's no need to worry about how to publish your package once you've built it.
+We've brought our favorite parts of [np](https://github.com/sindresorhus/np) (a self-described "better npm publish") into **@pika/pack**. With the `publish` command there's no need to worry about how to publish your package once you've built it.
 
-Run `pack publish` in your project and @pika/pack will walk you through version bumping, tagging your release, generating a fresh build, and finally publishing your package.
+Run `pack publish` in your project and **@pika/pack** will walk you through version bumping, tagging your release, generating a fresh build, and finally publishing your package.
