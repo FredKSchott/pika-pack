@@ -86,6 +86,7 @@ This is all possible because **@pika/pack** builds your entire package: code, as
 
  - [`@pika/plugin-standard-pkg`](https://github.com/pikapkg/builders/tree/master/packages/plugin-standard-pkg/): Compiles JavaScript/TypeScript to ES2018. Supports personalized, top-level `.babelrc` plugins/config.
  - [`@pika/plugin-ts-standard-pkg`](https://github.com/pikapkg/builders/tree/master/packages/plugin-ts-standard-pkg/): Compiles TypeScript to ES2018 (Uses `tsc` internally instead of Babel, and builds type definitions automatically).
+ - [`@pika/plugin-source-bucklescript`](https://github.com/pikapkg/builders/tree/master/packages/plugin-source-bucklescript/): Compiles JavaScript/TypeScript to ES2018. Supports personalized, top-level `.babelrc` plugins/config.
 
 #### Distribution Builders:
 
@@ -96,7 +97,7 @@ This is all possible because **@pika/pack** builds your entire package: code, as
 
 #### WASM Builders:
  - [`@pika/plugin-wasm-assemblyscript`](https://github.com/pikapkg/builders/tree/master/packages/plugin-wasm-assemblyscript/): Builds WASM from TypeScript using [AssemblyScript](https://github.com/AssemblyScript/assemblyscript).
- - [`@pika/plugin-wasm-bucklescript`](https://github.com/pikapkg/builders/tree/master/packages/plugin-wasm-bucklescript/): Builds WASM from ReasonML/OCAML using [BuckleScript](https://bucklescript.github.io/).
+ - [`@pika/plugin-wasm-emscripten`](https://github.com/pikapkg/issues/1): Builds WASM from C/C++ using [Emscripten](https://github.com/emscripten-core/emscripten) (Coming Soon).
  - [`@pika/plugin-wasm-bindings`](https://github.com/pikapkg/builders/tree/master/packages/plugin-wasm-bindings/): Builds a simple JS wrapper for any WASM build.
 
 #### Advanced Builders:
