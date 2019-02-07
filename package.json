@@ -3,6 +3,7 @@
   "description": "package building, reimagined.",
   "version": "0.3.1",
   "license": "MIT",
+  "homepage": "https://github.com/pikapkg/pack",
   "@pika/pack": {
     "pipeline": [
       [
