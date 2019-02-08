@@ -119,3 +119,16 @@ This is all possible because **@pika/pack** builds your entire package: code, as
 We've brought our favorite parts of [np](https://github.com/sindresorhus/np) (a self-described "better npm publish") into **@pika/pack**. With the `publish` command there's no need to worry about how to publish your package once you've built it.
 
 Run `pack publish` in your project and **@pika/pack** will walk you through version bumping, tagging your release, generating a fresh build, and finally publishing your package.
+
+## Contributing
+
+Clone the repo, then:
+```sh
+npm install -g @pika/pack
+npm install
+pack build
+```
+
+Or use Gitpod, a free online dev environment.
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io#https://github.com/pikapkg/pack)
