@@ -86,7 +86,7 @@ This is all possible because **@pika/pack** builds your entire package: code, as
 
  - [`@pika/plugin-standard-pkg`](https://github.com/pikapkg/builders/tree/master/packages/plugin-standard-pkg/): Compiles JavaScript/TypeScript to ES2018. Supports personalized, top-level `.babelrc` plugins/config.
  - [`@pika/plugin-ts-standard-pkg`](https://github.com/pikapkg/builders/tree/master/packages/plugin-ts-standard-pkg/): Compiles TypeScript to ES2018 (Uses `tsc` internally instead of Babel, and builds type definitions automatically).
- - [`@pika/plugin-source-bucklescript`](https://github.com/pikapkg/builders/tree/master/packages/plugin-source-bucklescript/): Compiles JavaScript/TypeScript to ES2018. Supports personalized, top-level `.babelrc` plugins/config.
+ - [`@pika/plugin-source-bucklescript`](https://github.com/pikapkg/builders/tree/master/packages/plugin-source-bucklescript/): Builds ES2018 JavaScript from ReasonML or OCaml via [BuckleScript](https://bucklescript.github.io).
 
 #### Distribution Builders:
 
