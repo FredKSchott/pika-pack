@@ -1,7 +1,7 @@
 {
   "name": "@pika/pack",
   "description": "package building, reimagined.",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "license": "MIT",
   "homepage": "https://www.pikapkg.com/blog/introducing-pika-pack/",
   "repository": {
