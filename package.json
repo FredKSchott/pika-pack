@@ -5,8 +5,8 @@
   "license": "MIT",
   "homepage": "https://www.pikapkg.com/blog/introducing-pika-pack/",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/pikapkg/pack.git"
+    "type": "git",
+    "url": "https://github.com/pikapkg/pack.git"
   },
   "@pika/pack": {
     "pipeline": [
@@ -54,7 +54,6 @@
     "issue-regex": "^2.0.0",
     "loud-rejection": "^1.2.0",
     "mkdirp": "^0.5.1",
-    "new-github-release-url": "^0.1.0",
     "opn": "^5.4.0",
     "p-timeout": "^2.0.1",
     "read": "^1.0.7",

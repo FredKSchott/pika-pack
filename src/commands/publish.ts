@@ -11,7 +11,6 @@ import * as fs from '../util/fs.js';
 import {hasUpstream} from '../util/publish/git-util.js';
 import prerequisiteTasks from '../util/publish/prerequisite.js';
 import {publish} from '../util/publish/publish.js';
-import {release} from '../util/publish/release.js';
 import ui from '../util/publish/ui.js';
 import {Build} from './build.js';
 
