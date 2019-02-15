@@ -109,6 +109,13 @@ This is all possible because **@pika/pack** builds your entire package: code, as
 
 [See a full list of official builders here →](https://github.com/pikapkg/builders/tree/master/packages)
 
+#### Community Builders
+
+- [`@ryaninvents/plugin-bundle-zip-node`](https://www.npmjs.com/package/@ryaninvents/plugin-bundle-zip-node): Plugin for @pika/pack to zip built files for Node.js.
+- [`@ryaninvents/plugin-bundle-dependencies`](https://www.npmjs.com/package/@ryaninvents/plugin-bundle-dependencies): Plugin for @pika/pack to zip your package's dependencies.
+- [`@ryaninvents/plugin-bundle-nextjs`](https://www.npmjs.com/package/@ryaninvents/plugin-bundle-nextjs): Plugin for @pika/pack to package a Next.js app for AWS Lambda.
+- [`pika-plugin-minify`](https://www.npmjs.com/package/pika-plugin-minify): A @pika/pack build plugin. Minifies your index.js files in /pkg/* using terser.
+
 
 ## Bonus Command: `publish`
 
