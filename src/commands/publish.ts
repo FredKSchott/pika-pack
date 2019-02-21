@@ -20,6 +20,7 @@ type Flags = {
   yolo: boolean,
   publish: boolean,
   tag: boolean,
+  skipVersionCheck: boolean,
   yarn: boolean,
   contents: boolean,
   otp?: string,
@@ -34,6 +35,7 @@ export function setFlags(commander: Command) {
   commander.option('--yolo', 'Skips cleanup and testing');
   commander.option('--no-publish', 'Skips publishing');
   commander.option('--tag', ' Publish under a given dist-tag');
+  commander.option('--skip-version-check', 'Skip the version check')
   commander.option('--no-yarn', " Don't use Yarn");
   commander.option('--contents', 'Subdirectory to publish', 'pkg/');
   commander.option('--otp <code>', 'Publish with an OTP code');

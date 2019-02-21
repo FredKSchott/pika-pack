@@ -67,7 +67,7 @@ export default async function prerequisites(input, pkg, options) {
   }
 
   newVersion = version.getNewVersion(pkg.version, input);
-  if (!version.isVersionGreater(pkg.version, newVersion)) {
+  if (!options.skipVersionCheck && !version.isVersionGreater(pkg.version, newVersion)) {
     throw new Error(`New version \`${newVersion}\` should be higher than current version \`${pkg.version}\``);
   }
 
