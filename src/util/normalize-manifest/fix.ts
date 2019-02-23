@@ -116,21 +116,6 @@ export default (async function(
     info.engines = engines;
   }
 
-  // if the repository field is a string then assume it's a git repo and expand it
-  if (typeof info.repository === 'string') {
-    info.repository = {
-      type: 'git',
-      url: info.repository,
-    };
-  }
-
-  const repo = info.repository;
-
-  // explode info.repository.url if it's a hosted git shorthand
-  // if (repo && typeof repo === 'object' && typeof repo.url === 'string') {
-  //   repo.url = hostedGitFragmentToGitUrl(repo.url, reporter);
-  // }
-
   // allow bugs to be specified as a string, expand it to an object with a single url prop
   if (typeof info.bugs === 'string') {
     info.bugs = {url: info.bugs};
