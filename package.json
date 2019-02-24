@@ -8,6 +8,7 @@
     "type": "git",
     "url": "https://github.com/pikapkg/pack.git"
   },
+  "engines": { "node" : ">=8" },
   "@pika/pack": {
     "pipeline": [
       [
@@ -19,13 +20,15 @@
       [
         "@pika/plugin-simple-bin",
         {
-          "bin": "pika-pack"
+          "bin": "pika-pack",
+          "minNodeVersion": 8
         }
       ],
       [
         "@pika/plugin-simple-bin",
         {
-          "bin": "pack"
+          "bin": "pack",
+          "minNodeVersion": 8
         }
       ]
     ]
