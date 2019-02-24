@@ -149,7 +149,7 @@ export default async function (options, pkg) {
 			type: 'confirm',
 			name: 'publishScoped',
 			when: isScoped(pkg.name) && options.publish && !pkg.private,
-			message: `This scoped repo ${chalk.bold.magenta(pkg.name)} hasn't been published. Do you want to publish it publicly?`,
+			message: `${chalk.bold.magenta(pkg.name)} is a scoped package. Do you want to publish it publicly?`,
 			default: true
 		}
 	];

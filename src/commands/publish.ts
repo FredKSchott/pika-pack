@@ -131,6 +131,21 @@ export class Publish {
       });
     }
 
+    steps.push(async (curr: number, total: number) => {
+      this.reporter.step(curr, total, 'Bump Version', '✨');
+      await execa('npm', ['version', input, '--force']);
+      await config.loadPackageManifest();
+    });
+
+    steps.push(async (curr: number, total: number) => {
+      this.reporter.step(curr, total, 'Building Package', '✨');
+      const oldIsSilent = reporter.isSilent;
+      reporter.isSilent = true;
+      const builder = new Build({out, publish: true, silent: true}, config, reporter);
+      await builder.init(true);
+      reporter.isSilent = oldIsSilent;
+    });
+
     if (runTests) {
       steps.push(async (curr: number, total: number) => {
         this.reporter.step(curr, total, 'Test', '✨');
@@ -151,20 +166,6 @@ export class Publish {
       });
     }
 
-    steps.push(async (curr: number, total: number) => {
-      this.reporter.step(curr, total, 'Bump Version', '✨');
-      await execa('npm', ['version', input, '--force']);
-      await config.loadPackageManifest();
-    });
-
-    steps.push(async (curr: number, total: number) => {
-      this.reporter.step(curr, total, 'Building Package', '✨');
-      const oldIsSilent = reporter.isSilent;
-      reporter.isSilent = true;
-      const builder = new Build({out, publish: true, silent: true}, config, reporter);
-      await builder.init(true);
-      reporter.isSilent = oldIsSilent;
-    });
 
     if (runPublish && !manifest.private) {
       steps.push(async (curr: number, total: number) => {
