@@ -1,7 +1,7 @@
 lib-node/
 local/
-pkg/
 .DS_Store
+/pkg
 /lib
 /lib-legacy
 /node_modules

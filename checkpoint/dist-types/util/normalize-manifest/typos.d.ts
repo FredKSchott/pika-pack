@@ -1,0 +1,22 @@
+declare const _default: {
+    autohr: string;
+    autor: string;
+    contributers: string;
+    depdenencies: string;
+    dependancies: string;
+    dependecies: string;
+    depends: string;
+    'dev-dependencies': string;
+    devDependences: string;
+    devDepenencies: string;
+    devEependencies: string;
+    devdependencies: string;
+    hampage: string;
+    hompage: string;
+    prefereGlobal: string;
+    publicationConfig: string;
+    repo: string;
+    repostitory: string;
+    script: string;
+};
+export default _default;

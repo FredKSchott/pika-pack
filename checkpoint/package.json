@@ -3,42 +3,24 @@
   "description": "package building, reimagined.",
   "version": "0.3.2",
   "license": "MIT",
+  "bin": {
+    "pika-pack": "dist-node/index.bin.js",
+    "pack": "dist-node/index.bin.js"
+  },
+  "source": "dist-src/index.js",
+  "types": "dist-types/index.d.ts",
+  "main": "dist-node/index.js",
+  "pika": true,
+  "sideEffects": false,
+  "files": [
+    "dist-*/",
+    "assets/",
+    "bin/"
+  ],
   "homepage": "https://www.pikapkg.com/blog/introducing-pika-pack/",
-  "engines": { "node" : ">=8" },
   "repository": {
     "type": "git",
     "url": "https://github.com/pikapkg/pack.git"
-  },
-  "scripts": {
-    "build": "./checkpoint/dist-node/index.bin.js build",
-    "test": "./pkg/dist-node/index.bin.js build"
-  },
-  "@pika/pack": {
-    "pipeline": [
-      [
-        "@pika/plugin-ts-standard-pkg"
-      ],
-      [
-        "@pika/plugin-build-node"
-      ],
-      [
-        "@pika/plugin-simple-bin",
-        {
-          "bin": "pika-pack",
-          "minNodeVersion": 8
-        }
-      ],
-      [
-        "@pika/plugin-simple-bin",
-        {
-          "bin": "pack",
-          "minNodeVersion": 8
-        }
-      ]
-    ]
-  },
-  "publishConfig": {
-    "access": "public"
   },
   "dependencies": {
     "@pika/types": "^0.3.3",
@@ -76,5 +58,11 @@
     "@pika/plugin-ts-standard-pkg": "^0.3.3",
     "prettier": "^1.15.3",
     "typescript": "^3.2.2"
+  },
+  "engines": {
+    "node": ">=8"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
