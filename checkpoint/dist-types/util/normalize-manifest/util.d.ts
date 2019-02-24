@@ -4,4 +4,3 @@ export declare function stringifyPerson(person: any): any;
 export declare function parsePerson(person: any): PersonObject;
 export declare function normalizePerson(person: any): any | PersonObject;
 export declare function extractDescription(readme: any): string;
-export declare function extractRepositoryUrl(repository: any): any;

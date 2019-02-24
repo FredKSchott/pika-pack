@@ -5,7 +5,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
 var path = require('path');
-var commander = require('commander');
+var commander$1 = require('commander');
 var fs = require('fs');
 var invariant = _interopDefault(require('invariant'));
 var loudRejection = _interopDefault(require('loud-rejection'));
@@ -1879,8 +1879,8 @@ const chmod = util.promisify(fs.chmod);
 const link = util.promisify(fs.link);
 const copyFile = util.promisify(fs.copyFile);
 const readFileBuffer = util.promisify(fs.readFile);
-const readFile = path$$1 => {
-  return util.promisify(fs.readFile)(path$$1, {
+const readFile = path => {
+  return util.promisify(fs.readFile)(path, {
     encoding: 'utf-8'
   });
 }; // export {unlink};
@@ -2430,12 +2430,12 @@ function getEolFromFile(_x5) {
 }
 
 function _getEolFromFile() {
-  _getEolFromFile = _asyncToGenerator(function* (path$$1) {
-    if (!(yield exists(path$$1))) {
+  _getEolFromFile = _asyncToGenerator(function* (path) {
+    if (!(yield exists(path))) {
       return undefined;
     }
 
-    const buffer = yield readFileBuffer(path$$1);
+    const buffer = yield readFileBuffer(path);
 
     for (let i = 0; i < buffer.length; ++i) {
       if (buffer[i] === cr) {
@@ -2512,14 +2512,14 @@ function writeFilePreservingEol(_x6, _x7) {
 // }
 
 function _writeFilePreservingEol() {
-  _writeFilePreservingEol = _asyncToGenerator(function* (path$$1, data) {
-    const eol = (yield getEolFromFile(path$$1)) || os.EOL;
+  _writeFilePreservingEol = _asyncToGenerator(function* (path, data) {
+    const eol = (yield getEolFromFile(path)) || os.EOL;
 
     if (eol !== '\n') {
       data = data.replace(/\n/g, eol);
     }
 
-    yield writeFile(path$$1, data);
+    yield writeFile(path, data);
   });
   return _writeFilePreservingEol.apply(this, arguments);
 }
@@ -2624,14 +2624,14 @@ function generatePrettyManifest(manifest) {
   }), null, 2);
 }
 
-function setFlags(commander$$1) {
-  commander$$1.description('Prepares your package out directory (pkg/) for publishing.');
-  commander$$1.usage('build [flags]');
-  commander$$1.option('-O, --out <path>', 'Where to write to');
-  commander$$1.option('--force', 'Whether to ignore failed build plugins and continue through errors.');
-  commander$$1.option('-P, --publish', 'Whether to include publish-only builds like unpkg & types.');
+function setFlags(commander) {
+  commander.description('Prepares your package out directory (pkg/) for publishing.');
+  commander.usage('build [flags]');
+  commander.option('-O, --out <path>', 'Where to write to');
+  commander.option('--force', 'Whether to ignore failed build plugins and continue through errors.');
+  commander.option('-P, --publish', 'Whether to include publish-only builds like unpkg & types.');
 }
-function hasWrapper(commander$$1, args) {
+function hasWrapper(commander, args) {
   return true;
 }
 class Build {
@@ -3108,6 +3108,11 @@ function _prerequisites() {
         // Ignore non-existing package error
         if (error.stderr.includes('code E404')) {
           return;
+        } // Workaround for npm issue, see https://github.com/pikapkg/pack/issues/18
+
+
+        if (error.stderr.includes('This command is only available for scoped packages.')) {
+          return;
         }
 
         throw error;
@@ -3389,7 +3394,7 @@ function _ref3() {
       type: 'confirm',
       name: 'publishScoped',
       when: isScoped(pkg.name) && options.publish && !pkg.private,
-      message: `This scoped repo ${chalk.bold.magenta(pkg.name)} hasn't been published. Do you want to publish it publicly?`,
+      message: `${chalk.bold.magenta(pkg.name)} is a scoped package. Do you want to publish it publicly?`,
       default: true
     }];
 
@@ -3419,18 +3424,18 @@ function _ref3() {
   return _ref3.apply(this, arguments);
 }
 
-function setFlags$1(commander$$1) {
-  commander$$1.description('Publish');
-  commander$$1.usage('publish [version] [...flags]');
-  commander$$1.option('--any-branch', 'Allow publishing from any branch');
-  commander$$1.option('--no-cleanup', 'Skips cleanup of node_modules');
-  commander$$1.option('--yolo', 'Skips cleanup and testing');
-  commander$$1.option('--no-publish', 'Skips publishing');
-  commander$$1.option('--tag', ' Publish under a given dist-tag');
-  commander$$1.option('--no-yarn', " Don't use Yarn");
-  commander$$1.option('--contents', 'Subdirectory to publish', 'pkg/');
-  commander$$1.option('--otp <code>', 'Publish with an OTP code');
-  commander$$1.option('--out <dir>', 'Directory to publish');
+function setFlags$1(commander) {
+  commander.description('Publish');
+  commander.usage('publish [version] [...flags]');
+  commander.option('--any-branch', 'Allow publishing from any branch');
+  commander.option('--no-cleanup', 'Skips cleanup of node_modules');
+  commander.option('--yolo', 'Skips cleanup and testing');
+  commander.option('--no-publish', 'Skips publishing');
+  commander.option('--tag', ' Publish under a given dist-tag');
+  commander.option('--no-yarn', " Don't use Yarn");
+  commander.option('--contents', 'Subdirectory to publish', 'pkg/');
+  commander.option('--otp <code>', 'Publish with an OTP code');
+  commander.option('--out <dir>', 'Directory to publish');
 }
 function hasWrapper$1() {
   return false;
@@ -3543,11 +3548,47 @@ class Publish {
         }());
       }
 
+      steps.push(
+      /*#__PURE__*/
+      function () {
+        var _ref5 = _asyncToGenerator(function* (curr, total) {
+          _this.reporter.step(curr, total, 'Bump Version', '✨');
+
+          yield execa('npm', ['version', input, '--force']);
+          yield config.loadPackageManifest();
+        });
+
+        return function (_x5, _x6) {
+          return _ref5.apply(this, arguments);
+        };
+      }());
+      steps.push(
+      /*#__PURE__*/
+      function () {
+        var _ref6 = _asyncToGenerator(function* (curr, total) {
+          _this.reporter.step(curr, total, 'Building Package', '✨');
+
+          const oldIsSilent = reporter.isSilent;
+          reporter.isSilent = true;
+          const builder = new Build({
+            out,
+            publish: true,
+            silent: true
+          }, config, reporter);
+          yield builder.init(true);
+          reporter.isSilent = oldIsSilent;
+        });
+
+        return function (_x7, _x8) {
+          return _ref6.apply(this, arguments);
+        };
+      }());
+
       if (runTests) {
         steps.push(
         /*#__PURE__*/
         function () {
-          var _ref5 = _asyncToGenerator(function* (curr, total) {
+          var _ref7 = _asyncToGenerator(function* (curr, total) {
             _this.reporter.step(curr, total, 'Test', '✨');
 
             if (!options.yarn) {
@@ -3566,47 +3607,11 @@ class Publish {
             }
           });
 
-          return function (_x5, _x6) {
-            return _ref5.apply(this, arguments);
+          return function (_x9, _x10) {
+            return _ref7.apply(this, arguments);
           };
         }());
       }
-
-      steps.push(
-      /*#__PURE__*/
-      function () {
-        var _ref6 = _asyncToGenerator(function* (curr, total) {
-          _this.reporter.step(curr, total, 'Bump Version', '✨');
-
-          yield execa('npm', ['version', input, '--force']);
-          yield config.loadPackageManifest();
-        });
-
-        return function (_x7, _x8) {
-          return _ref6.apply(this, arguments);
-        };
-      }());
-      steps.push(
-      /*#__PURE__*/
-      function () {
-        var _ref7 = _asyncToGenerator(function* (curr, total) {
-          _this.reporter.step(curr, total, 'Building Package', '✨');
-
-          const oldIsSilent = reporter.isSilent;
-          reporter.isSilent = true;
-          const builder = new Build({
-            out,
-            publish: true,
-            silent: true
-          }, config, reporter);
-          yield builder.init(true);
-          reporter.isSilent = oldIsSilent;
-        });
-
-        return function (_x9, _x10) {
-          return _ref7.apply(this, arguments);
-        };
-      }());
 
       if (runPublish && !manifest.private) {
         steps.push(
@@ -3667,8 +3672,8 @@ function _run$1() {
       return;
     }
 
-    const publish$$1 = new Publish(flags, config, reporter);
-    yield publish$$1.init(options.version);
+    const publish = new Publish(flags, config, reporter);
+    yield publish.init(options.version);
     const newManifest = yield config.loadPackageManifest();
     console.log(chalk.bold(`\n🎉  ${newManifest.name} v${newManifest.version} published!`));
     console.log(`You can see it at: ${chalk.underline(`https://unpkg.com/${newManifest.name}@${newManifest.version}/`)}`);
@@ -3692,10 +3697,10 @@ const commands = {
 function hasWrapper$2(flags, args) {
   return false;
 }
-function setFlags$2(commander$$1) {
-  commander$$1.description('Displays help information.');
+function setFlags$2(commander) {
+  commander.description('Displays help information.');
 }
-function run$2(config, reporter, commander$$1, args) {
+function run$2(config, reporter, commander, args) {
   if (args.length) {
     const commandName = args.shift();
 
@@ -3703,25 +3708,25 @@ function run$2(config, reporter, commander$$1, args) {
       const command = commands[commandName];
 
       if (command) {
-        command.setFlags(commander$$1);
+        command.setFlags(commander);
         const examples = (command && command.examples || []).map(example => `    $ pika ${example}`);
 
         if (examples.length) {
-          commander$$1.on('--help', () => {
+          commander.on('--help', () => {
             reporter.log(reporter.lang('helpExamples', reporter.rawText(examples.join('\n'))));
           });
         } // eslint-disable-next-line pika-internal/warn-language
         // commander.on('--help', () => reporter.log('  ' + getDocsInfo(commandName) + '\n'));
 
 
-        commander$$1.help();
+        commander.help();
         return Promise.resolve();
       }
     }
   }
 
-  commander$$1.options.sort(sortOptionsByFlags);
-  commander$$1.help();
+  commander.options.sort(sortOptionsByFlags);
+  commander.help();
   return Promise.resolve();
 }
 
@@ -4204,21 +4209,8 @@ var fix = /*#__PURE__*/
       }
 
       info.engines = engines;
-    } // if the repository field is a string then assume it's a git repo and expand it
+    } // allow bugs to be specified as a string, expand it to an object with a single url prop
 
-
-    if (typeof info.repository === 'string') {
-      info.repository = {
-        type: 'git',
-        url: info.repository
-      };
-    }
-
-    const repo = info.repository; // explode info.repository.url if it's a hosted git shorthand
-    // if (repo && typeof repo === 'object' && typeof repo.url === 'string') {
-    //   repo.url = hostedGitFragmentToGitUrl(repo.url, reporter);
-    // }
-    // allow bugs to be specified as a string, expand it to an object with a single url prop
 
     if (typeof info.bugs === 'string') {
       info.bugs = {
@@ -4704,7 +4696,7 @@ class BlockingQueue {
 }
 
 /* global child_process$spawnOpts */
-const queue$1 = new BlockingQueue('child', CHILD_CONCURRENCY); // TODO: this uid check is kinda whack
+const queue = new BlockingQueue('child', CHILD_CONCURRENCY); // TODO: this uid check is kinda whack
 
 let uid = 0;
 const spawnedProcesses = {};
@@ -4718,7 +4710,7 @@ function forwardSignalToSpawnedProcesses(signal) {
 }
 function spawn(program, args, opts = {}, onData) {
   const key = opts.cwd || String(++uid);
-  return queue$1.push(key, () => new Promise((resolve, reject) => {
+  return queue.push(key, () => new Promise((resolve, reject) => {
     const proc = child_process.spawn(program, args, opts);
 
     spawnedProcesses[key] = proc;
@@ -5182,15 +5174,20 @@ function boolifyWithDefault(val, defaultResult) {
   return val === '' || val === null || val === undefined ? defaultResult : boolify(val);
 }
 
-const commander$1 = new commander.Command(); // @ts-ignore
+const commander = new commander$1.Command(); // @ts-ignore
 
 const currentFilename = uri2path(new (typeof URL !== 'undefined' ? URL : require('ur'+'l').URL)((process.browser ? '' : 'file:') + __filename, process.browser && document.baseURI).href);
-const packageJsonContent = fs.readFileSync(path.resolve(currentFilename, '../../package.json'), {
-  encoding: 'utf-8'
-});
 
-const _map = nullify(JSON.parse(stripBOM(packageJsonContent))),
-      version = _map.version;
+function getVersion() {
+  const packageJsonContent = fs.readFileSync(path.resolve(currentFilename, '../../package.json'), {
+    encoding: 'utf-8'
+  });
+
+  const _map = nullify(JSON.parse(stripBOM(packageJsonContent))),
+        version = _map.version;
+
+  return version;
+}
 
 function findProjectRoot(base) {
   let prev = null;
@@ -5218,21 +5215,21 @@ function _main() {
     args,
     endArgs
   }) {
-
+    const version = getVersion();
     loudRejection();
     handleSignals(); // set global options
 
-    commander$1.version(version, '-v, --version');
-    commander$1.usage('[command] [flags]');
-    commander$1.option('--verbose', 'output verbose messages on internal operations');
-    commander$1.option('--json', 'format Pika log messages as lines of JSON (see jsonlines.org)'); // commander.option('--force', 'install and build packages even if they were built before, overwrite lockfile');
+    commander.version(version, '-v, --version');
+    commander.usage('[command] [flags]');
+    commander.option('--verbose', 'output verbose messages on internal operations');
+    commander.option('--json', 'format Pika log messages as lines of JSON (see jsonlines.org)'); // commander.option('--force', 'install and build packages even if they were built before, overwrite lockfile');
     // commander.option('--prod, --production [prod]', '', boolify);
 
-    commander$1.option('--emoji [bool]', 'enable emoji in output', boolify, process.platform === 'darwin' || process.env.TERM_PROGRAM === 'Hyper' || process.env.TERM_PROGRAM === 'HyperTerm');
-    commander$1.option('-s, --silent', 'skip Pika console logs, other types of logs (script output) will be printed');
-    commander$1.option('--cwd <cwd>', 'working directory to use', process.cwd());
-    commander$1.option('--no-progress', 'disable progress bar');
-    commander$1.option('--no-node-version-check', 'do not warn when using a potentially unsupported Node version'); // if -v is the first command, then always exit after returning the version
+    commander.option('--emoji [bool]', 'enable emoji in output', boolify, process.platform === 'darwin' || process.env.TERM_PROGRAM === 'Hyper' || process.env.TERM_PROGRAM === 'HyperTerm');
+    commander.option('-s, --silent', 'skip Pika console logs, other types of logs (script output) will be printed');
+    commander.option('--cwd <cwd>', 'working directory to use', process.cwd());
+    commander.option('--no-progress', 'disable progress bar');
+    commander.option('--no-node-version-check', 'do not warn when using a potentially unsupported Node version'); // if -v is the first command, then always exit after returning the version
 
     if (args[0] === '-v') {
       console.log(version.trim());
@@ -5244,7 +5241,7 @@ function _main() {
     const firstNonFlagIndex = args.findIndex((arg, idx, arr) => {
       const isOption = arg.startsWith('-');
       const prev = idx > 0 && arr[idx - 1];
-      const prevOption = prev && prev.startsWith('-') && commander$1.optionFor(prev);
+      const prevOption = prev && prev.startsWith('-') && commander.optionFor(prev);
       const boundToPrevOption = prevOption && (prevOption.optional || prevOption.required);
       return !isOption && !boundToPrevOption;
     });
@@ -5296,25 +5293,25 @@ function _main() {
     }
 
     const command = commandName === 'help' ? helpCommand : commands[commandName];
-    commander$1.originalArgs = args;
+    commander.originalArgs = args;
     args = [...preCommandArgs, ...args];
-    command.setFlags(commander$1);
-    commander$1.parse([...startArgs, // we use this for https://github.com/tj/commander.js/issues/346, otherwise
+    command.setFlags(commander);
+    commander.parse([...startArgs, // we use this for https://github.com/tj/commander.js/issues/346, otherwise
     // it will strip some args that match with any options
     'this-arg-will-get-stripped-later', ...args]);
-    commander$1.args = commander$1.args.concat(endArgs.slice(1)); // we strip cmd
+    commander.args = commander.args.concat(endArgs.slice(1)); // we strip cmd
 
-    console.assert(commander$1.args.length >= 1);
-    console.assert(commander$1.args[0] === 'this-arg-will-get-stripped-later');
-    commander$1.args.shift(); //
+    console.assert(commander.args.length >= 1);
+    console.assert(commander.args[0] === 'this-arg-will-get-stripped-later');
+    commander.args.shift(); //
 
-    const Reporter = commander$1.json ? JSONReporter : ConsoleReporter;
+    const Reporter = commander.json ? JSONReporter : ConsoleReporter;
     const reporter = new Reporter({
-      emoji: process.stdout.isTTY && commander$1.emoji,
-      verbose: commander$1.verbose,
-      noProgress: !commander$1.progress,
-      isSilent: boolifyWithDefault(process.env.PIKA_SILENT, false) || commander$1.silent,
-      nonInteractive: commander$1.nonInteractive
+      emoji: process.stdout.isTTY && commander.emoji,
+      verbose: commander.verbose,
+      noProgress: !commander.progress,
+      isSilent: boolifyWithDefault(process.env.PIKA_SILENT, false) || commander.silent,
+      nonInteractive: commander.nonInteractive
     });
 
     const exit = (exitCode = 0) => {
@@ -5328,18 +5325,18 @@ function _main() {
 
     reporter.initPeakMemoryCounter();
     const outputWrapperEnabled = boolifyWithDefault(process.env.PIKA_WRAP_OUTPUT, true);
-    const shouldWrapOutput = outputWrapperEnabled && !commander$1.json && command.hasWrapper(commander$1, commander$1.args); // if (shouldWrapOutput) {
+    const shouldWrapOutput = outputWrapperEnabled && !commander.json && command.hasWrapper(commander, commander.args); // if (shouldWrapOutput) {
 
     reporter.header(commandName, {
       name: '@pika/pack',
       version
     }); // }
 
-    if (commander$1.nodeVersionCheck && !semver.satisfies(process.versions.node, SUPPORTED_NODE_VERSIONS)) {
+    if (commander.nodeVersionCheck && !semver.satisfies(process.versions.node, SUPPORTED_NODE_VERSIONS)) {
       reporter.warn(reporter.lang('unsupportedNodeVersion', process.versions.node, SUPPORTED_NODE_VERSIONS));
     }
 
-    if (command.noArguments && commander$1.args.length) {
+    if (command.noArguments && commander.args.length) {
       reporter.error(reporter.lang('noArguments')); // reporter.info(command.getDocsInfo);
 
       exit(1);
@@ -5356,7 +5353,7 @@ function _main() {
       //   reporter.warn(reporter.lang('dashDashDeprecation'));
       // }
 
-      return command.run(config, reporter, commander$1, commander$1.args).then(exitCode => {
+      return command.run(config, reporter, commander, commander.args).then(exitCode => {
         if (shouldWrapOutput) {
           reporter.footer(false);
         }
@@ -5413,7 +5410,7 @@ function _main() {
       return errorReportLoc;
     }
 
-    const cwd = command.shouldRunInCurrentCwd ? commander$1.cwd : findProjectRoot(commander$1.cwd);
+    const cwd = command.shouldRunInCurrentCwd ? commander.cwd : findProjectRoot(commander.cwd);
     const config = new Config(reporter, cwd);
     yield config.loadPackageManifest();
 

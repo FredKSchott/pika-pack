@@ -11,6 +11,7 @@
   },
   "scripts": {
     "build": "./checkpoint/dist-node/index.bin.js build",
+    "update-checkpoint": "rm -rf checkpoint/ && cp -r pkg/ checkpoint/",
     "test": "./pkg/dist-node/index.bin.js build"
   },
   "@pika/pack": {

@@ -70,9 +70,3 @@ export function extractDescription(readme) {
     }
     return lines.slice(start, end).join(' ');
 }
-export function extractRepositoryUrl(repository) {
-    if (!repository || typeof repository !== 'object') {
-        return repository;
-    }
-    return repository.url;
-}

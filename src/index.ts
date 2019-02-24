@@ -23,8 +23,11 @@ const commander = new Command();
 
 // @ts-ignore
 const currentFilename = uri2path(import.meta.url);
-const packageJsonContent = fs.readFileSync(path.resolve(currentFilename, '../../package.json'), {encoding: 'utf-8'});
-const {version} = map(JSON.parse(stripBOM(packageJsonContent)));
+function getVersion() {
+  const packageJsonContent = fs.readFileSync(path.resolve(currentFilename, '../../package.json'), {encoding: 'utf-8'});
+  const {version} = map(JSON.parse(stripBOM(packageJsonContent)));
+  return version;
+}
 
 function findProjectRoot(base: string): string {
   let prev = null;
@@ -51,11 +54,7 @@ export async function main({
   args: Array<string>,
   endArgs: Array<string>,
 }): Promise<void> {
-  const collect = (val, acc) => {
-    acc.push(val);
-    return acc;
-  };
-
+  const version = getVersion();
   loudRejection();
   handleSignals();
 

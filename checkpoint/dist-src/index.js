@@ -18,8 +18,11 @@ import uri2path from 'file-uri-to-path';
 const commander = new Command();
 // @ts-ignore
 const currentFilename = uri2path(import.meta.url);
-const packageJsonContent = fs.readFileSync(path.resolve(currentFilename, '../../package.json'), { encoding: 'utf-8' });
-const { version } = map(JSON.parse(stripBOM(packageJsonContent)));
+function getVersion() {
+    const packageJsonContent = fs.readFileSync(path.resolve(currentFilename, '../../package.json'), { encoding: 'utf-8' });
+    const { version } = map(JSON.parse(stripBOM(packageJsonContent)));
+    return version;
+}
 function findProjectRoot(base) {
     let prev = null;
     let dir = base;
@@ -33,10 +36,7 @@ function findProjectRoot(base) {
     return base;
 }
 export async function main({ startArgs, args, endArgs, }) {
-    const collect = (val, acc) => {
-        acc.push(val);
-        return acc;
-    };
+    const version = getVersion();
     loudRejection();
     handleSignals();
     // set global options
