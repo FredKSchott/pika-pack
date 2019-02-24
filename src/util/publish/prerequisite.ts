@@ -43,7 +43,10 @@ export default async function prerequisites(input, pkg, options) {
       if (error.stderr.includes('code E404')) {
         return;
       }
-
+      // Workaround for npm issue, see https://github.com/pikapkg/pack/issues/18
+      if (error.stderr.includes('This command is only available for scoped packages.')) {
+        return;
+      }
       throw error;
     }
 
