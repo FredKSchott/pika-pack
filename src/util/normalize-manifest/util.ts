@@ -93,10 +93,3 @@ export function extractDescription(readme: any): string {
 
   return lines.slice(start, end).join(' ');
 }
-
-export function extractRepositoryUrl(repository: any): any {
-  if (!repository || typeof repository !== 'object') {
-    return repository;
-  }
-  return repository.url;
-}
