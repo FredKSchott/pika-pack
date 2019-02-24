@@ -1,10 +1,12 @@
 {
   "name": "@pika/pack",
   "description": "package building, reimagined.",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "license": "MIT",
   "homepage": "https://www.pikapkg.com/blog/introducing-pika-pack/",
-  "engines": { "node" : ">=8" },
+  "engines": {
+    "node": ">=8"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/pikapkg/pack.git"
