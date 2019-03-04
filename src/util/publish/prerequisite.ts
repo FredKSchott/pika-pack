@@ -3,7 +3,7 @@ import pTimeout from 'p-timeout';
 import * as version from './version.js';
 import {getTagVersionPrefix} from './util.js';
 
-export default async function prerequisites(input, pkg, options) {
+export default async function prerequisites(pkg, options) {
   const isExternalRegistry = typeof pkg.publishConfig === 'object' && typeof pkg.publishConfig.registry === 'string';
   let newVersion = null;
 
@@ -65,11 +65,11 @@ export default async function prerequisites(input, pkg, options) {
   }
 
   // title: 'Validate version',
-  if (!version.isValidVersionInput(input)) {
+  if (!version.isValidVersionInput(options.version)) {
     throw new Error(`Version should be either ${version.SEMVER_INCREMENTS.join(', ')}, or a valid semver version.`);
   }
 
-  newVersion = version.getNewVersion(pkg.version, input);
+  newVersion = version.getNewVersion(pkg.version, options.version);
   if (!version.isVersionGreater(pkg.version, newVersion)) {
     throw new Error(`New version \`${newVersion}\` should be higher than current version \`${pkg.version}\``);
   }

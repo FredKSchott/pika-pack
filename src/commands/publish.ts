@@ -63,20 +63,14 @@ export class Publish {
   reporter: Reporter;
   totalNum: number;
 
-  async init(input = 'patch') {
-    const {out, flags, config, reporter} = this;
+  async init(options) {
+    const {out, config, reporter} = this;
     const {manifest} = config;
     const repoUrl =
       manifest.repository &&
       githubUrlFromGit(manifest.repository.url, {
         extraBaseUrls: ['gitlab.com'],
       });
-    const options: Flags = {
-      cleanup: true,
-      publish: true,
-      ...flags,
-      yarn: hasYarn(),
-    };
 
     if (!hasYarn() && options.yarn) {
       throw new Error('Could not use Yarn without yarn.lock file');
@@ -92,7 +86,7 @@ export class Publish {
 
     steps.push(async (curr: number, total: number) => {
       this.reporter.step(curr, total, 'Prerequisite checks', '✨');
-      runPublish && (await prerequisiteTasks(input, manifest, options));
+      runPublish && (await prerequisiteTasks(manifest, options));
       // title: 'Check current branch',
       const {stdout: branch} = await execa('git', ['symbolic-ref', '--short', 'HEAD']);
       if (branch !== 'master') {
@@ -133,7 +127,7 @@ export class Publish {
 
     steps.push(async (curr: number, total: number) => {
       this.reporter.step(curr, total, 'Bump Version', '✨');
-      await execa('npm', ['version', input, '--force']);
+      await execa('npm', ['version', options.version, '--force']);
       await config.loadPackageManifest();
     });
 
@@ -170,7 +164,7 @@ export class Publish {
     if (runPublish && !manifest.private) {
       steps.push(async (curr: number, total: number) => {
         this.reporter.step(curr, total, 'Publishing Package', '✨');
-        await publish(pkgManager, 'Publishing Package', options, input);
+        await publish(pkgManager, 'Publishing Package', options);
       });
     }
 
@@ -193,11 +187,12 @@ export async function run(config, reporter, flags, args) {
   const options =
     args.length > 0
       ? {
-          ...flags,
-          yarn: hasYarn(),
-          confirm: true,
-          version: args[0],
-        }
+        cleanup: true,
+        // publish: true,
+        ...flags,
+        yarn: hasYarn(),
+        version: args[0],
+      }
       : await ui({...flags, yarn: hasYarn()}, config.manifest);
 
   if (!options.confirm) {
@@ -205,7 +200,7 @@ export async function run(config, reporter, flags, args) {
   }
 
   const publish = new Publish(flags, config, reporter);
-  await publish.init(options.version);
+  await publish.init(options);
   const newManifest = await config.loadPackageManifest();
   console.log(chalk.bold(`\n🎉  ${newManifest.name} v${newManifest.version} published!`));
   console.log(`You can see it at: ${chalk.underline(`https://unpkg.com/${newManifest.name}@${newManifest.version}/`)}`);
