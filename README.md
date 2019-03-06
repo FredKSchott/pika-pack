@@ -115,7 +115,7 @@ This is all possible because **@pika/pack** builds your entire package: code, as
 - [`pika-plugin-minify`](https://www.npmjs.com/package/pika-plugin-minify): A @pika/pack build plugin. Minifies your index.js files in /pkg/* using terser.
 
 
-#### @pika/pack + Lerna
+## @pika/pack + Lerna
 
 Curious about integrating @pika/pack with Lerna? Our official collection of plugins is a Lerna repo that uses @pika/pack to build each package! [Check it out](https://github.com/pikapkg/builders) to see how easy it is to use the two tools together.
 
