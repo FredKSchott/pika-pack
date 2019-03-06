@@ -46,7 +46,7 @@ So now what? If you run `pack build` with an empty pipeline, you'll get an empty
   "version": "1.0.0",
   "@pika/pack": {
     "pipeline": [
-      ["@pika/plugin-standard-pkg", {"exclude": ["__tests__/*"]}],
+      ["@pika/plugin-standard-pkg", {"exclude": ["__tests__/**/*"]}],
       ["@pika/plugin-build-node"],
       ["@pika/plugin-build-web"],
       ["@pika/plugin-build-types"]
