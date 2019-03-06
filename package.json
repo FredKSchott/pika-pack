@@ -12,9 +12,9 @@
     "url": "https://github.com/pikapkg/pack.git"
   },
   "scripts": {
-    "build": "./checkpoint/dist-node/index.bin.js build",
-    "update-checkpoint": "rm -rf checkpoint/ && cp -r pkg/ checkpoint/",
-    "test": "./pkg/dist-node/index.bin.js build"
+    "build": "node checkpoint/dist-node/index.bin.js build",
+    "update-checkpoint": "rimraf checkpoint/ && ncp pkg/ checkpoint/",
+    "test": "node pkg/dist-node/index.bin.js build"
   },
   "@pika/pack": {
     "pipeline": [
@@ -67,7 +67,6 @@
     "opn": "^5.4.0",
     "p-timeout": "^2.0.1",
     "read": "^1.0.7",
-    "rimraf": "^2.5.0",
     "semver": "^5.6.0",
     "strip-ansi": "^4.0.0",
     "strip-bom": "^3.0.0",
@@ -77,7 +76,9 @@
     "@pika/plugin-build-node": "^0.3.3",
     "@pika/plugin-simple-bin": "^0.3.3",
     "@pika/plugin-ts-standard-pkg": "^0.3.3",
+    "ncp": "^2.0.0",
     "prettier": "^1.15.3",
+    "rimraf": "^2.6.3",
     "typescript": "^3.2.2"
   }
 }
