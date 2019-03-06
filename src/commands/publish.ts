@@ -15,9 +15,9 @@ import ui from '../util/publish/ui.js';
 import {Build} from './build.js';
 
 type Flags = {
-  branch: boolean,
   cleanup: boolean,
   yolo: boolean,
+  anyBranch: boolean,
   publish: boolean,
   tag: boolean,
   yarn: boolean,
@@ -89,7 +89,7 @@ export class Publish {
       runPublish && (await prerequisiteTasks(manifest, options));
       // title: 'Check current branch',
       const {stdout: branch} = await execa('git', ['symbolic-ref', '--short', 'HEAD']);
-      if (branch !== 'master') {
+      if (branch !== 'master' && !options.anyBranch) {
         throw new Error('Not on `master` branch. Use --any-branch to publish anyway.');
       }
       // title: 'Check local working tree',
