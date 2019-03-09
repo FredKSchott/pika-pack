@@ -80,7 +80,7 @@ This is all possible because **@pika/pack** builds your entire package: code, as
 
 ## Available Plugins
 
-[Check out the full list of official & community-written @pika/pack plugins!](https://github.com/pikapkg/builders)
+**[Check out the full list](https://github.com/pikapkg/builders) of official & community-written @pika/pack plugins!**
 
 
 ## Lerna Support
