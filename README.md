@@ -78,9 +78,9 @@ Builders are simple, single-purpose build plugins defined in your `package.json`
 This is all possible because **@pika/pack** builds your entire package: code, assets, and even package.json manifest. By building the entire package, you end up with a fully-built `pkg/` directory, ready to publish. Entry points like "main", "module", "umd:main", "types", "unpkg", "files", and even advanced options like "sideEffects" are all handled by your build pipeline.
 
 
-## Available Plugins
+## Build Plugins
 
-**[Check out the full list](https://github.com/pikapkg/builders) of official & community-written @pika/pack plugins!**
+**[Check out the full list](https://github.com/pikapkg/builders)** of official & community-written @pika/pack plugins!
 
 
 ## Lerna Support
