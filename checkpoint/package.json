@@ -1,7 +1,7 @@
 {
   "name": "@pika/pack",
   "description": "package building, reimagined.",
-  "version": "0.3.2",
+  "version": "0.3.4",
   "license": "MIT",
   "bin": {
     "pika-pack": "dist-node/index.bin.js",

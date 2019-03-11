@@ -2908,26 +2908,26 @@ class Build {
 
           if (yield exists(path.join(cwd, 'CHANGELOG'))) {
             copyFile(path.join(cwd, 'CHANGELOG'), path.join(out, 'CHANGELOG'));
-            reporter.log(`      📝  ` + chalk.green(outPretty + 'CHANGELOG'));
+            reporter.log(chalk.dim(`      » copying CHANGELOG...`));
           } else if (yield exists(path.join(cwd, 'CHANGELOG.md'))) {
             copyFile(path.join(cwd, 'CHANGELOG.md'), path.join(out, 'CHANGELOG.md'));
-            reporter.log(`      📝  ` + chalk.green(outPretty + 'CHANGELOG.md'));
+            reporter.log(chalk.dim(`      » copying CHANGELOG.md...`));
           }
 
           if (yield exists(path.join(cwd, 'LICENSE'))) {
             copyFile(path.join(cwd, 'LICENSE'), path.join(out, 'LICENSE'));
-            reporter.log(`      📝  ` + chalk.green(outPretty + 'LICENSE'));
+            reporter.log(chalk.dim(`      » copying LICENSE...`));
           } else if (yield exists(path.join(cwd, 'LICENSE.md'))) {
             copyFile(path.join(cwd, 'LICENSE.md'), path.join(out, 'LICENSE.md'));
-            reporter.log(`      📝  ` + chalk.green(outPretty + 'LICENSE.md'));
+            reporter.log(chalk.dim(`      » copying LICENSE.md...`));
           }
 
           if (yield exists(path.join(cwd, 'README'))) {
             copyFile(path.join(cwd, 'README'), path.join(out, 'README'));
-            reporter.log(`      📝  ` + chalk.green(outPretty + 'README'));
+            reporter.log(chalk.dim(`      » copying README...`));
           } else if (yield exists(path.join(cwd, 'README.md'))) {
             copyFile(path.join(cwd, 'README.md'), path.join(out, 'README.md'));
-            reporter.log(`      📝  ` + chalk.green(outPretty + 'README.md'));
+            reporter.log(chalk.dim(`      » copying README.md...`));
           }
 
           const publishManifest = yield generatePublishManifest(config._manifest, config, distRunners);
@@ -3071,12 +3071,12 @@ function _getTagVersionPrefix() {
   return _getTagVersionPrefix.apply(this, arguments);
 }
 
-function prerequisites(_x, _x2, _x3) {
+function prerequisites(_x, _x2) {
   return _prerequisites.apply(this, arguments);
 }
 
 function _prerequisites() {
-  _prerequisites = _asyncToGenerator(function* (input, pkg, options) {
+  _prerequisites = _asyncToGenerator(function* (pkg, options) {
     const isExternalRegistry = typeof pkg.publishConfig === 'object' && typeof pkg.publishConfig.registry === 'string';
     let newVersion = null; // title: 'Ping npm registry',
 
@@ -3134,11 +3134,11 @@ function _prerequisites() {
     } // title: 'Validate version',
 
 
-    if (!isValidVersionInput(input)) {
+    if (!isValidVersionInput(options.version)) {
       throw new Error(`Version should be either ${SEMVER_INCREMENTS.join(', ')}, or a valid semver version.`);
     }
 
-    newVersion = getNewVersion(pkg.version, input);
+    newVersion = getNewVersion(pkg.version, options.version);
 
     if (!isVersionGreater(pkg.version, newVersion)) {
       throw new Error(`New version \`${newVersion}\` should be higher than current version \`${pkg.version}\``);
@@ -3171,7 +3171,7 @@ function _prerequisites() {
   return _prerequisites.apply(this, arguments);
 }
 
-const pkgPublish = (pkgManager, options, input) => {
+const pkgPublish = (pkgManager, options) => {
   const args = ["publish"];
 
   if (options.contents) {
@@ -3181,7 +3181,7 @@ const pkgPublish = (pkgManager, options, input) => {
   }
 
   if (options.yarn) {
-    args.push("--new-version", input);
+    args.push("--new-version", options.version);
   }
 
   if (options.tag) {
@@ -3199,32 +3199,31 @@ const pkgPublish = (pkgManager, options, input) => {
   return execa(pkgManager, args);
 };
 
-function handleError(_x, _x2, _x3, _x4, _x5) {
+function handleError(_x, _x2, _x3, _x4) {
   return _handleError.apply(this, arguments);
 }
 
 function _handleError() {
-  _handleError = _asyncToGenerator(function* (error, pkgManager, task, options, input) {
+  _handleError = _asyncToGenerator(function* (error, pkgManager, task, options) {
     if (error.stderr.includes("one-time pass") || error.message.includes("user TTY") || error.message.includes("One-Time-Password")) {
       const answers = yield inquirer__default.prompt([{
         type: "input",
         name: "otp",
         message: `[${task}] 2FA/OTP code required:`
       }]);
-      return pkgPublish(pkgManager, {
-        options,
+      return pkgPublish(pkgManager, Object.assign({}, options, {
         otp: answers.otp
-      }, input).catch(err => {
-        return handleError(err, pkgManager, task, options, input);
+      })).catch(err => {
+        return handleError(err, pkgManager, task, options);
       });
     }
   });
   return _handleError.apply(this, arguments);
 }
 
-function publish(pkgManager, task, options, input) {
-  return pkgPublish(pkgManager, options, input).catch(err => {
-    return handleError(err, pkgManager, task, options, input);
+function publish(pkgManager, task, options) {
+  return pkgPublish(pkgManager, options).catch(err => {
+    return handleError(err, pkgManager, task, options);
   });
 }
 
@@ -3453,23 +3452,16 @@ class Publish {
     }
   }
 
-  init(input = 'patch') {
+  init(options) {
     var _this = this;
 
     return _asyncToGenerator(function* () {
       const out = _this.out,
-            flags = _this.flags,
             config = _this.config,
             reporter = _this.reporter;
       const manifest = config.manifest;
       const repoUrl = manifest.repository && githubUrlFromGit(manifest.repository.url, {
         extraBaseUrls: ['gitlab.com']
-      });
-      const options = Object.assign({
-        cleanup: true,
-        publish: true
-      }, flags, {
-        yarn: hasYarn()
       });
 
       if (!hasYarn() && options.yarn) {
@@ -3488,12 +3480,12 @@ class Publish {
         var _ref = _asyncToGenerator(function* (curr, total) {
           _this.reporter.step(curr, total, 'Prerequisite checks', '✨');
 
-          runPublish && (yield prerequisites(input, manifest, options)); // title: 'Check current branch',
+          runPublish && (yield prerequisites(manifest, options)); // title: 'Check current branch',
 
           const _ref2 = yield execa('git', ['symbolic-ref', '--short', 'HEAD']),
                 branch = _ref2.stdout;
 
-          if (branch !== 'master') {
+          if (branch !== 'master' && !options.anyBranch) {
             throw new Error('Not on `master` branch. Use --any-branch to publish anyway.');
           } // title: 'Check local working tree',
 
@@ -3554,7 +3546,7 @@ class Publish {
         var _ref5 = _asyncToGenerator(function* (curr, total) {
           _this.reporter.step(curr, total, 'Bump Version', '✨');
 
-          yield execa('npm', ['version', input, '--force']);
+          yield execa('npm', ['version', options.version, '--force']);
           yield config.loadPackageManifest();
         });
 
@@ -3620,7 +3612,7 @@ class Publish {
           var _ref8 = _asyncToGenerator(function* (curr, total) {
             _this.reporter.step(curr, total, 'Publishing Package', '✨');
 
-            yield publish(pkgManager, 'Publishing Package', options, input);
+            yield publish(pkgManager, 'Publishing Package', options);
           });
 
           return function (_x11, _x12) {
@@ -3660,9 +3652,10 @@ function run$1(_x15, _x16, _x17, _x18) {
 function _run$1() {
   _run$1 = _asyncToGenerator(function* (config, reporter, flags, args) {
     yield config.loadPackageManifest();
-    const options = args.length > 0 ? Object.assign({}, flags, {
+    const options = args.length > 0 ? Object.assign({
+      cleanup: true
+    }, flags, {
       yarn: hasYarn(),
-      confirm: true,
       version: args[0]
     }) : yield ui(Object.assign({}, flags, {
       yarn: hasYarn()
@@ -3673,7 +3666,7 @@ function _run$1() {
     }
 
     const publish = new Publish(flags, config, reporter);
-    yield publish.init(options.version);
+    yield publish.init(options);
     const newManifest = yield config.loadPackageManifest();
     console.log(chalk.bold(`\n🎉  ${newManifest.name} v${newManifest.version} published!`));
     console.log(`You can see it at: ${chalk.underline(`https://unpkg.com/${newManifest.name}@${newManifest.version}/`)}`);

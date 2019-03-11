@@ -133,27 +133,27 @@ export class Build {
             }
             if (await fs.exists(path.join(cwd, 'CHANGELOG'))) {
                 fs.copyFile(path.join(cwd, 'CHANGELOG'), path.join(out, 'CHANGELOG'));
-                reporter.log(`      📝  ` + chalk.green(outPretty + 'CHANGELOG'));
+                reporter.log(chalk.dim(`      » copying CHANGELOG...`));
             }
             else if (await fs.exists(path.join(cwd, 'CHANGELOG.md'))) {
                 fs.copyFile(path.join(cwd, 'CHANGELOG.md'), path.join(out, 'CHANGELOG.md'));
-                reporter.log(`      📝  ` + chalk.green(outPretty + 'CHANGELOG.md'));
+                reporter.log(chalk.dim(`      » copying CHANGELOG.md...`));
             }
             if (await fs.exists(path.join(cwd, 'LICENSE'))) {
                 fs.copyFile(path.join(cwd, 'LICENSE'), path.join(out, 'LICENSE'));
-                reporter.log(`      📝  ` + chalk.green(outPretty + 'LICENSE'));
+                reporter.log(chalk.dim(`      » copying LICENSE...`));
             }
             else if (await fs.exists(path.join(cwd, 'LICENSE.md'))) {
                 fs.copyFile(path.join(cwd, 'LICENSE.md'), path.join(out, 'LICENSE.md'));
-                reporter.log(`      📝  ` + chalk.green(outPretty + 'LICENSE.md'));
+                reporter.log(chalk.dim(`      » copying LICENSE.md...`));
             }
             if (await fs.exists(path.join(cwd, 'README'))) {
                 fs.copyFile(path.join(cwd, 'README'), path.join(out, 'README'));
-                reporter.log(`      📝  ` + chalk.green(outPretty + 'README'));
+                reporter.log(chalk.dim(`      » copying README...`));
             }
             else if (await fs.exists(path.join(cwd, 'README.md'))) {
                 fs.copyFile(path.join(cwd, 'README.md'), path.join(out, 'README.md'));
-                reporter.log(`      📝  ` + chalk.green(outPretty + 'README.md'));
+                reporter.log(chalk.dim(`      » copying README.md...`));
             }
             const publishManifest = await generatePublishManifest(config._manifest, config, distRunners);
             if (out === cwd) {

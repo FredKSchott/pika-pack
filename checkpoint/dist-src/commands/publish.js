@@ -37,14 +37,13 @@ export class Publish {
             throw new Error('On publish, you cannot write to cwd because a package.json is created');
         }
     }
-    async init(input = 'patch') {
-        const { out, flags, config, reporter } = this;
+    async init(options) {
+        const { out, config, reporter } = this;
         const { manifest } = config;
         const repoUrl = manifest.repository &&
             githubUrlFromGit(manifest.repository.url, {
                 extraBaseUrls: ['gitlab.com'],
             });
-        const options = Object.assign({ cleanup: true, publish: true }, flags, { yarn: hasYarn() });
         if (!hasYarn() && options.yarn) {
             throw new Error('Could not use Yarn without yarn.lock file');
         }
@@ -56,10 +55,10 @@ export class Publish {
         const steps = [];
         steps.push(async (curr, total) => {
             this.reporter.step(curr, total, 'Prerequisite checks', '✨');
-            runPublish && (await prerequisiteTasks(input, manifest, options));
+            runPublish && (await prerequisiteTasks(manifest, options));
             // title: 'Check current branch',
             const { stdout: branch } = await execa('git', ['symbolic-ref', '--short', 'HEAD']);
-            if (branch !== 'master') {
+            if (branch !== 'master' && !options.anyBranch) {
                 throw new Error('Not on `master` branch. Use --any-branch to publish anyway.');
             }
             // title: 'Check local working tree',
@@ -95,7 +94,7 @@ export class Publish {
         }
         steps.push(async (curr, total) => {
             this.reporter.step(curr, total, 'Bump Version', '✨');
-            await execa('npm', ['version', input, '--force']);
+            await execa('npm', ['version', options.version, '--force']);
             await config.loadPackageManifest();
         });
         steps.push(async (curr, total) => {
@@ -127,7 +126,7 @@ export class Publish {
         if (runPublish && !manifest.private) {
             steps.push(async (curr, total) => {
                 this.reporter.step(curr, total, 'Publishing Package', '✨');
-                await publish(pkgManager, 'Publishing Package', options, input);
+                await publish(pkgManager, 'Publishing Package', options);
             });
         }
         steps.push(async (curr, total) => {
@@ -145,12 +144,12 @@ export class Publish {
 export async function run(config, reporter, flags, args) {
     await config.loadPackageManifest();
     const options = args.length > 0
-        ? Object.assign({}, flags, { yarn: hasYarn(), confirm: true, version: args[0] }) : await ui(Object.assign({}, flags, { yarn: hasYarn() }), config.manifest);
+        ? Object.assign({ cleanup: true }, flags, { yarn: hasYarn(), version: args[0] }) : await ui(Object.assign({}, flags, { yarn: hasYarn() }), config.manifest);
     if (!options.confirm) {
         return;
     }
     const publish = new Publish(flags, config, reporter);
-    await publish.init(options.version);
+    await publish.init(options);
     const newManifest = await config.loadPackageManifest();
     console.log(chalk.bold(`\n🎉  ${newManifest.name} v${newManifest.version} published!`));
     console.log(`You can see it at: ${chalk.underline(`https://unpkg.com/${newManifest.name}@${newManifest.version}/`)}`);

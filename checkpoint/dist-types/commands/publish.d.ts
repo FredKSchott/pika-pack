@@ -2,9 +2,9 @@ import { Command } from 'commander';
 import Config from '../config.js';
 import { Reporter } from '../reporters/index.js';
 declare type Flags = {
-    branch: boolean;
     cleanup: boolean;
     yolo: boolean;
+    anyBranch: boolean;
     publish: boolean;
     tag: boolean;
     yarn: boolean;
@@ -21,7 +21,7 @@ export declare class Publish {
     config: Config;
     reporter: Reporter;
     totalNum: number;
-    init(input?: string): Promise<void>;
+    init(options: any): Promise<void>;
 }
 export declare function run(config: any, reporter: any, flags: any, args: any): Promise<void>;
 export {};
