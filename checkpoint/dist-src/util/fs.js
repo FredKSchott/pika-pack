@@ -1,6 +1,6 @@
 import { promisify } from 'util';
-import _rimraf from "rimraf";
-import _mkdirp from "mkdirp";
+import _rimraf from 'rimraf';
+import _mkdirp from 'mkdirp';
 import _glob from 'glob';
 export const unlink = promisify(_rimraf);
 export const glob = promisify(_glob);
@@ -609,7 +609,7 @@ export async function walk(dir, relativeDir, ignoreBasenames = new Set()) {
 const cr = '\r'.charCodeAt(0);
 const lf = '\n'.charCodeAt(0);
 async function getEolFromFile(path) {
-    if (!await exists(path)) {
+    if (!(await exists(path))) {
         return undefined;
     }
     const buffer = await readFileBuffer(path);

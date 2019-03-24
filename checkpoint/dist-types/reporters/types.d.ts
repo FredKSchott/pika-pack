@@ -1,6 +1,6 @@
 /// <reference types="node" />
-import { Writable, Readable } from "stream";
-import { WriteStream, ReadStream } from "fs";
+import { Writable, Readable } from 'stream';
+import { WriteStream, ReadStream } from 'fs';
 export declare type Stdout = Writable | WriteStream;
 export declare type Stdin = Readable | ReadStream;
 export declare type Package = {

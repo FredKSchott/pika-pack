@@ -1381,8 +1381,10 @@ class ConsoleReporter extends BaseReporter {
     return {
       spinners,
       end: () => {
-        for (var _i = 0; _i < spinners.length; _i++) {
-          const spinner = spinners[_i];
+        var _arr = spinners;
+
+        for (var _i = 0; _i < _arr.length; _i++) {
+          const spinner = _arr[_i];
           spinner.end();
         }
 
@@ -2949,9 +2951,10 @@ class Build {
         };
       }());
       let currentStep = 0;
+      var _arr = steps;
 
-      for (var _i = 0; _i < steps.length; _i++) {
-        const step = steps[_i];
+      for (var _i = 0; _i < _arr.length; _i++) {
+        const step = _arr[_i];
         yield step(++currentStep, steps.length);
       }
     })();
@@ -3078,6 +3081,7 @@ function prerequisites(_x, _x2) {
 function _prerequisites() {
   _prerequisites = _asyncToGenerator(function* (pkg, options) {
     const isExternalRegistry = typeof pkg.publishConfig === 'object' && typeof pkg.publishConfig.registry === 'string';
+    const isWindows = os.type() === 'Windows_NT';
     let newVersion = null; // title: 'Ping npm registry',
 
     if (!(pkg.private || isExternalRegistry)) {
@@ -3088,10 +3092,10 @@ function _prerequisites() {
           throw new Error('Connection to npm registry failed');
         }
       })(), 15000, 'Connection to npm registry timed out');
-    } // title: 'Verify user is authenticated',
+    } // Temporarily skip on Windows, see https://github.com/pikapkg/pack/issues/37
 
 
-    if (!(process.env.NODE_ENV === 'test' || pkg.private || isExternalRegistry)) {
+    if (!(process.env.NODE_ENV === 'test' || pkg.private || isExternalRegistry) && !isWindows) {
       let username;
 
       try {
@@ -3636,9 +3640,10 @@ class Publish {
       }());
       console.log('');
       let currentStep = 0;
+      var _arr = steps;
 
-      for (var _i = 0; _i < steps.length; _i++) {
-        const step = steps[_i];
+      for (var _i = 0; _i < _arr.length; _i++) {
+        const step = _arr[_i];
         yield step(++currentStep, steps.length);
       }
     })();
@@ -3823,8 +3828,10 @@ function validate (info, isRoot, reporter, warn) {
   // validate strings
 
 
-  for (var _i = 0; _i < strings.length; _i++) {
-    const key = strings[_i];
+  var _arr = strings;
+
+  for (var _i = 0; _i < _arr.length; _i++) {
+    const key = _arr[_i];
     const val = info[key];
 
     if (val && typeof val !== 'string') {
@@ -3837,9 +3844,10 @@ function validate (info, isRoot, reporter, warn) {
 function cleanDependencies(info, isRoot, reporter, warn) {
   // get dependency objects
   const depTypes = [];
+  var _arr2 = dependencyKeys;
 
-  for (var _i2 = 0; _i2 < dependencyKeys.length; _i2++) {
-    const type = dependencyKeys[_i2];
+  for (var _i2 = 0; _i2 < _arr2.length; _i2++) {
+    const type = _arr2[_i2];
     const deps = info[type];
 
     if (!deps || typeof deps !== 'object') {
@@ -3851,16 +3859,17 @@ function cleanDependencies(info, isRoot, reporter, warn) {
 
 
   const nonTrivialDeps = new Map();
+  var _arr3 = depTypes;
 
-  for (var _i3 = 0; _i3 < depTypes.length; _i3++) {
-    const _depTypes$_i = _slicedToArray(depTypes[_i3], 2),
-          type = _depTypes$_i[0],
-          deps = _depTypes$_i[1];
+  for (var _i3 = 0; _i3 < _arr3.length; _i3++) {
+    const _arr3$_i = _slicedToArray(_arr3[_i3], 2),
+          type = _arr3$_i[0],
+          deps = _arr3$_i[1];
 
-    var _arr = Object.keys(deps);
+    var _arr5 = Object.keys(deps);
 
-    for (var _i5 = 0; _i5 < _arr.length; _i5++) {
-      const name = _arr[_i5];
+    for (var _i5 = 0; _i5 < _arr5.length; _i5++) {
+      const name = _arr5[_i5];
       const version = deps[name];
 
       if (!nonTrivialDeps.has(name) && version && version !== '*') {
@@ -3874,16 +3883,17 @@ function cleanDependencies(info, isRoot, reporter, warn) {
 
 
   const setDeps = new Set();
+  var _arr4 = depTypes;
 
-  for (var _i4 = 0; _i4 < depTypes.length; _i4++) {
-    const _depTypes$_i2 = _slicedToArray(depTypes[_i4], 2),
-          type = _depTypes$_i2[0],
-          deps = _depTypes$_i2[1];
+  for (var _i4 = 0; _i4 < _arr4.length; _i4++) {
+    const _arr4$_i = _slicedToArray(_arr4[_i4], 2),
+          type = _arr4$_i[0],
+          deps = _arr4$_i[1];
 
-    var _arr2 = Object.keys(deps);
+    var _arr6 = Object.keys(deps);
 
-    for (var _i6 = 0; _i6 < _arr2.length; _i6++) {
-      const name = _arr2[_i6];
+    for (var _i6 = 0; _i6 < _arr6.length; _i6++) {
+      const name = _arr6[_i6];
       let version = deps[name];
       const dep = nonTrivialDeps.get(name);
 
@@ -4985,10 +4995,10 @@ function makeEnv() {
 // }
 
 function _makeEnv() {
-  _makeEnv = _asyncToGenerator(function* () // stage: string,
-  // cwd: string,
-  // config: Config,
-  {
+  _makeEnv = _asyncToGenerator(function* () {
+    // stage: string,
+    // cwd: string,
+    // config: Config,
     const env = Object.assign({
       NODE: process.execPath,
       INIT_CWD: process.cwd()
@@ -5452,6 +5462,6 @@ function _start() {
 
 const autoRun = false;
 
-exports.main = main;
 exports.autoRun = autoRun;
 exports.default = start;
+exports.main = main;

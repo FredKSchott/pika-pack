@@ -31,11 +31,10 @@ import { fixCmdWinSlashes } from './fix-cmd-win-slashes.js';
 //   return wrappersFolder;
 // }
 // const INVALID_CHAR_REGEX = /\W/g;
-export async function makeEnv(
-// stage: string,
-// cwd: string,
-// config: Config,
-) {
+export async function makeEnv() {
+    // stage: string,
+    // cwd: string,
+    // config: Config,
     const env = Object.assign({ NODE: process.execPath, INIT_CWD: process.cwd() }, process.env);
     return env;
 }
