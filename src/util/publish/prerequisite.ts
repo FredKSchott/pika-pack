@@ -6,7 +6,7 @@ import {type} from 'os';
 
 export default async function prerequisites(pkg, options) {
   const isExternalRegistry = typeof pkg.publishConfig === 'object' && typeof pkg.publishConfig.registry === 'string';
-  const isWindows=type()==='Windows_NT'
+  const isWindows = type() === 'Windows_NT';
   let newVersion = null;
 
   // title: 'Ping npm registry',
@@ -24,8 +24,8 @@ export default async function prerequisites(pkg, options) {
     );
   }
 
-  // title: 'Verify user is authenticated',
-  if (!(process.env.NODE_ENV === 'test' || pkg.private || isExternalRegistry) && !isWindows ) {
+  // Temporarily skip on Windows, see https://github.com/pikapkg/pack/issues/37
+  if (!(process.env.NODE_ENV === 'test' || pkg.private || isExternalRegistry) && !isWindows) {
     let username;
     try {
       username = await execa.stdout('npm', ['whoami']);
