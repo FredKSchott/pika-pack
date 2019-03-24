@@ -1,5 +1,3 @@
-
-
 import {ReporterSpinnerSet, Trees, ReporterSpinner} from './types.js';
 import BaseReporter from './base-reporter.js';
 
@@ -160,5 +158,4 @@ export default class JSONReporter extends BaseReporter {
       }
     };
   }
-
 }

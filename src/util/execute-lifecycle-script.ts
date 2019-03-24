@@ -1,16 +1,16 @@
-import { StdioOptions } from 'child_process';
+import {StdioOptions} from 'child_process';
 import Config from '../config.js';
-import { MessageError } from '@pika/types';
-import {  ProcessTermError } from '../errors.js';
+import {MessageError} from '@pika/types';
+import {ProcessTermError} from '../errors.js';
 import * as child from './child.js';
-import { fixCmdWinSlashes } from './fix-cmd-win-slashes.js';
+import {fixCmdWinSlashes} from './fix-cmd-win-slashes.js';
 
 // import path from 'path';
 
 export type LifecycleReturn = Promise<{
-  cwd: string,
-  command: string,
-  stdout: string,
+  cwd: string;
+  command: string;
+  stdout: string;
 }>;
 
 // export const IGNORE_MANIFEST_KEYS: Set<string> = new Set(['readme', 'notice', 'licenseText']);
@@ -52,11 +52,10 @@ export type LifecycleReturn = Promise<{
 
 // const INVALID_CHAR_REGEX = /\W/g;
 
-export async function makeEnv(
-  // stage: string,
-  // cwd: string,
-  // config: Config,
-): Promise<{[key: string]: string}> {
+export async function makeEnv(): Promise<{[key: string]: string}> {
+// stage: string,
+// cwd: string,
+// config: Config,
   const env = {
     NODE: process.execPath,
     INIT_CWD: process.cwd(),
@@ -241,12 +240,12 @@ export async function executeLifecycleScript({
   onProgress,
   customShell,
 }: {
-  config: Config,
-  cwd: string,
-  cmd: string,
-  isInteractive?: boolean,
-  onProgress?: (chunk: Buffer | string) => void,
-  customShell?: string,
+  config: Config;
+  cwd: string;
+  cmd: string;
+  isInteractive?: boolean;
+  onProgress?: (chunk: Buffer | string) => void;
+  customShell?: string;
 }): LifecycleReturn {
   const env = await makeEnv();
 
@@ -336,12 +335,12 @@ export async function execCommand({
   isInteractive,
   customShell,
 }: {
-  stage: string,
-  config: Config,
-  cmd: string,
-  cwd: string,
-  isInteractive: boolean,
-  customShell?: string,
+  stage: string;
+  config: Config;
+  cmd: string;
+  cwd: string;
+  isInteractive: boolean;
+  customShell?: string;
 }): Promise<void> {
   const {reporter} = config;
   try {

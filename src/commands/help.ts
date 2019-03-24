@@ -4,7 +4,7 @@ import {commands} from './index.js';
 import {Reporter} from '../reporters/index.js';
 import Config from '../config.js';
 import {sortOptionsByFlags} from '../util/misc.js';
-import { Command } from 'commander';
+import {Command} from 'commander';
 
 export function hasWrapper(flags: Object, args: Array<string>): boolean {
   return false;

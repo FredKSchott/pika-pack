@@ -1,5 +1,3 @@
-
-
 export default function nullify<T>(obj?: T): T {
   if (Array.isArray(obj)) {
     for (const item of obj) {

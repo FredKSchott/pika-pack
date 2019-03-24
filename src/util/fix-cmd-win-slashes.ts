@@ -1,5 +1,5 @@
 export function fixCmdWinSlashes(cmd: string): string {
-  function findQuotes(quoteSymbol: string): {from: number, to: number}[] {
+  function findQuotes(quoteSymbol: string): {from: number; to: number}[] {
     const quotes = [];
     const addQuote = (_, index) => {
       quotes.push({from: index, to: index + _.length});

@@ -9,10 +9,10 @@ import * as fs from '../util/fs.js';
 import {generatePrettyManifest, generatePublishManifest} from '../util/normalize-manifest/for-publish.js';
 
 type Flags = {
-  publish?: boolean,
-  out?: string,
-  silent?: boolean,
-  force?: boolean,
+  publish?: boolean;
+  out?: string;
+  silent?: boolean;
+  force?: boolean;
 };
 
 export function setFlags(commander: Command) {
@@ -121,7 +121,11 @@ export class Build {
 
     if (distRunners.length === 0) {
       steps.push(async (curr: number, total: number) => {
-        this.reporter.step(curr, total, `Pipeline is empty! See ${chalk.underline('https://github.com/pikapkg/pack')} for help getting started`);
+        this.reporter.step(
+          curr,
+          total,
+          `Pipeline is empty! See ${chalk.underline('https://github.com/pikapkg/pack')} for help getting started`,
+        );
       });
     }
 
@@ -145,13 +149,13 @@ export class Build {
               ...builderConfig,
               options,
             }));
-          } catch (err) {
-            if (flags.force) {
-              console.log('      ❗️  ', chalk.red(err.message), chalk.dim('--force, continuing...'));
-            } else {
-              throw err;
-            }
+        } catch (err) {
+          if (flags.force) {
+            console.log('      ❗️  ', chalk.red(err.message), chalk.dim('--force, continuing...'));
+          } else {
+            throw err;
           }
+        }
         // ).catch(err => {
         // log(chalk.red(err.message));
         // reporter.log(

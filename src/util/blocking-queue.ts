@@ -1,5 +1,3 @@
-
-
 import map from './map.js';
 
 export default class BlockingQueue {
@@ -27,14 +25,14 @@ export default class BlockingQueue {
 
   queue: {
     [key: string]: Array<{
-      factory: () => Promise<any>,
-      resolve: (val: any) => void,
-      reject: Function,
-    }>,
+      factory: () => Promise<any>;
+      resolve: (val: any) => void;
+      reject: Function;
+    }>;
   };
 
   running: {
-    [key: string]: boolean,
+    [key: string]: boolean;
   };
 
   stillActive() {

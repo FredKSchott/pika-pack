@@ -1,5 +1,3 @@
-
-
 function formatFunction(...strs: Array<string>): string {
   return strs.join(' ');
 }
@@ -29,21 +27,21 @@ type FormatFunction = (...strs: Array<string>) => string;
 export type FormatKeys = keyof typeof defaultFormatter;
 
 export type Formatter = {
-  bold: FormatFunction,
-  dim: FormatFunction,
-  italic: FormatFunction,
-  underline: FormatFunction,
-  inverse: FormatFunction,
-  strikethrough: FormatFunction,
-  black: FormatFunction,
-  red: FormatFunction,
-  green: FormatFunction,
-  yellow: FormatFunction,
-  blue: FormatFunction,
-  magenta: FormatFunction,
-  cyan: FormatFunction,
-  white: FormatFunction,
-  gray: FormatFunction,
-  grey: FormatFunction,
-  stripColor: FormatFunction,
+  bold: FormatFunction;
+  dim: FormatFunction;
+  italic: FormatFunction;
+  underline: FormatFunction;
+  inverse: FormatFunction;
+  strikethrough: FormatFunction;
+  black: FormatFunction;
+  red: FormatFunction;
+  green: FormatFunction;
+  yellow: FormatFunction;
+  blue: FormatFunction;
+  magenta: FormatFunction;
+  cyan: FormatFunction;
+  white: FormatFunction;
+  gray: FormatFunction;
+  grey: FormatFunction;
+  stripColor: FormatFunction;
 };

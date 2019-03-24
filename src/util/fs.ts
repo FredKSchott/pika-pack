@@ -1,6 +1,6 @@
 import {promisify} from 'util';
-import _rimraf from "rimraf";
-import _mkdirp from "mkdirp";
+import _rimraf from 'rimraf';
+import _mkdirp from 'mkdirp';
 import _glob from 'glob';
 
 export const unlink: (path: string) => Promise<void> = promisify(_rimraf);
@@ -51,7 +51,7 @@ export const existsSync = fs.existsSync;
 const readFileBuffer = util.promisify(fs.readFile);
 export const readFile = (path: string) => {
   return util.promisify(fs.readFile)(path, {encoding: 'utf-8'});
-}
+};
 // export {unlink};
 
 // // fs.copyFile uses the native file copying instructions on the system, performing much better
@@ -651,12 +651,11 @@ export async function readJson(loc: string): Promise<Object> {
   return (await readJsonAndFile(loc)).object;
 }
 
-
 export async function readJsonAndFile(
   loc: string,
 ): Promise<{
-  object: Object,
-  content: string,
+  object: Object;
+  content: string;
 }> {
   const file = await readFile(loc);
   try {
@@ -721,10 +720,10 @@ export async function readJsonAndFile(
 // }
 
 export type WalkFiles = Array<{
-  relative: string,
-  absolute: string,
-  basename: string,
-  mtime: number,
+  relative: string;
+  absolute: string;
+  basename: string;
+  mtime: number;
 }>;
 
 export async function walk(
@@ -774,7 +773,7 @@ const cr = '\r'.charCodeAt(0);
 const lf = '\n'.charCodeAt(0);
 
 async function getEolFromFile(path: string): Promise<string | void> {
-  if (!await exists(path)) {
+  if (!(await exists(path))) {
     return undefined;
   }
 

@@ -23,16 +23,16 @@ import {EventEmitter} from 'events';
 type Language = keyof typeof languages;
 
 export type ReporterOptions = {
-  verbose?: boolean,
-  language?: Language,
-  stdout?: Stdout,
-  stderr?: Stdout,
-  stdin?: Stdin,
-  emoji?: boolean,
-  noProgress?: boolean,
-  silent?: boolean,
-  isSilent?: boolean,
-  nonInteractive?: boolean,
+  verbose?: boolean;
+  language?: Language;
+  stdout?: Stdout;
+  stderr?: Stdout;
+  stdin?: Stdin;
+  emoji?: boolean;
+  noProgress?: boolean;
+  silent?: boolean;
+  isSilent?: boolean;
+  nonInteractive?: boolean;
 };
 
 export function stringifyLangArgs(args: Array<any>): Array<string> {

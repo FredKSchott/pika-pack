@@ -15,15 +15,15 @@ import ui from '../util/publish/ui.js';
 import {Build} from './build.js';
 
 type Flags = {
-  cleanup: boolean,
-  yolo: boolean,
-  anyBranch: boolean,
-  publish: boolean,
-  tag: boolean,
-  yarn: boolean,
-  contents: boolean,
-  otp?: string,
-  out?: string,
+  cleanup: boolean;
+  yolo: boolean;
+  anyBranch: boolean;
+  publish: boolean;
+  tag: boolean;
+  yarn: boolean;
+  contents: boolean;
+  otp?: string;
+  out?: string;
 };
 
 export function setFlags(commander: Command) {
@@ -160,7 +160,6 @@ export class Publish {
       });
     }
 
-
     if (runPublish && !manifest.private) {
       steps.push(async (curr: number, total: number) => {
         this.reporter.step(curr, total, 'Publishing Package', '✨');
@@ -187,12 +186,12 @@ export async function run(config, reporter, flags, args) {
   const options =
     args.length > 0
       ? {
-        cleanup: true,
-        // publish: true,
-        ...flags,
-        yarn: hasYarn(),
-        version: args[0],
-      }
+          cleanup: true,
+          // publish: true,
+          ...flags,
+          yarn: hasYarn(),
+          version: args[0],
+        }
       : await ui({...flags, yarn: hasYarn()}, config.manifest);
 
   if (!options.confirm) {

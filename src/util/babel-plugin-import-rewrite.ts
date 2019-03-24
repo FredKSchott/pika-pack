@@ -18,8 +18,7 @@ function log(symbol: string, fileName: string, errors: string | Array<string>) {
 }
 
 export default function transform({template, types: t}): any {
-
-  function rewriteImport(specifier,  {opts, file}) {
+  function rewriteImport(specifier, {opts, file}) {
     const {deps, addExtensions} = opts;
 
     try {

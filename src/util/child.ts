@@ -1,11 +1,10 @@
-
 /* global child_process$spawnOpts */
 
 import * as constants from '../constants.js';
 import BlockingQueue from './blocking-queue.js';
 import {ProcessSpawnError, ProcessTermError} from '../errors.js';
 import {promisify} from './promise.js';
-import { exec as _exec, spawn as _spawn, ChildProcess, SpawnOptions } from 'child_process';
+import {exec as _exec, spawn as _spawn, ChildProcess, SpawnOptions} from 'child_process';
 
 export const queue = new BlockingQueue('child', constants.CHILD_CONCURRENCY);
 
@@ -32,7 +31,7 @@ type ProcessFn = (
 export function spawn(
   program: string,
   args: Array<string>,
-  opts: SpawnOptions & {detached?: boolean, process?: ProcessFn} = {},
+  opts: SpawnOptions & {detached?: boolean; process?: ProcessFn} = {},
   onData?: (chunk: Buffer | string) => void,
 ): Promise<string> {
   const key = opts.cwd || String(++uid);

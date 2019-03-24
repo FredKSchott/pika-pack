@@ -1,6 +1,14 @@
 import BaseReporter from './base-reporter.js';
-import { LanguageKeys } from './lang/en.js';
-import { Package, PromptOptions, QuestionOptions, ReporterSelectOption, ReporterSpinner, ReporterSpinnerSet, Trees } from './types.js';
+import {LanguageKeys} from './lang/en.js';
+import {
+  Package,
+  PromptOptions,
+  QuestionOptions,
+  ReporterSelectOption,
+  ReporterSpinner,
+  ReporterSpinnerSet,
+  Trees,
+} from './types.js';
 
 export default class NoopReporter extends BaseReporter {
   lang(key: LanguageKeys, ...args: Array<any>): string {
