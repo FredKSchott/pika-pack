@@ -2,9 +2,11 @@ import execa from 'execa';
 import pTimeout from 'p-timeout';
 import * as version from './version.js';
 import {getTagVersionPrefix} from './util.js';
+import {type} from 'os';
 
 export default async function prerequisites(pkg, options) {
   const isExternalRegistry = typeof pkg.publishConfig === 'object' && typeof pkg.publishConfig.registry === 'string';
+  const isWindows=type()==='Windows_NT'
   let newVersion = null;
 
   // title: 'Ping npm registry',
@@ -23,7 +25,7 @@ export default async function prerequisites(pkg, options) {
   }
 
   // title: 'Verify user is authenticated',
-  if (!(process.env.NODE_ENV === 'test' || pkg.private || isExternalRegistry)) {
+  if (!(process.env.NODE_ENV === 'test' || pkg.private || isExternalRegistry) && !isWindows ) {
     let username;
     try {
       username = await execa.stdout('npm', ['whoami']);
