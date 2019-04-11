@@ -36,6 +36,7 @@ export async function generatePublishManifest(
     version,
     license,
     bin,
+    files: ['dist-*/', 'bin/'],
   };
 
   const dists = _dists || (await config.getDistributions());
@@ -55,7 +56,6 @@ export async function generatePublishManifest(
     pika: true,
     sideEffects: manifest.sideEffects || false,
     keywords,
-    files: ['dist-*/', 'assets/', 'bin/'],
     homepage,
     bugs,
     authors,
