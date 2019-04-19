@@ -1,22 +1,21 @@
 {
   "name": "@pika/pack",
   "description": "package building, reimagined.",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "license": "MIT",
   "bin": {
     "pika-pack": "dist-node/index.bin.js",
     "pack": "dist-node/index.bin.js"
   },
+  "files": [
+    "dist-*/",
+    "bin/"
+  ],
   "source": "dist-src/index.js",
   "types": "dist-types/index.d.ts",
   "main": "dist-node/index.js",
   "pika": true,
   "sideEffects": false,
-  "files": [
-    "dist-*/",
-    "assets/",
-    "bin/"
-  ],
   "homepage": "https://www.pikapkg.com/blog/introducing-pika-pack/",
   "repository": {
     "type": "git",

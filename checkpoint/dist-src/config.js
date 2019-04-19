@@ -13,6 +13,10 @@ export default class Config {
         this.cwd = path.resolve(cwd || process.cwd());
     }
     async loadPackageManifest() {
+        this.packConfig = require(path.join(this.cwd, constants.CONFIG_FILE));
+        if (this.packConfig) {
+            console.log(`file ${constants.CONFIG_FILE} loaded`);
+        }
         const loc = path.join(this.cwd, constants.NODE_PACKAGE_JSON);
         if (await fs.exists(loc)) {
             const info = await this.readJson(loc, fs.readJsonAndFile);
@@ -40,18 +44,21 @@ export default class Config {
     }
     async savePackageManifest(newManifestData) {
         const loc = path.join(this.cwd, constants.NODE_PACKAGE_JSON);
-        const manifest = Object.assign({}, this._manifest, newManifestData);
+        const manifest = {
+            ...this._manifest,
+            ...newManifestData
+        };
         await fs.writeFilePreservingEol(loc, JSON.stringify(manifest, null, this.manifestIndent || constants.DEFAULT_INDENT) + '\n');
         return this.loadPackageManifest();
     }
     async getDistributions() {
-        const raw = this.manifest[`@pika/pack`] || {};
+        const raw = this.packConfig || this.manifest[`@pika/pack`] || {};
         raw.defaults = raw.defaults || {};
         raw.plugins = raw.plugins || [];
         async function cleanRawDistObject(rawVal, cwd, canBeFalsey) {
             if (Array.isArray(rawVal)) {
                 let importStr = (rawVal[0].startsWith('./') || rawVal[0].startsWith('../')) ? path.join(cwd, rawVal[0]) : rawVal[0];
-                return [Object.assign({}, importFrom(cwd, importStr), { name: rawVal[0] }), rawVal[1] || {}];
+                return [{ ...importFrom(cwd, importStr), name: rawVal[0] }, rawVal[1] || {}];
             }
             if (typeof rawVal === 'string') {
                 return [{ build: ({ cwd }) => {

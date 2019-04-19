@@ -18,6 +18,7 @@ export default class Config {
     _manifest: any;
     manifest: Manifest;
     manifestIndent?: string;
+    packConfig?: object;
     constructor(reporter: BaseReporter, cwd?: string);
     loadPackageManifest(): Promise<Manifest>;
     readJson(loc: string, factory?: (filename: string) => Promise<any>): Promise<any>;

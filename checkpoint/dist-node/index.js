@@ -78,6 +78,40 @@ function _asyncToGenerator(fn) {
   };
 }
 
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+function _objectSpread(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+    var ownKeys = Object.keys(source);
+
+    if (typeof Object.getOwnPropertySymbols === 'function') {
+      ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {
+        return Object.getOwnPropertyDescriptor(source, sym).enumerable;
+      }));
+    }
+
+    ownKeys.forEach(function (key) {
+      _defineProperty(target, key, source[key]);
+    });
+  }
+
+  return target;
+}
+
 function _slicedToArray(arr, i) {
   return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest();
 }
@@ -1381,10 +1415,8 @@ class ConsoleReporter extends BaseReporter {
     return {
       spinners,
       end: () => {
-        var _arr = spinners;
-
-        for (var _i = 0; _i < _arr.length; _i++) {
-          const spinner = _arr[_i];
+        for (var _i = 0, _spinners = spinners; _i < _spinners.length; _i++) {
+          const spinner = _spinners[_i];
           spinner.end();
         }
 
@@ -1705,7 +1737,7 @@ class JSONReporter extends BaseReporter {
 
     const id = this._activityId++;
 
-    this._dump('activityStart', Object.assign({
+    this._dump('activityStart', _objectSpread({
       id
     }, data));
 
@@ -1781,7 +1813,8 @@ const SUPPORTED_NODE_VERSIONS = '>=8.5.0'; // export const PIKA_REGISTRY = 'http
 // // max amount of child processes to execute concurrently
 
 const CHILD_CONCURRENCY = 5; // export const REQUIRED_PACKAGE_KEYS = ['name', 'version', '_uid'];
-const NODE_PACKAGE_JSON = 'package.json'; // export const PNP_FILENAME = '.pnp';
+const NODE_PACKAGE_JSON = 'package.json';
+const CONFIG_FILE = 'pack.config.js'; // export const PNP_FILENAME = '.pnp';
 // export const POSIX_GLOBAL_PREFIX = `${process.env.DESTDIR || ''}/usr/local`;
 // export const FALLBACK_GLOBAL_PREFIX = path.join(userHome, '.pika');
 // export const META_FOLDER = '.pika-meta';
@@ -2558,7 +2591,8 @@ function _generatePublishManifest() {
       description,
       version,
       license,
-      bin
+      bin,
+      files: ['dist-*/', 'bin/']
     };
     const dists = _dists || (yield config.getDistributions());
     var _iteratorNormalCompletion = true;
@@ -2595,11 +2629,10 @@ function _generatePublishManifest() {
       }
     }
 
-    return Object.assign({}, newManifest, {
+    return _objectSpread({}, newManifest, {
       pika: true,
       sideEffects: manifest.sideEffects || false,
       keywords,
-      files: ['dist-*/', 'assets/', 'bin/'],
       homepage,
       bugs,
       authors,
@@ -2621,7 +2654,7 @@ function _generatePublishManifest() {
 }
 
 function generatePrettyManifest(manifest) {
-  return JSON.stringify(Object.assign({}, manifest, {
+  return JSON.stringify(_objectSpread({}, manifest, {
     dependencies: Object.keys(manifest.dependencies).length === 0 ? {} : '{ ... }'
   }), null, 2);
 }
@@ -2718,7 +2751,7 @@ class Build {
                     options = _step$value[1];
 
               if (runner.validate) {
-                const result = yield runner.validate(Object.assign({}, builderConfig, {
+                const result = yield runner.validate(_objectSpread({}, builderConfig, {
                   options
                 }));
 
@@ -2765,7 +2798,7 @@ class Build {
                     runner = _step2$value[0],
                     options = _step2$value[1];
 
-              yield runner.beforeBuild && runner.beforeBuild(Object.assign({}, builderConfig, {
+              yield runner.beforeBuild && runner.beforeBuild(_objectSpread({}, builderConfig, {
                 options
               }));
             }
@@ -2822,13 +2855,13 @@ class Build {
 
 
               try {
-                yield runner.beforeJob && runner.beforeJob(Object.assign({}, builderConfig, {
+                yield runner.beforeJob && runner.beforeJob(_objectSpread({}, builderConfig, {
                   options
                 }));
-                yield runner.build && runner.build(Object.assign({}, builderConfig, {
+                yield runner.build && runner.build(_objectSpread({}, builderConfig, {
                   options
                 }));
-                yield runner.afterJob && runner.afterJob(Object.assign({}, builderConfig, {
+                yield runner.afterJob && runner.afterJob(_objectSpread({}, builderConfig, {
                   options
                 }));
               } catch (err) {
@@ -2889,7 +2922,7 @@ class Build {
                     runner = _step4$value[0],
                     options = _step4$value[1];
 
-              yield runner.afterBuild && runner.afterBuild(Object.assign({}, builderConfig, {
+              yield runner.afterBuild && runner.afterBuild(_objectSpread({}, builderConfig, {
                 options
               }));
             }
@@ -2951,10 +2984,9 @@ class Build {
         };
       }());
       let currentStep = 0;
-      var _arr = steps;
 
-      for (var _i = 0; _i < _arr.length; _i++) {
-        const step = _arr[_i];
+      for (var _i = 0, _steps = steps; _i < _steps.length; _i++) {
+        const step = _steps[_i];
         yield step(++currentStep, steps.length);
       }
     })();
@@ -3215,7 +3247,7 @@ function _handleError() {
         name: "otp",
         message: `[${task}] 2FA/OTP code required:`
       }]);
-      return pkgPublish(pkgManager, Object.assign({}, options, {
+      return pkgPublish(pkgManager, _objectSpread({}, options, {
         otp: answers.otp
       })).catch(err => {
         return handleError(err, pkgManager, task, options);
@@ -3414,12 +3446,12 @@ function _ref3() {
       }]);
 
       if (!answers.confirm) {
-        return Object.assign({}, options, answers);
+        return _objectSpread({}, options, answers);
       }
     }
 
     const answers = yield inquirer__default.prompt(prompts);
-    return Object.assign({}, options, answers, {
+    return _objectSpread({}, options, answers, {
       repoUrl,
       releaseNotes
     });
@@ -3640,10 +3672,9 @@ class Publish {
       }());
       console.log('');
       let currentStep = 0;
-      var _arr = steps;
 
-      for (var _i = 0; _i < _arr.length; _i++) {
-        const step = _arr[_i];
+      for (var _i = 0, _steps = steps; _i < _steps.length; _i++) {
+        const step = _steps[_i];
         yield step(++currentStep, steps.length);
       }
     })();
@@ -3657,12 +3688,12 @@ function run$1(_x15, _x16, _x17, _x18) {
 function _run$1() {
   _run$1 = _asyncToGenerator(function* (config, reporter, flags, args) {
     yield config.loadPackageManifest();
-    const options = args.length > 0 ? Object.assign({
+    const options = args.length > 0 ? _objectSpread({
       cleanup: true
     }, flags, {
       yarn: hasYarn(),
       version: args[0]
-    }) : yield ui(Object.assign({}, flags, {
+    }) : yield ui(_objectSpread({}, flags, {
       yarn: hasYarn()
     }), config.manifest);
 
@@ -3828,10 +3859,8 @@ function validate (info, isRoot, reporter, warn) {
   // validate strings
 
 
-  var _arr = strings;
-
-  for (var _i = 0; _i < _arr.length; _i++) {
-    const key = _arr[_i];
+  for (var _i = 0, _strings = strings; _i < _strings.length; _i++) {
+    const key = _strings[_i];
     const val = info[key];
 
     if (val && typeof val !== 'string') {
@@ -3844,10 +3873,9 @@ function validate (info, isRoot, reporter, warn) {
 function cleanDependencies(info, isRoot, reporter, warn) {
   // get dependency objects
   const depTypes = [];
-  var _arr2 = dependencyKeys;
 
-  for (var _i2 = 0; _i2 < _arr2.length; _i2++) {
-    const type = _arr2[_i2];
+  for (var _i2 = 0, _dependencyKeys = dependencyKeys; _i2 < _dependencyKeys.length; _i2++) {
+    const type = _dependencyKeys[_i2];
     const deps = info[type];
 
     if (!deps || typeof deps !== 'object') {
@@ -3859,17 +3887,14 @@ function cleanDependencies(info, isRoot, reporter, warn) {
 
 
   const nonTrivialDeps = new Map();
-  var _arr3 = depTypes;
 
-  for (var _i3 = 0; _i3 < _arr3.length; _i3++) {
-    const _arr3$_i = _slicedToArray(_arr3[_i3], 2),
-          type = _arr3$_i[0],
-          deps = _arr3$_i[1];
+  for (var _i3 = 0, _depTypes = depTypes; _i3 < _depTypes.length; _i3++) {
+    const _depTypes$_i = _slicedToArray(_depTypes[_i3], 2),
+          type = _depTypes$_i[0],
+          deps = _depTypes$_i[1];
 
-    var _arr5 = Object.keys(deps);
-
-    for (var _i5 = 0; _i5 < _arr5.length; _i5++) {
-      const name = _arr5[_i5];
+    for (var _i5 = 0, _Object$keys = Object.keys(deps); _i5 < _Object$keys.length; _i5++) {
+      const name = _Object$keys[_i5];
       const version = deps[name];
 
       if (!nonTrivialDeps.has(name) && version && version !== '*') {
@@ -3883,17 +3908,14 @@ function cleanDependencies(info, isRoot, reporter, warn) {
 
 
   const setDeps = new Set();
-  var _arr4 = depTypes;
 
-  for (var _i4 = 0; _i4 < _arr4.length; _i4++) {
-    const _arr4$_i = _slicedToArray(_arr4[_i4], 2),
-          type = _arr4$_i[0],
-          deps = _arr4$_i[1];
+  for (var _i4 = 0, _depTypes2 = depTypes; _i4 < _depTypes2.length; _i4++) {
+    const _depTypes2$_i = _slicedToArray(_depTypes2[_i4], 2),
+          type = _depTypes2$_i[0],
+          deps = _depTypes2$_i[1];
 
-    var _arr6 = Object.keys(deps);
-
-    for (var _i6 = 0; _i6 < _arr6.length; _i6++) {
-      const name = _arr6[_i6];
+    for (var _i6 = 0, _Object$keys2 = Object.keys(deps); _i6 < _Object$keys2.length; _i6++) {
+      const name = _Object$keys2[_i6];
       let version = deps[name];
       const dep = nonTrivialDeps.get(name);
 
@@ -4704,10 +4726,8 @@ const queue = new BlockingQueue('child', CHILD_CONCURRENCY); // TODO: this uid c
 let uid = 0;
 const spawnedProcesses = {};
 function forwardSignalToSpawnedProcesses(signal) {
-  var _arr = Object.keys(spawnedProcesses);
-
-  for (var _i = 0; _i < _arr.length; _i++) {
-    const key = _arr[_i];
+  for (var _i = 0, _Object$keys = Object.keys(spawnedProcesses); _i < _Object$keys.length; _i++) {
+    const key = _Object$keys[_i];
     spawnedProcesses[key].kill(signal);
   }
 }
@@ -4999,10 +5019,11 @@ function _makeEnv() {
     // stage: string,
     // cwd: string,
     // config: Config,
-    const env = Object.assign({
+    const env = _objectSpread({
       NODE: process.execPath,
       INIT_CWD: process.cwd()
     }, process.env);
+
     return env;
   });
   return _makeEnv.apply(this, arguments);
@@ -5066,6 +5087,12 @@ class Config {
     var _this = this;
 
     return _asyncToGenerator(function* () {
+      _this.packConfig = require(path.join(_this.cwd, CONFIG_FILE));
+
+      if (_this.packConfig) {
+        console.log(`file ${CONFIG_FILE} loaded`);
+      }
+
       const loc = path.join(_this.cwd, NODE_PACKAGE_JSON);
 
       if (yield exists(loc)) {
@@ -5097,7 +5124,9 @@ class Config {
 
     return _asyncToGenerator(function* () {
       const loc = path.join(_this2.cwd, NODE_PACKAGE_JSON);
-      const manifest = Object.assign({}, _this2._manifest, newManifestData);
+
+      const manifest = _objectSpread({}, _this2._manifest, newManifestData);
+
       yield writeFilePreservingEol(loc, JSON.stringify(manifest, null, _this2.manifestIndent || DEFAULT_INDENT) + '\n');
       return _this2.loadPackageManifest();
     })();
@@ -5107,7 +5136,7 @@ class Config {
     var _this3 = this;
 
     return _asyncToGenerator(function* () {
-      const raw = _this3.manifest[`@pika/pack`] || {};
+      const raw = _this3.packConfig || _this3.manifest[`@pika/pack`] || {};
       raw.defaults = raw.defaults || {};
       raw.plugins = raw.plugins || [];
 
@@ -5119,7 +5148,7 @@ class Config {
         _cleanRawDistObject = _asyncToGenerator(function* (rawVal, cwd, canBeFalsey) {
           if (Array.isArray(rawVal)) {
             let importStr = rawVal[0].startsWith('./') || rawVal[0].startsWith('../') ? path.join(cwd, rawVal[0]) : rawVal[0];
-            return [Object.assign({}, importFrom(cwd, importStr), {
+            return [_objectSpread({}, importFrom(cwd, importStr), {
               name: rawVal[0]
             }), rawVal[1] || {}];
           }
@@ -5179,7 +5208,7 @@ function boolifyWithDefault(val, defaultResult) {
 
 const commander = new commander$1.Command(); // @ts-ignore
 
-const currentFilename = uri2path(new (typeof URL !== 'undefined' ? URL : require('ur'+'l').URL)((process.browser ? '' : 'file:') + __filename, process.browser && document.baseURI).href);
+const currentFilename = uri2path((typeof document === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : (document.currentScript && document.currentScript.src || new URL('index.js', document.baseURI).href)));
 
 function getVersion() {
   const packageJsonContent = fs.readFileSync(path.resolve(currentFilename, '../../package.json'), {

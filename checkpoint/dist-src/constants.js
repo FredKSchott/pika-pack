@@ -41,6 +41,7 @@ export const CHILD_CONCURRENCY = 5;
 // export const NODE_BIN_PATH = process.execPath;
 export const NODE_MODULES_FOLDER = 'node_modules';
 export const NODE_PACKAGE_JSON = 'package.json';
+export const CONFIG_FILE = 'pack.config.js';
 // export const PNP_FILENAME = '.pnp';
 // export const POSIX_GLOBAL_PREFIX = `${process.env.DESTDIR || ''}/usr/local`;
 // export const FALLBACK_GLOBAL_PREFIX = path.join(userHome, '.pika');

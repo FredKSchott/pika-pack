@@ -12,6 +12,21 @@ npm install
 npm run build
 ```
 
+## Development
+
+After do your changes in the `src` folder you will need to build the code
+```
+npm run build
+```
+Then update the `checkpoint` folder
+```
+npm run update-checkpoint
+```
+Finally you could test your changes
+```
+npm run test
+```
+
 ## Testing the Project
 
 Writing unit tests for the project is still TODO. I know, I know, I'm more embarassed than anyone. 

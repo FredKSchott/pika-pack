@@ -62,6 +62,7 @@ export const CHILD_CONCURRENCY = 5;
 
 export const NODE_MODULES_FOLDER = 'node_modules';
 export const NODE_PACKAGE_JSON = 'package.json';
+export const CONFIG_FILE = 'pack.config.js';
 
 // export const PNP_FILENAME = '.pnp';
 

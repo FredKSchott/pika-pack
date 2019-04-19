@@ -34,6 +34,7 @@ export default class Config {
   _manifest: any;
   manifest: Manifest;
   manifestIndent?: string;
+  packConfig?: object;
 
   constructor(reporter: BaseReporter, cwd?: string) {
     this.reporter = reporter;
@@ -42,6 +43,12 @@ export default class Config {
   }
 
   async loadPackageManifest() {
+    this.packConfig = require(path.join(this.cwd, constants.CONFIG_FILE));
+
+    if (this.packConfig) {
+      console.log(`file ${constants.CONFIG_FILE} loaded`)
+    }
+
     const loc = path.join(this.cwd, constants.NODE_PACKAGE_JSON);
     if (await fs.exists(loc)) {
       const info = await this.readJson(loc, fs.readJsonAndFile);
@@ -77,7 +84,7 @@ export default class Config {
   }
 
   async getDistributions(): Promise<Array<[any, any]>> {
-    const raw = this.manifest[`@pika/pack`] || {};
+    const raw = this.packConfig || this.manifest[`@pika/pack`] || {};
     raw.defaults = raw.defaults || {};
     raw.plugins = raw.plugins || [];
 
@@ -107,4 +114,3 @@ export default class Config {
     ])).filter(Boolean);
   }
 }
-

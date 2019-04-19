@@ -17,30 +17,6 @@
     "update-checkpoint": "rm -rf checkpoint/ && cp -r pkg/ checkpoint/",
     "test": "./pkg/dist-node/index.bin.js build"
   },
-  "@pika/pack": {
-    "pipeline": [
-      [
-        "@pika/plugin-ts-standard-pkg"
-      ],
-      [
-        "@pika/plugin-build-node"
-      ],
-      [
-        "@pika/plugin-simple-bin",
-        {
-          "bin": "pika-pack",
-          "minNodeVersion": 8
-        }
-      ],
-      [
-        "@pika/plugin-simple-bin",
-        {
-          "bin": "pack",
-          "minNodeVersion": 8
-        }
-      ]
-    ]
-  },
   "publishConfig": {
     "access": "public"
   },

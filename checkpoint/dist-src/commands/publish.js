@@ -144,7 +144,14 @@ export class Publish {
 export async function run(config, reporter, flags, args) {
     await config.loadPackageManifest();
     const options = args.length > 0
-        ? Object.assign({ cleanup: true }, flags, { yarn: hasYarn(), version: args[0] }) : await ui(Object.assign({}, flags, { yarn: hasYarn() }), config.manifest);
+        ? {
+            cleanup: true,
+            // publish: true,
+            ...flags,
+            yarn: hasYarn(),
+            version: args[0],
+        }
+        : await ui({ ...flags, yarn: hasYarn() }, config.manifest);
     if (!options.confirm) {
         return;
     }
