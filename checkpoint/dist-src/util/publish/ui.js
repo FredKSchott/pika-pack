@@ -141,11 +141,18 @@ export default async function (options, pkg) {
                 default: false
             }]);
         if (!answers.confirm) {
-            return Object.assign({}, options, answers);
+            return {
+                ...options,
+                ...answers
+            };
         }
     }
     const answers = await inquirer.prompt(prompts);
-    return Object.assign({}, options, answers, { repoUrl,
-        releaseNotes });
+    return {
+        ...options,
+        ...answers,
+        repoUrl,
+        releaseNotes
+    };
 }
 ;

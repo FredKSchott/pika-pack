@@ -69,7 +69,10 @@ export class Build {
             this.reporter.step(curr, total, 'Validating source');
             for (const [runner, options] of distRunners) {
                 if (runner.validate) {
-                    const result = await runner.validate(Object.assign({}, builderConfig, { options }));
+                    const result = await runner.validate({
+                        ...builderConfig,
+                        options,
+                    });
                     if (result instanceof Error) {
                         throw result;
                     }
@@ -82,7 +85,10 @@ export class Build {
             reporter.log(`      ❇️  ${chalk.green(outPretty)}`);
             for (const [runner, options] of distRunners) {
                 await (runner.beforeBuild &&
-                    runner.beforeBuild(Object.assign({}, builderConfig, { options })));
+                    runner.beforeBuild({
+                        ...builderConfig,
+                        options,
+                    }));
             }
         });
         if (distRunners.length === 0) {
@@ -96,11 +102,20 @@ export class Build {
                 // return Promise.resolve(
                 try {
                     await (runner.beforeJob &&
-                        runner.beforeJob(Object.assign({}, builderConfig, { options })));
+                        runner.beforeJob({
+                            ...builderConfig,
+                            options,
+                        }));
                     await (runner.build &&
-                        runner.build(Object.assign({}, builderConfig, { options })));
+                        runner.build({
+                            ...builderConfig,
+                            options,
+                        }));
                     await (runner.afterJob &&
-                        runner.afterJob(Object.assign({}, builderConfig, { options })));
+                        runner.afterJob({
+                            ...builderConfig,
+                            options,
+                        }));
                 }
                 catch (err) {
                     if (flags.force) {
@@ -129,7 +144,10 @@ export class Build {
             this.reporter.step(curr, total, `Finalizing package`);
             for (const [runner, options] of distRunners) {
                 await (runner.afterBuild &&
-                    runner.afterBuild(Object.assign({}, builderConfig, { options })));
+                    runner.afterBuild({
+                        ...builderConfig,
+                        options,
+                    }));
             }
             if (await fs.exists(path.join(cwd, 'CHANGELOG'))) {
                 fs.copyFile(path.join(cwd, 'CHANGELOG'), path.join(out, 'CHANGELOG'));

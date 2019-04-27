@@ -9,14 +9,17 @@ if (majorVer < 8) {
   process.exit(1);
 }
 
-let cli;
+let hasBundled = true    
+
 try {
-  cli = require('./index.bundled.js');
-} catch (err) {
+  require.resolve('./index.bundled.js');
+} catch(err) {
   // We don't have/need this on legacy builds and dev builds
   // If an error happens here, throw it, that means no Node.js distribution exists at all.
-  cli = require('../');
+  hasBundled = false;
 }
+
+const cli = !hasBundled ? require('../') : require('./index.bundled.js');
 
 if (cli.autoRun) {
   return;

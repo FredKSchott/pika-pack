@@ -35,7 +35,14 @@ export async function makeEnv() {
     // stage: string,
     // cwd: string,
     // config: Config,
-    const env = Object.assign({ NODE: process.execPath, INIT_CWD: process.cwd() }, process.env);
+    const env = {
+        NODE: process.execPath,
+        INIT_CWD: process.cwd(),
+        // This lets `process.env.NODE` to override our `process.execPath`.
+        // This is a bit confusing but it is how `npm` was designed so we
+        // try to be compatible with that.
+        ...process.env,
+    };
     return env;
 }
 //   // Merge in the `env` object specified in .pikarc

@@ -6,6 +6,7 @@ export async function generatePublishManifest(manifest, config, _dists) {
         version,
         license,
         bin,
+        files: ['dist-*/', 'bin/'],
     };
     const dists = _dists || (await config.getDistributions());
     for (const [runner, options] of dists) {
@@ -18,18 +19,31 @@ export async function generatePublishManifest(manifest, config, _dists) {
             });
         }
     }
-    return Object.assign({}, newManifest, { pika: true, sideEffects: manifest.sideEffects || false, keywords, files: ['dist-*/', 'assets/', 'bin/'], homepage,
+    return {
+        ...newManifest,
+        pika: true,
+        sideEffects: manifest.sideEffects || false,
+        keywords,
+        homepage,
         bugs,
         authors,
         contributors,
         man,
-        repository, dependencies: manifest.dependencies || {}, peerDependencies,
+        repository,
+        dependencies: manifest.dependencies || {},
+        peerDependencies,
         devDependencies,
         bundledDependencies,
         optionalDependencies,
         engines,
-        enginesStrict, private: priv, publishConfig });
+        enginesStrict,
+        private: priv,
+        publishConfig,
+    };
 }
 export function generatePrettyManifest(manifest) {
-    return JSON.stringify(Object.assign({}, manifest, { dependencies: Object.keys(manifest.dependencies).length === 0 ? {} : '{ ... }' }), null, 2);
+    return JSON.stringify({
+        ...manifest,
+        dependencies: Object.keys(manifest.dependencies).length === 0 ? {} : '{ ... }',
+    }, null, 2);
 }

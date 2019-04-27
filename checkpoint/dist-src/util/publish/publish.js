@@ -33,7 +33,7 @@ async function handleError(error, pkgManager, task, options) {
                 message: `[${task}] 2FA/OTP code required:`
             }
         ]);
-        return pkgPublish(pkgManager, Object.assign({}, options, { otp: answers.otp })).catch((err) => {
+        return pkgPublish(pkgManager, { ...options, otp: answers.otp }).catch((err) => {
             return handleError(err, pkgManager, task, options);
         });
     }

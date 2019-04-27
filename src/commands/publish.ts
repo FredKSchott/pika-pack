@@ -112,15 +112,19 @@ export class Publish {
     if (runCleanup) {
       steps.push(async (curr: number, total: number) => {
         this.reporter.step(curr, total, 'Cleanup', '✨');
-        await fs.unlink('package-lock.json');
-        await fs.unlink('yarn.lock');
-        await fs.unlink('node_modules');
+
+        const hasLockFile = await fs.exists(options.yarn ? 'yarn.lock' : 'package-lock.json');
+
+        if (!hasLockFile) {
+          await fs.unlink('node_modules');
+        }
+
         await fs.unlink('pkg');
 
         if (options.yarn) {
-          return execa('yarn', ['install', '--production=false']);
+          return execa('yarn', ['install', '--frozen-lockfile', '--production=false']);
         } else {
-          return execa('npm', ['install', '--no-production']);
+          return execa('npm', hasLockFile ? ['ci'] : ['install', '--no-production', '--no-package-lock']);
         }
       });
     }
@@ -135,7 +139,15 @@ export class Publish {
       this.reporter.step(curr, total, 'Building Package', '✨');
       const oldIsSilent = reporter.isSilent;
       reporter.isSilent = true;
-      const builder = new Build({out, publish: true, silent: true}, config, reporter);
+      const builder = new Build(
+        {
+          out,
+          publish: true,
+          silent: true,
+        },
+        config,
+        reporter,
+      );
       await builder.init(true);
       reporter.isSilent = oldIsSilent;
     });

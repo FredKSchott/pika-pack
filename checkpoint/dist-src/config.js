@@ -40,7 +40,10 @@ export default class Config {
     }
     async savePackageManifest(newManifestData) {
         const loc = path.join(this.cwd, constants.NODE_PACKAGE_JSON);
-        const manifest = Object.assign({}, this._manifest, newManifestData);
+        const manifest = {
+            ...this._manifest,
+            ...newManifestData
+        };
         await fs.writeFilePreservingEol(loc, JSON.stringify(manifest, null, this.manifestIndent || constants.DEFAULT_INDENT) + '\n');
         return this.loadPackageManifest();
     }
@@ -51,7 +54,7 @@ export default class Config {
         async function cleanRawDistObject(rawVal, cwd, canBeFalsey) {
             if (Array.isArray(rawVal)) {
                 let importStr = (rawVal[0].startsWith('./') || rawVal[0].startsWith('../')) ? path.join(cwd, rawVal[0]) : rawVal[0];
-                return [Object.assign({}, importFrom(cwd, importStr), { name: rawVal[0] }), rawVal[1] || {}];
+                return [{ ...importFrom(cwd, importStr), name: rawVal[0] }, rawVal[1] || {}];
             }
             if (typeof rawVal === 'string') {
                 return [{ build: ({ cwd }) => {
