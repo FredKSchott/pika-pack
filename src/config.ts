@@ -13,18 +13,7 @@ import executeLifecycleScript from './util/execute-lifecycle-script.js';
 import importFrom from 'import-from';
 
 export type ConfigOptions = {
-  cwd?: string,
-  _cacheRootFolder?: string,
-  tempFolder?: string,
-  ignoreScripts?: boolean,
-  ignorePlatform?: boolean,
-  ignoreEngines?: boolean,
-  // cafile??: string,
-  production?: boolean,
-  binLinks?: boolean,
-  // scriptsPrependNodePath?: boolean,
-  commandName?: string,
-  otp?: string,
+  pipeline?: string;
 };
 
 
@@ -34,11 +23,13 @@ export default class Config {
   _manifest: any;
   manifest: Manifest;
   manifestIndent?: string;
+  flags: ConfigOptions;
 
-  constructor(reporter: BaseReporter, cwd?: string) {
+  constructor(reporter: BaseReporter, cwd: string, flags: ConfigOptions) {
     this.reporter = reporter;
     // Ensure the cwd is always an absolute path.
     this.cwd = path.resolve(cwd || process.cwd());
+    this.flags = flags;
   }
 
   async loadPackageManifest() {
@@ -76,12 +67,11 @@ export default class Config {
     return this.loadPackageManifest();
   }
 
-  async getDistributions(): Promise<Array<[any, any]>> {
+  async getDistributions(): Promise<[any, any][]> {
     const raw = this.manifest[`@pika/pack`] || {};
-    raw.defaults = raw.defaults || {};
-    raw.plugins = raw.plugins || [];
-
-    async function cleanRawDistObject(rawVal, cwd, canBeFalsey): Promise<false | any[]> {
+    const override = this.flags.pipeline && JSON.parse(this.flags.pipeline);
+    const cwd = this.cwd;
+    function cleanRawDistObject(rawVal): false | [any, any] {
       if (Array.isArray(rawVal)) {
         let importStr = (rawVal[0].startsWith('./') ||rawVal[0].startsWith('../')) ? path.join(cwd, rawVal[0]) : rawVal[0];
         return [{...importFrom(cwd, importStr), name: rawVal[0]}, rawVal[1] || {}];
@@ -96,16 +86,13 @@ export default class Config {
           isInteractive: false});
         }}, {}];
       }
-      if (!rawVal && !canBeFalsey) {
+      if (!rawVal) {
         throw new Error('Cannot be false');
       }
       return false;
     }
-    return (await Promise.all([
-      ...((raw.pipeline || []).map(rawVal => {
-        return cleanRawDistObject(rawVal, this.cwd, false);
-      })),
-    ])).filter(Boolean);
+    const pipeline: any[] = override || raw.pipeline || [];
+    return pipeline.map(cleanRawDistObject).filter(Boolean) as [any, any][];
   }
 }
 
