@@ -75,6 +75,7 @@ export async function main({
   commander.option('--cwd <cwd>', 'working directory to use', process.cwd());
   commander.option('--no-progress', 'disable progress bar');
   commander.option('--no-node-version-check', 'do not warn when using a potentially unsupported Node version');
+  commander.option('--pipeline <pipeline>', 'the build pipeline to run');
 
   // if -v is the first command, then always exit after returning the version
   if (args[0] === '-v') {
@@ -264,7 +265,7 @@ export async function main({
   }
 
   const cwd = command.shouldRunInCurrentCwd ? commander.cwd : findProjectRoot(commander.cwd);
-  const config = new Config(reporter, cwd);
+  const config = new Config(reporter, cwd, commander as any);
 
   await config.loadPackageManifest();
 
