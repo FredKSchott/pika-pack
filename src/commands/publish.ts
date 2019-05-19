@@ -66,5 +66,5 @@ export async function run(config: Config, reporter: Reporter, flags: Flags, args
   }
 
   const newManifest = await config.loadPackageManifest();
-  console.log(`You can see it at: ${chalk.underline(`https://unpkg.com/${newManifest.name}@${newManifest.version}/`)}`);
+  console.log(`If published publicly, you can see it at: ${chalk.underline(`https://unpkg.com/${newManifest.name}@${newManifest.version}/`)}`);
 }
