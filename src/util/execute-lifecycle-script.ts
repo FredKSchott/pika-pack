@@ -233,15 +233,17 @@ export async function makeEnv(): Promise<{[key: string]: string}> {
 // }
 
 export async function executeLifecycleScript({
-  config,
+  // config,
   cwd,
   cmd,
+  args,
   isInteractive,
   onProgress,
   customShell,
 }: {
-  config: Config;
+  // config: Config;
   cwd: string;
+  args: string[];
   cmd: string;
   isInteractive?: boolean;
   onProgress?: (chunk: Buffer | string) => void;
@@ -267,7 +269,7 @@ export async function executeLifecycleScript({
   }
 
   const shell = customShell || true;
-  const stdout = await child.spawn(cmd, [], {cwd, env, stdio, detached, shell}, onProgress);
+  const stdout = await child.spawn(cmd, args, {cwd, env, stdio, detached, shell}, onProgress);
 
   return {cwd, command: cmd, stdout};
 }
@@ -327,35 +329,35 @@ export default executeLifecycleScript;
 //   }
 // }
 
-export async function execCommand({
-  stage,
-  config,
-  cmd,
-  cwd,
-  isInteractive,
-  customShell,
-}: {
-  stage: string;
-  config: Config;
-  cmd: string;
-  cwd: string;
-  isInteractive: boolean;
-  customShell?: string;
-}): Promise<void> {
-  const {reporter} = config;
-  try {
-    reporter.command(cmd);
-    await executeLifecycleScript({config, cwd, cmd, isInteractive, customShell});
-    return Promise.resolve();
-  } catch (err) {
-    if (err instanceof ProcessTermError) {
-      throw new MessageError(
-        err.EXIT_SIGNAL
-          ? reporter.lang('commandFailedWithSignal', err.EXIT_SIGNAL)
-          : reporter.lang('commandFailedWithCode', err.EXIT_CODE),
-      );
-    } else {
-      throw err;
-    }
-  }
-}
+// export async function execCommand({
+//   stage,
+//   config,
+//   cmd,
+//   cwd,
+//   isInteractive,
+//   customShell,
+// }: {
+//   stage: string;
+//   config: Config;
+//   cmd: string;
+//   cwd: string;
+//   isInteractive: boolean;
+//   customShell?: string;
+// }): Promise<void> {
+//   const {reporter} = config;
+//   try {
+//     reporter.command(cmd);
+//     await executeLifecycleScript({config, cwd, cmd, isInteractive, customShell});
+//     return Promise.resolve();
+//   } catch (err) {
+//     if (err instanceof ProcessTermError) {
+//       throw new MessageError(
+//         err.EXIT_SIGNAL
+//           ? reporter.lang('commandFailedWithSignal', err.EXIT_SIGNAL)
+//           : reporter.lang('commandFailedWithCode', err.EXIT_CODE),
+//       );
+//     } else {
+//       throw err;
+//     }
+//   }
+// }
