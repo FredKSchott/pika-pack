@@ -15,9 +15,10 @@
   "scripts": {
     "format": "prettier --write src/**/*.ts",
     "build": "./checkpoint/dist-node/index.bin.js build",
-    "update-checkpoint": "rm -rf checkpoint/ && cp -r pkg/ checkpoint/",
+    "publish": "./pkg/dist-node/index.bin.js publish",
     "test": "./pkg/dist-node/index.bin.js build",
-    "version": "npm run build"
+    "version": "npm run build",
+    "update-checkpoint": "rm -rf checkpoint/ && cp -r pkg/ checkpoint/"
   },
   "@pika/pack": {
     "pipeline": [
