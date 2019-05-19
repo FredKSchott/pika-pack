@@ -51,6 +51,7 @@ export async function main({ startArgs, args, endArgs, }) {
     commander.option('--cwd <cwd>', 'working directory to use', process.cwd());
     commander.option('--no-progress', 'disable progress bar');
     commander.option('--no-node-version-check', 'do not warn when using a potentially unsupported Node version');
+    commander.option('--pipeline <pipeline>', 'the build pipeline to run');
     // if -v is the first command, then always exit after returning the version
     if (args[0] === '-v') {
         console.log(version.trim());
@@ -210,7 +211,7 @@ export async function main({ startArgs, args, endArgs, }) {
         return errorReportLoc;
     }
     const cwd = command.shouldRunInCurrentCwd ? commander.cwd : findProjectRoot(commander.cwd);
-    const config = new Config(reporter, cwd);
+    const config = new Config(reporter, cwd, commander);
     await config.loadPackageManifest();
     try {
         // option "no-progress" stored in pika config

@@ -12,7 +12,6 @@ var loudRejection = _interopDefault(require('loud-rejection'));
 var semver = _interopDefault(require('semver'));
 var chalk = _interopDefault(require('chalk'));
 var inquirer = require('inquirer');
-var inquirer__default = _interopDefault(inquirer);
 var read = _interopDefault(require('read'));
 var readline = require('readline');
 var stripAnsi = _interopDefault(require('strip-ansi'));
@@ -26,19 +25,12 @@ var _rimraf = _interopDefault(require('rimraf'));
 var _mkdirp = _interopDefault(require('mkdirp'));
 var _glob = _interopDefault(require('glob'));
 var stripBOM = _interopDefault(require('strip-bom'));
-var execa = _interopDefault(require('execa'));
-var githubUrlFromGit = _interopDefault(require('github-url-from-git'));
-var hasYarn = _interopDefault(require('has-yarn'));
-var hostedGitInfo = _interopDefault(require('hosted-git-info'));
-var pTimeout = _interopDefault(require('p-timeout'));
-require('issue-regex');
-var isScoped = _interopDefault(require('is-scoped'));
 var types = require('@pika/types');
+var child_process = require('child_process');
 var isBuiltinModule = _interopDefault(require('is-builtin-module'));
 var validateLicense = _interopDefault(require('validate-npm-package-license'));
 var nodeUrl = require('url');
 var detectIndent = _interopDefault(require('detect-indent'));
-var child_process = require('child_process');
 var importFrom = _interopDefault(require('import-from'));
 var uri2path = _interopDefault(require('file-uri-to-path'));
 
@@ -76,6 +68,40 @@ function _asyncToGenerator(fn) {
       _next(undefined);
     });
   };
+}
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+function _objectSpread(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+    var ownKeys = Object.keys(source);
+
+    if (typeof Object.getOwnPropertySymbols === 'function') {
+      ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {
+        return Object.getOwnPropertyDescriptor(source, sym).enumerable;
+      }));
+    }
+
+    ownKeys.forEach(function (key) {
+      _defineProperty(target, key, source[key]);
+    });
+  }
+
+  return target;
 }
 
 function _slicedToArray(arr, i) {
@@ -1381,10 +1407,8 @@ class ConsoleReporter extends BaseReporter {
     return {
       spinners,
       end: () => {
-        var _arr = spinners;
-
-        for (var _i = 0; _i < _arr.length; _i++) {
-          const spinner = _arr[_i];
+        for (var _i = 0, _spinners = spinners; _i < _spinners.length; _i++) {
+          const spinner = _spinners[_i];
           spinner.end();
         }
 
@@ -1705,7 +1729,7 @@ class JSONReporter extends BaseReporter {
 
     const id = this._activityId++;
 
-    this._dump('activityStart', Object.assign({
+    this._dump('activityStart', _objectSpread({
       id
     }, data));
 
@@ -2543,6 +2567,7 @@ function _generatePublishManifest() {
           authors = manifest.authors,
           contributors = manifest.contributors,
           man = manifest.man,
+          sideEffects = manifest.sideEffects,
           repository = manifest.repository,
           dependencies = manifest.dependencies,
           peerDependencies = manifest.peerDependencies,
@@ -2558,7 +2583,26 @@ function _generatePublishManifest() {
       description,
       version,
       license,
-      bin
+      bin,
+      files: ['dist-*/', 'bin/'],
+      pika: true,
+      sideEffects: sideEffects || false,
+      keywords,
+      homepage,
+      bugs,
+      authors,
+      contributors,
+      man,
+      repository,
+      dependencies: dependencies || {},
+      peerDependencies,
+      devDependencies,
+      bundledDependencies,
+      optionalDependencies,
+      engines,
+      enginesStrict,
+      private: priv,
+      publishConfig
     };
     const dists = _dists || (yield config.getDistributions());
     var _iteratorNormalCompletion = true;
@@ -2595,33 +2639,14 @@ function _generatePublishManifest() {
       }
     }
 
-    return Object.assign({}, newManifest, {
-      pika: true,
-      sideEffects: manifest.sideEffects || false,
-      keywords,
-      files: ['dist-*/', 'assets/', 'bin/'],
-      homepage,
-      bugs,
-      authors,
-      contributors,
-      man,
-      repository,
-      dependencies: manifest.dependencies || {},
-      peerDependencies,
-      devDependencies,
-      bundledDependencies,
-      optionalDependencies,
-      engines,
-      enginesStrict,
-      private: priv,
-      publishConfig
-    });
+    newManifest.pika = true;
+    return newManifest;
   });
   return _generatePublishManifest.apply(this, arguments);
 }
 
 function generatePrettyManifest(manifest) {
-  return JSON.stringify(Object.assign({}, manifest, {
+  return JSON.stringify(_objectSpread({}, manifest, {
     dependencies: Object.keys(manifest.dependencies).length === 0 ? {} : '{ ... }'
   }), null, 2);
 }
@@ -2718,7 +2743,7 @@ class Build {
                     options = _step$value[1];
 
               if (runner.validate) {
-                const result = yield runner.validate(Object.assign({}, builderConfig, {
+                const result = yield runner.validate(_objectSpread({}, builderConfig, {
                   options
                 }));
 
@@ -2765,7 +2790,7 @@ class Build {
                     runner = _step2$value[0],
                     options = _step2$value[1];
 
-              yield runner.beforeBuild && runner.beforeBuild(Object.assign({}, builderConfig, {
+              yield runner.beforeBuild && runner.beforeBuild(_objectSpread({}, builderConfig, {
                 options
               }));
             }
@@ -2822,13 +2847,13 @@ class Build {
 
 
               try {
-                yield runner.beforeJob && runner.beforeJob(Object.assign({}, builderConfig, {
+                yield runner.beforeJob && runner.beforeJob(_objectSpread({}, builderConfig, {
                   options
                 }));
-                yield runner.build && runner.build(Object.assign({}, builderConfig, {
+                yield runner.build && runner.build(_objectSpread({}, builderConfig, {
                   options
                 }));
-                yield runner.afterJob && runner.afterJob(Object.assign({}, builderConfig, {
+                yield runner.afterJob && runner.afterJob(_objectSpread({}, builderConfig, {
                   options
                 }));
               } catch (err) {
@@ -2889,7 +2914,7 @@ class Build {
                     runner = _step4$value[0],
                     options = _step4$value[1];
 
-              yield runner.afterBuild && runner.afterBuild(Object.assign({}, builderConfig, {
+              yield runner.afterBuild && runner.afterBuild(_objectSpread({}, builderConfig, {
                 options
               }));
             }
@@ -2951,10 +2976,9 @@ class Build {
         };
       }());
       let currentStep = 0;
-      var _arr = steps;
 
-      for (var _i = 0; _i < _arr.length; _i++) {
-        const step = _arr[_i];
+      for (var _i = 0, _steps = steps; _i < _steps.length; _i++) {
+        const step = _steps[_i];
         yield step(++currentStep, steps.length);
       }
     })();
@@ -2981,451 +3005,573 @@ var build = /*#__PURE__*/Object.freeze({
   run: run
 });
 
-const latestTag = () => execa.stdout('git', ['describe', '--abbrev=0']);
+class BlockingQueue {
+  constructor(alias, maxConcurrency = Infinity) {
+    this.concurrencyQueue = [];
+    this.maxConcurrency = maxConcurrency;
+    this.runningCount = 0;
+    this.warnedStuck = false;
+    this.alias = alias;
+    this.first = true;
+    this.running = nullify() || {};
+    this.queue = nullify() || {};
+    this.stuckTick = this.stuckTick.bind(this);
+  }
 
-const firstCommit = () => execa.stdout('git', ['rev-list', '--max-parents=0', 'HEAD']);
-
-function latestTagOrFirstCommit() {
-  return _latestTagOrFirstCommit.apply(this, arguments);
-}
-
-function _latestTagOrFirstCommit() {
-  _latestTagOrFirstCommit = _asyncToGenerator(function* () {
-    let latest;
-
-    try {
-      // In case a previous tag exists, we use it to compare the current repo status to.
-      latest = yield latestTag();
-    } catch (_) {
-      // Otherwise, we fallback to using the first commit for comparison.
-      latest = yield firstCommit();
+  stillActive() {
+    if (this.stuckTimer) {
+      clearTimeout(this.stuckTimer);
     }
 
-    return latest;
-  });
-  return _latestTagOrFirstCommit.apply(this, arguments);
-}
-function hasUpstream() {
-  return _hasUpstream.apply(this, arguments);
-}
+    this.stuckTimer = setTimeout(this.stuckTick, 5000); // We need to check the existence of unref because of https://github.com/facebook/jest/issues/4559
+    // $FlowFixMe: Node's setInterval returns a Timeout, not a Number
 
-function _hasUpstream() {
-  _hasUpstream = _asyncToGenerator(function* () {
-    const _ref = yield execa('git', ['status', '--short', '--branch', '--porcelain=2']),
-          stdout = _ref.stdout;
-
-    return /^# branch\.upstream [\w\-/]+$/m.test(stdout);
-  });
-  return _hasUpstream.apply(this, arguments);
-}
-
-const SEMVER_INCREMENTS = ["patch", "minor", "major", "prepatch", "preminor", "premajor", "prerelease"];
-const PRERELEASE_VERSIONS = ["prepatch", "preminor", "premajor", "prerelease"];
-
-const isValidVersion = input => Boolean(semver.valid(input));
-
-function isValidVersionInput(input) {
-  return SEMVER_INCREMENTS.includes(input) || isValidVersion(input);
-}
-function isPrereleaseVersion(version) {
-  return PRERELEASE_VERSIONS.includes(version) || Boolean(semver.prerelease(version));
-}
-function getNewVersion(oldVersion, input) {
-  if (!isValidVersionInput(input)) {
-    throw new Error(`Version should be either ${SEMVER_INCREMENTS.join(", ")} or a valid semver version.`);
+    this.stuckTimer.unref && this.stuckTimer.unref();
   }
 
-  return SEMVER_INCREMENTS.includes(input) ? semver.inc(oldVersion, input) : input;
-}
-function isVersionGreater(oldVersion, newVersion) {
-  if (!isValidVersion(newVersion)) {
-    throw new Error("Version should be a valid semver version.");
-  }
-
-  return semver.gt(newVersion, oldVersion);
-}
-
-function linkifyCommitRange(url, commitRange) {
-  return `${commitRange} (${url}/compare/${commitRange})`;
-}
-let tagVersionPrefix;
-function getTagVersionPrefix(_x) {
-  return _getTagVersionPrefix.apply(this, arguments);
-}
-
-function _getTagVersionPrefix() {
-  _getTagVersionPrefix = _asyncToGenerator(function* (options) {
-    if (tagVersionPrefix) {
-      return tagVersionPrefix;
+  stuckTick() {
+    if (this.runningCount === 1) {
+      this.warnedStuck = true;
+      console.log(`The ${JSON.stringify(this.alias)} blocking queue may be stuck. 5 seconds ` + `without any activity with 1 worker: ${Object.keys(this.running)[0]}`);
     }
-
-    try {
-      if (options.yarn) {
-        tagVersionPrefix = yield execa.stdout('yarn', ['config', 'get', 'version-tag-prefix']);
-      } else {
-        tagVersionPrefix = yield execa.stdout('npm', ['config', 'get', 'tag-version-prefix']);
-      }
-    } catch (_) {
-      tagVersionPrefix = 'v';
-    }
-
-    return tagVersionPrefix;
-  });
-  return _getTagVersionPrefix.apply(this, arguments);
-}
-
-function prerequisites(_x, _x2) {
-  return _prerequisites.apply(this, arguments);
-}
-
-function _prerequisites() {
-  _prerequisites = _asyncToGenerator(function* (pkg, options) {
-    const isExternalRegistry = typeof pkg.publishConfig === 'object' && typeof pkg.publishConfig.registry === 'string';
-    const isWindows = os.type() === 'Windows_NT';
-    let newVersion = null; // title: 'Ping npm registry',
-
-    if (!(pkg.private || isExternalRegistry)) {
-      yield pTimeout(_asyncToGenerator(function* () {
-        try {
-          yield execa('npm', ['ping']);
-        } catch (_) {
-          throw new Error('Connection to npm registry failed');
-        }
-      })(), 15000, 'Connection to npm registry timed out');
-    } // Temporarily skip on Windows, see https://github.com/pikapkg/pack/issues/37
-
-
-    if (!(process.env.NODE_ENV === 'test' || pkg.private || isExternalRegistry) && !isWindows) {
-      let username;
-
-      try {
-        username = yield execa.stdout('npm', ['whoami']);
-      } catch (error) {
-        throw new Error(/ENEEDAUTH/.test(error.stderr) ? 'You must be logged in to publish packages. Use `npm login` and try again.' : 'Authentication error. Use `npm whoami` to troubleshoot.');
-      }
-
-      let collaborators;
-
-      try {
-        collaborators = yield execa.stdout('npm', ['access', 'ls-collaborators', pkg.name]);
-      } catch (error) {
-        // Ignore non-existing package error
-        if (error.stderr.includes('code E404')) {
-          return;
-        } // Workaround for npm issue, see https://github.com/pikapkg/pack/issues/18
-
-
-        if (error.stderr.includes('This command is only available for scoped packages.')) {
-          return;
-        }
-
-        throw error;
-      }
-
-      const json = JSON.parse(collaborators);
-      const permissions = json[username];
-
-      if (!permissions || !permissions.includes('write')) {
-        throw new Error('You do not have write permissions required to publish this package.');
-      }
-    } // title: 'Check git remote',
-
-
-    try {
-      yield execa('git', ['ls-remote', 'origin', 'HEAD']);
-    } catch (error) {
-      throw new Error(error.stderr.replace('fatal:', 'Git fatal error:'));
-    } // title: 'Validate version',
-
-
-    if (!isValidVersionInput(options.version)) {
-      throw new Error(`Version should be either ${SEMVER_INCREMENTS.join(', ')}, or a valid semver version.`);
-    }
-
-    newVersion = getNewVersion(pkg.version, options.version);
-
-    if (!isVersionGreater(pkg.version, newVersion)) {
-      throw new Error(`New version \`${newVersion}\` should be higher than current version \`${pkg.version}\``);
-    } // title: 'Check for pre-release version',
-
-
-    if (!pkg.private && isPrereleaseVersion(newVersion) && !options.tag) {
-      throw new Error('You must specify a dist-tag using --tag when publishing a pre-release version. This prevents accidentally tagging unstable versions as "latest". https://docs.npmjs.com/cli/dist-tag');
-    } // title: 'Check git tag existence',
-
-
-    yield execa('git', ['fetch']);
-    const tagPrefix = yield getTagVersionPrefix(options);
-
-    try {
-      const _ref2 = yield execa.stdout('git', ['rev-parse', '--quiet', '--verify', `refs/tags/${tagPrefix}${newVersion}`]),
-            revInfo = _ref2.stdout;
-
-      if (revInfo) {
-        throw new Error(`Git tag \`${tagPrefix}${newVersion}\` already exists.`);
-      }
-    } catch (error) {
-      // Command fails with code 1 and no output if the tag does not exist, even though `--quiet` is provided
-      // https://github.com/sindresorhus/np/pull/73#discussion_r72385685
-      if (error.stdout !== '' || error.stderr !== '') {
-        throw error;
-      }
-    }
-  });
-  return _prerequisites.apply(this, arguments);
-}
-
-const pkgPublish = (pkgManager, options) => {
-  const args = ["publish"];
-
-  if (options.contents) {
-    args.push(options.contents);
-  } else {
-    args.push('pkg');
   }
 
-  if (options.yarn) {
-    args.push("--new-version", options.version);
-  }
-
-  if (options.tag) {
-    args.push("--tag", options.tag);
-  }
-
-  if (options.otp) {
-    args.push("--otp", options.otp);
-  }
-
-  if (options.publishScoped) {
-    args.push("--access", "public");
-  }
-
-  return execa(pkgManager, args);
-};
-
-function handleError(_x, _x2, _x3, _x4) {
-  return _handleError.apply(this, arguments);
-}
-
-function _handleError() {
-  _handleError = _asyncToGenerator(function* (error, pkgManager, task, options) {
-    if (error.stderr.includes("one-time pass") || error.message.includes("user TTY") || error.message.includes("One-Time-Password")) {
-      const answers = yield inquirer__default.prompt([{
-        type: "input",
-        name: "otp",
-        message: `[${task}] 2FA/OTP code required:`
-      }]);
-      return pkgPublish(pkgManager, Object.assign({}, options, {
-        otp: answers.otp
-      })).catch(err => {
-        return handleError(err, pkgManager, task, options);
-      });
-    }
-  });
-  return _handleError.apply(this, arguments);
-}
-
-function publish(pkgManager, task, options) {
-  return pkgPublish(pkgManager, options).catch(err => {
-    return handleError(err, pkgManager, task, options);
-  });
-}
-
-function prettyVersionDiff(oldVersion, inc) {
-  const newVersion = getNewVersion(oldVersion, inc).split('.');
-  oldVersion = oldVersion.split('.');
-  let firstVersionChange = false;
-  const output = [];
-
-  for (let i = 0; i < newVersion.length; i++) {
-    if (newVersion[i] !== oldVersion[i] && !firstVersionChange) {
-      output.push(`${chalk.dim.cyan(newVersion[i])}`);
-      firstVersionChange = true;
-    } else if (newVersion[i].indexOf('-') >= 1) {
-      let preVersion = [];
-      preVersion = newVersion[i].split('-');
-      output.push(`${chalk.dim.cyan(`${preVersion[0]}-${preVersion[1]}`)}`);
+  push(key, factory) {
+    if (this.first) {
+      this.first = false;
     } else {
-      output.push(chalk.reset.dim(newVersion[i]));
+      this.stillActive();
+    }
+
+    return new Promise((resolve, reject) => {
+      // we're already running so push ourselves to the queue
+      const queue = this.queue[key] = this.queue[key] || [];
+      queue.push({
+        factory,
+        resolve,
+        reject
+      });
+
+      if (!this.running[key]) {
+        this.shift(key);
+      }
+    });
+  }
+
+  shift(key) {
+    if (this.running[key]) {
+      delete this.running[key];
+      this.runningCount--;
+
+      if (this.stuckTimer) {
+        clearTimeout(this.stuckTimer);
+        this.stuckTimer = null;
+      }
+
+      if (this.warnedStuck) {
+        this.warnedStuck = false;
+        console.log(`${JSON.stringify(this.alias)} blocking queue finally resolved. Nothing to worry about.`);
+      }
+    }
+
+    const queue = this.queue[key];
+
+    if (!queue) {
+      return;
+    }
+
+    const _queue$shift = queue.shift(),
+          resolve = _queue$shift.resolve,
+          reject = _queue$shift.reject,
+          factory = _queue$shift.factory;
+
+    if (!queue.length) {
+      delete this.queue[key];
+    }
+
+    const next = () => {
+      this.shift(key);
+      this.shiftConcurrencyQueue();
+    };
+
+    const run = () => {
+      this.running[key] = true;
+      this.runningCount++;
+      factory().then(function (val) {
+        resolve(val);
+        next();
+        return null;
+      }).catch(function (err) {
+        reject(err);
+        next();
+      });
+    };
+
+    this.maybePushConcurrencyQueue(run);
+  }
+
+  maybePushConcurrencyQueue(run) {
+    if (this.runningCount < this.maxConcurrency) {
+      run();
+    } else {
+      this.concurrencyQueue.push(run);
     }
   }
 
-  return output.join(chalk.reset.dim('.'));
+  shiftConcurrencyQueue() {
+    if (this.runningCount < this.maxConcurrency) {
+      const fn = this.concurrencyQueue.shift();
+
+      if (fn) {
+        fn();
+      }
+    }
+  }
+
 }
 
-const printCommitLog =
-/*#__PURE__*/
-function () {
-  var _ref = _asyncToGenerator(function* (repoUrl) {
-    const latest = yield latestTagOrFirstCommit();
+class ProcessSpawnError extends types.MessageError {
+  constructor(msg, code, process) {
+    super(msg);
+    this.code = code;
+    this.process = process;
+  }
 
-    const _ref2 = yield execa('git', ['log', '--format=%s %h', `${latest}..HEAD`]),
-          log = _ref2.stdout;
+}
+class ProcessTermError extends types.MessageError {}
 
-    if (!log) {
-      return {
-        hasCommits: false,
-        releaseNotes: null
-      };
+/* global child_process$spawnOpts */
+const queue = new BlockingQueue('child', CHILD_CONCURRENCY); // TODO: this uid check is kinda whack
+
+let uid = 0;
+const spawnedProcesses = {};
+function forwardSignalToSpawnedProcesses(signal) {
+  for (var _i = 0, _Object$keys = Object.keys(spawnedProcesses); _i < _Object$keys.length; _i++) {
+    const key = _Object$keys[_i];
+    spawnedProcesses[key].kill(signal);
+  }
+}
+function spawn(program, args, opts = {}, onData) {
+  const key = opts.cwd || String(++uid);
+  return queue.push(key, () => new Promise((resolve, reject) => {
+    const proc = child_process.spawn(program, args, opts);
+
+    spawnedProcesses[key] = proc;
+    let processingDone = false;
+    let processClosed = false;
+    let err = null;
+    let stdout = '';
+    proc.on('error', err => {
+      if (err.code === 'ENOENT') {
+        reject(new ProcessSpawnError(`Couldn't find the binary ${program}`, err.code, program));
+      } else {
+        reject(err);
+      }
+    });
+
+    function updateStdout(chunk) {
+      stdout += chunk;
+
+      if (onData) {
+        onData(chunk);
+      }
     }
 
-    const commits = log.split('\n').map(commit => {
-      const splitIndex = commit.lastIndexOf(' ');
-      return {
-        message: commit.slice(0, splitIndex),
-        id: commit.slice(splitIndex + 1)
-      };
+    function finish() {
+      delete spawnedProcesses[key];
+
+      if (err) {
+        reject(err);
+      } else {
+        resolve(stdout.trim());
+      }
+    }
+
+    if (typeof opts.process === 'function') {
+      opts.process(proc, updateStdout, reject, function () {
+        if (processClosed) {
+          finish();
+        } else {
+          processingDone = true;
+        }
+      });
+    } else {
+      if (proc.stderr) {
+        proc.stderr.on('data', updateStdout);
+      }
+
+      if (proc.stdout) {
+        proc.stdout.on('data', updateStdout);
+      }
+
+      processingDone = true;
+    }
+
+    proc.on('close', (code, signal) => {
+      if (signal || code >= 1) {
+        err = new ProcessTermError(['Command failed.', signal ? `Exit signal: ${signal}` : `Exit code: ${code}`, `Command: ${program}`, `Arguments: ${args.join(' ')}`, `Directory: ${opts.cwd || process.cwd()}`, `Output:\n${stdout.trim()}`].join('\n'));
+        err.EXIT_SIGNAL = signal;
+        err.EXIT_CODE = code;
+      }
+
+      if (processingDone || err) {
+        finish();
+      } else {
+        processClosed = true;
+      }
     });
-    const history = commits.map(commit => {
-      const commitMessage = commit.message; // util.linkifyIssues(repoUrl, commit.message);
+  }));
+}
 
-      const commitId = ''; //util.linkifyCommit(repoUrl, commit.id);
+function fixCmdWinSlashes(cmd) {
+  function findQuotes(quoteSymbol) {
+    const quotes = [];
 
-      return `- ${commitMessage}  ${commitId}`;
-    }).join('\n');
+    const addQuote = (_, index) => {
+      quotes.push({
+        from: index,
+        to: index + _.length
+      });
+      return _;
+    };
 
-    const releaseNotes = nextTag => commits.map(commit => `- ${commit.message}  ${commit.id}`).join('\n') + `\n\n${repoUrl}/compare/${latest}...${nextTag}`;
+    const regEx = new RegExp(quoteSymbol + '.*' + quoteSymbol);
+    cmd.replace(regEx, addQuote);
+    return quotes;
+  }
 
-    const commitRange = linkifyCommitRange(repoUrl, `${latest}...master`);
-    console.log(`${chalk.bold('Commits:')}\n${history}\n\n${chalk.bold('Commit Range:')}\n${commitRange}\n`);
+  const quotes = findQuotes('"').concat(findQuotes("'"));
+
+  function isInsideQuotes(index) {
+    return quotes.reduce((result, quote) => {
+      return result || quote.from <= index && index <= quote.to;
+    }, false);
+  }
+
+  const cmdPrePattern = '((?:^|&&|&|\\|\\||\\|)\\s*)';
+  const cmdPattern = '(".*?"|\'.*?\'|\\S*)';
+  const regExp = new RegExp(`${cmdPrePattern}${cmdPattern}`, 'g');
+  return cmd.replace(regExp, (whole, pre, cmd, index) => {
+    if ((pre[0] === '&' || pre[0] === '|') && isInsideQuotes(index)) {
+      return whole;
+    }
+
+    return pre + cmd.replace(/\//g, '\\');
+  });
+}
+
+// // We treat these configs as internal, thus not expose them to process.env.
+// // This helps us avoid some gyp issues when building native modules.
+// // See https://github.com/yarnpkg/yarn/issues/2286.
+// const IGNORE_CONFIG_KEYS = ['lastUpdateCheck'];
+// async function getPnpParameters(config: Config): Promise<Array<string>> {
+//   if (await fs.exists(`${config.lockfileFolder}/${constants.PNP_FILENAME}`)) {
+//     return ['-r', `${config.lockfileFolder}/${constants.PNP_FILENAME}`];
+//   } else {
+//     return [];
+//   }
+// }
+// let wrappersFolder = null;
+// export async function getWrappersFolder(config: Config): Promise<string> {
+//   if (wrappersFolder) {
+//     return wrappersFolder;
+//   }
+//   wrappersFolder = await fs.makeTempDir();
+//   await makePortableProxyScript(process.execPath, wrappersFolder, {
+//     proxyBasename: 'node',
+//     prependArguments: [...(await getPnpParameters(config))],
+//   });
+//   await makePortableProxyScript(process.execPath, wrappersFolder, {
+//     proxyBasename: 'pika',
+//     prependArguments: [process.argv[1]],
+//   });
+//   return wrappersFolder;
+// }
+// const INVALID_CHAR_REGEX = /\W/g;
+
+function makeEnv() {
+  return _makeEnv.apply(this, arguments);
+} //   // Merge in the `env` object specified in .pikarc
+//   const customEnv = config.getOption('env');
+//   if (customEnv && typeof customEnv === 'object') {
+//     Object.assign(env, customEnv);
+//   }
+//   env.npm_lifecycle_event = stage;
+//   env.npm_node_execpath = env.NODE;
+//   env.npm_execpath = env.npm_execpath || (process.mainModule && process.mainModule.filename);
+//   // Set the env to production for npm compat if production mode.
+//   // https://github.com/npm/npm/blob/30d75e738b9cb7a6a3f9b50e971adcbe63458ed3/lib/utils/lifecycle.js#L336
+//   if (config.production) {
+//     env.NODE_ENV = 'production';
+//   }
+//   // Note: npm_config_argv environment variable contains output of nopt - command-line
+//   // parser used by npm. Since we use other parser, we just roughly emulate it's output. (See: #684)
+//   env.npm_config_argv = JSON.stringify({
+//     remain: [],
+//     cooked: config.commandName === 'run' ? [config.commandName, stage] : [config.commandName],
+//     original: process.argv.slice(2),
+//   });
+//   const manifest = await config.maybeReadManifest(cwd);
+//   if (manifest) {
+//     if (manifest.scripts && Object.prototype.hasOwnProperty.call(manifest.scripts, stage)) {
+//       env.npm_lifecycle_script = manifest.scripts[stage];
+//     }
+//     // add npm_package_*
+//     const queue = [['', manifest]];
+//     while (queue.length) {
+//       const [key, val] = queue.pop();
+//       if (typeof val === 'object') {
+//         for (const subKey in val) {
+//           const fullKey = [key, subKey].filter(Boolean).join('_');
+//           if (fullKey && fullKey[0] !== '_' && !IGNORE_MANIFEST_KEYS.has(fullKey)) {
+//             queue.push([fullKey, val[subKey]]);
+//           }
+//         }
+//       } else {
+//         let cleanVal = String(val);
+//         if (cleanVal.indexOf('\n') >= 0) {
+//           cleanVal = JSON.stringify(cleanVal);
+//         }
+//         //replacing invalid chars with underscore
+//         const cleanKey = key.replace(INVALID_CHAR_REGEX, '_');
+//         env[`npm_package_${cleanKey}`] = cleanVal;
+//       }
+//     }
+//   }
+//   // add npm_config_* and npm_package_config_* from pika config
+//   const keys: Set<string> = new Set([
+//     ...Object.keys(config.registries.pika.config),
+//     ...Object.keys(config.registries.npm.config),
+//   ]);
+//   const cleaned = Array.from(keys)
+//     .filter(key => !key.match(/:_/) && IGNORE_CONFIG_KEYS.indexOf(key) === -1)
+//     .map(key => {
+//       let val = config.getOption(key);
+//       if (!val) {
+//         val = '';
+//       } else if (typeof val === 'number') {
+//         val = '' + val;
+//       } else if (typeof val !== 'string') {
+//         val = JSON.stringify(val);
+//       }
+//       if (val.indexOf('\n') >= 0) {
+//         val = JSON.stringify(val);
+//       }
+//       return [key, val];
+//     });
+//   // add npm_config_*
+//   for (const [key, val] of cleaned) {
+//     const cleanKey = key.replace(/^_+/, '');
+//     const envKey = `npm_config_${cleanKey}`.replace(INVALID_CHAR_REGEX, '_');
+//     env[envKey] = val;
+//   }
+//   // add npm_package_config_*
+//   if (manifest && manifest.name) {
+//     const packageConfigPrefix = `${manifest.name}:`;
+//     for (const [key, val] of cleaned) {
+//       if (key.indexOf(packageConfigPrefix) !== 0) {
+//         continue;
+//       }
+//       const cleanKey = key.replace(/^_+/, '').replace(packageConfigPrefix, '');
+//       const envKey = `npm_package_config_${cleanKey}`.replace(INVALID_CHAR_REGEX, '_');
+//       env[envKey] = val;
+//     }
+//   }
+//   // split up the path
+//   const envPath = env[constants.ENV_PATH_KEY];
+//   const pathParts = envPath ? envPath.split(path.delimiter) : [];
+//   // Include the directory that contains node so that we can guarantee that the scripts
+//   // will always run with the exact same Node release than the one use to run Pika
+//   const execBin = path.dirname(process.execPath);
+//   if (pathParts.indexOf(execBin) === -1) {
+//     pathParts.unshift(execBin);
+//   }
+//   // Include node-gyp version that was bundled with the current Node.js version,
+//   // if available.
+//   pathParts.unshift(path.join(path.dirname(process.execPath), 'node_modules', 'npm', 'bin', 'node-gyp-bin'));
+//   pathParts.unshift(
+//     path.join(path.dirname(process.execPath), '..', 'lib', 'node_modules', 'npm', 'bin', 'node-gyp-bin'),
+//   );
+//   // Include node-gyp version from homebrew managed npm, if available.
+//   pathParts.unshift(
+//     path.join(path.dirname(process.execPath), '..', 'libexec', 'lib', 'node_modules', 'npm', 'bin', 'node-gyp-bin'),
+//   );
+//   // Add global bin folder if it is not present already, as some packages depend
+//   // on a globally-installed version of node-gyp.
+//   const globalBin = await getGlobalBinFolder(config, {});
+//   if (pathParts.indexOf(globalBin) === -1) {
+//     pathParts.unshift(globalBin);
+//   }
+//   // Add node_modules .bin folders to the PATH
+//   for (const registry of Object.keys(registries)) {
+//     const binFolder = path.join(config.registries[registry].folder, '.bin');
+//     if (config.workspacesEnabled && config.workspaceRootFolder) {
+//       pathParts.unshift(path.join(config.workspaceRootFolder, binFolder));
+//     }
+//     pathParts.unshift(path.join(config.linkFolder, binFolder));
+//     pathParts.unshift(path.join(cwd, binFolder));
+//     if (config.modulesFolder) {
+//       pathParts.unshift(path.join(config.modulesFolder, '.bin'));
+//     }
+//   }
+//   if (await fs.exists(`${config.lockfileFolder}/${constants.PNP_FILENAME}`)) {
+//     // TODO: Fix. import()? Do we even like that it does this?
+//     throw new Error("pnp temporarily not supported");
+//     const pnpApi = {}; //dynamicRequire(`${config.lockfileFolder}/${constants.PNP_FILENAME}`);
+//     const packageLocator = pnpApi.findPackageLocator(`${config.cwd}/`);
+//     const packageInformation = pnpApi.getPackageInformation(packageLocator);
+//     for (const [name, reference] of packageInformation.packageDependencies.entries()) {
+//       const dependencyInformation = pnpApi.getPackageInformation({name, reference});
+//       if (!dependencyInformation || !dependencyInformation.packageLocation) {
+//         continue;
+//       }
+//       pathParts.unshift(`${dependencyInformation.packageLocation}/.bin`);
+//     }
+//   }
+//   pathParts.unshift(await getWrappersFolder(config));
+//   // join path back together
+//   env[constants.ENV_PATH_KEY] = pathParts.join(path.delimiter);
+//   return env;
+// }
+
+function _makeEnv() {
+  _makeEnv = _asyncToGenerator(function* () {
+    // stage: string,
+    // cwd: string,
+    // config: Config,
+    const env = _objectSpread({
+      NODE: process.execPath,
+      INIT_CWD: process.cwd()
+    }, process.env);
+
+    return env;
+  });
+  return _makeEnv.apply(this, arguments);
+}
+
+function executeLifecycleScript(_x) {
+  return _executeLifecycleScript.apply(this, arguments);
+}
+
+function _executeLifecycleScript() {
+  _executeLifecycleScript = _asyncToGenerator(function* ({
+    // config,
+    cwd,
+    cmd,
+    args,
+    isInteractive,
+    onProgress,
+    customShell
+  }) {
+    const env = yield makeEnv(); // await checkForGypIfNeeded(config, cmd, env[constants.ENV_PATH_KEY].split(path.delimiter));
+
+    if (process.platform === 'win32' && (!customShell || customShell === 'cmd')) {
+      // handle windows run scripts starting with a relative path
+      cmd = fixCmdWinSlashes(cmd);
+    } // By default (non-interactive), pipe everything to the terminal and run child process detached
+    // as long as it's not Windows (since windows does not have /dev/tty)
+
+
+    let stdio = ['ignore', 'pipe', 'pipe'];
+    let detached = process.platform !== 'win32';
+
+    if (isInteractive) {
+      stdio = 'inherit';
+      detached = false;
+    }
+
+    const shell = customShell || true;
+    const stdout = yield spawn(cmd, args, {
+      cwd,
+      env,
+      stdio,
+      detached,
+      shell
+    }, onProgress);
     return {
-      hasCommits: true,
-      releaseNotes
+      cwd,
+      command: cmd,
+      stdout
     };
   });
-
-  return function printCommitLog(_x) {
-    return _ref.apply(this, arguments);
-  };
-}();
-
-function ui (_x2, _x3) {
-  return _ref3.apply(this, arguments);
+  return _executeLifecycleScript.apply(this, arguments);
 }
-
-function _ref3() {
-  _ref3 = _asyncToGenerator(function* (options, pkg) {
-    const oldVersion = pkg.version;
-    const extraBaseUrls = ['gitlab.com'];
-    const repoUrl = pkg.repository && githubUrlFromGit(pkg.repository.url, {
-      extraBaseUrls
-    });
-    console.log(`\nPublish a new version of ${chalk.bold.magenta(pkg.name)} ${chalk.dim(`(current: ${oldVersion})`)}\n`);
-    const prompts = [{
-      type: 'list',
-      name: 'version',
-      message: 'Select semver increment or specify new version',
-      pageSize: SEMVER_INCREMENTS.length + 2,
-      choices: SEMVER_INCREMENTS.map(inc => ({
-        name: `${inc} 	${prettyVersionDiff(oldVersion, inc)}`,
-        value: inc
-      })).concat([new inquirer__default.Separator(), {
-        name: 'Other (specify)',
-        value: null
-      }]),
-      filter: input => isValidVersionInput(input) ? getNewVersion(oldVersion, input) : input
-    }, {
-      type: 'input',
-      name: 'version',
-      message: 'Version',
-      when: answers => !answers.version,
-      filter: input => isValidVersionInput(input) ? getNewVersion(pkg.version, input) : input,
-      validate: input => {
-        if (!isValidVersionInput(input)) {
-          return 'Please specify a valid semver, for example, `1.2.3`. See http://semver.org';
-        }
-
-        if (!isVersionGreater(oldVersion, input)) {
-          return `Version must be greater than ${oldVersion}`;
-        }
-
-        return true;
-      }
-    }, {
-      type: 'list',
-      name: 'tag',
-      message: 'How should this pre-release version be tagged in npm?',
-      when: answers => !pkg.private && isPrereleaseVersion(answers.version) && !options.tag,
-      choices: function () {
-        var _choices = _asyncToGenerator(function* () {
-          const _ref4 = yield execa('npm', ['view', '--json', pkg.name, 'dist-tags']),
-                stdout = _ref4.stdout;
-
-          const existingPrereleaseTags = Object.keys(JSON.parse(stdout)).filter(tag => tag !== 'latest');
-
-          if (existingPrereleaseTags.length === 0) {
-            existingPrereleaseTags.push('next');
-          }
-
-          return [...existingPrereleaseTags, new inquirer__default.Separator(), {
-            name: 'Other (specify)',
-            value: null
-          }];
-        });
-
-        function choices() {
-          return _choices.apply(this, arguments);
-        }
-
-        return choices;
-      }()
-    }, {
-      type: 'input',
-      name: 'tag',
-      message: 'Tag',
-      when: answers => !pkg.private && isPrereleaseVersion(answers.version) && !options.tag && !answers.tag,
-      validate: input => {
-        if (input.length === 0) {
-          return 'Please specify a tag, for example, `next`.';
-        }
-
-        if (input.toLowerCase() === 'latest') {
-          return 'It\'s not possible to publish pre-releases under the `latest` tag. Please specify something else, for example, `next`.';
-        }
-
-        return true;
-      }
-    }, {
-      type: 'confirm',
-      name: 'confirm',
-      message: answers => {
-        const tag = answers.tag || options.tag;
-        const tagPart = tag ? ` and tag this release in npm as ${tag}` : '';
-        return `Will bump from ${chalk.cyan(oldVersion)} to ${chalk.cyan(answers.version + tagPart)}. Continue?`;
-      }
-    }, {
-      type: 'confirm',
-      name: 'publishScoped',
-      when: isScoped(pkg.name) && options.publish && !pkg.private,
-      message: `${chalk.bold.magenta(pkg.name)} is a scoped package. Do you want to publish it publicly?`,
-      default: true
-    }];
-
-    const _ref5 = yield printCommitLog(repoUrl),
-          hasCommits = _ref5.hasCommits,
-          releaseNotes = _ref5.releaseNotes;
-
-    if (!hasCommits) {
-      const answers = yield inquirer__default.prompt([{
-        type: 'confirm',
-        name: 'confirm',
-        message: 'No commits found since previous release, continue?',
-        default: false
-      }]);
-
-      if (!answers.confirm) {
-        return Object.assign({}, options, answers);
-      }
-    }
-
-    const answers = yield inquirer__default.prompt(prompts);
-    return Object.assign({}, options, answers, {
-      repoUrl,
-      releaseNotes
-    });
-  });
-  return _ref3.apply(this, arguments);
-}
+// // /**
+// //  * Special case: Some packages depend on node-gyp, but don't specify this in
+// //  * their package.json dependencies. They assume that node-gyp is available
+// //  * globally. We need to detect this case and show an error message.
+// //  */
+// function checkForGypIfNeeded(config: Config, cmd: string, paths: Array<string>): Promise<void> {
+//   if (cmd.substr(0, cmd.indexOf(' ')) !== 'node-gyp') {
+//     return Promise.resolve();
+//   }
+//   // Ensure this only runs once, rather than multiple times in parallel.
+//   if (!checkGypPromise) {
+//     checkGypPromise = _checkForGyp(config, paths);
+//   }
+//   return checkGypPromise;
+// }
+// async function _checkForGyp(config: Config, paths: Array<string>): Promise<void> {
+//   const {reporter} = config;
+//   // Check every directory in the PATH
+//   const allChecks = await Promise.all(paths.map(dir => fs.exists(path.join(dir, 'node-gyp'))));
+//   if (allChecks.some(Boolean)) {
+//     // node-gyp is available somewhere
+//     return;
+//   }
+//   reporter.info(reporter.lang('packageRequiresNodeGyp'));
+// }
+// export async function execFromDistributions(config: Config, cwd: string, dist: string, step: string): Promise<void> {
+//   const pkg = await config.maybeReadManifest(cwd);
+//   if (!pkg || !pkg.distributions || !pkg.distributions[dist] || typeof pkg.distributions[dist][step] !== 'string') {
+//     return false;
+//   }
+//   const cmd: ?string = pkg.distributions[dist][step];
+//   await execCommand({stage: 'build', config, cmd, cwd, isInteractive: true});
+//   return true;
+// }
+// export async function execFromManifest(config: Config, commandName: string, cwd: string): Promise<void> {
+//   const pkg = await config.maybeReadManifest(cwd);
+//   if (!pkg || !pkg.scripts) {
+//     return;
+//   }
+//   const cmd: ?string = pkg.scripts[commandName];
+//   if (cmd) {
+//     await execCommand({stage: commandName, config, cmd, cwd, isInteractive: true});
+//   }
+// }
+// export async function execCommand({
+//   stage,
+//   config,
+//   cmd,
+//   cwd,
+//   isInteractive,
+//   customShell,
+// }: {
+//   stage: string;
+//   config: Config;
+//   cmd: string;
+//   cwd: string;
+//   isInteractive: boolean;
+//   customShell?: string;
+// }): Promise<void> {
+//   const {reporter} = config;
+//   try {
+//     reporter.command(cmd);
+//     await executeLifecycleScript({config, cwd, cmd, isInteractive, customShell});
+//     return Promise.resolve();
+//   } catch (err) {
+//     if (err instanceof ProcessTermError) {
+//       throw new MessageError(
+//         err.EXIT_SIGNAL
+//           ? reporter.lang('commandFailedWithSignal', err.EXIT_SIGNAL)
+//           : reporter.lang('commandFailedWithCode', err.EXIT_CODE),
+//       );
+//     } else {
+//       throw err;
+//     }
+//   }
+// }
 
 function setFlags$1(commander) {
   commander.description('Publish');
@@ -3437,258 +3583,64 @@ function setFlags$1(commander) {
   commander.option('--tag', ' Publish under a given dist-tag');
   commander.option('--no-yarn', " Don't use Yarn");
   commander.option('--contents', 'Subdirectory to publish', 'pkg/');
+  commander.option('--no-release-draft', 'Skips opening a GitHub release draft');
   commander.option('--otp <code>', 'Publish with an OTP code');
-  commander.option('--out <dir>', 'Directory to publish');
 }
 function hasWrapper$1() {
   return false;
 }
-class Publish {
-  constructor(flags, config, reporter) {
-    this.flags = flags;
-    this.config = config;
-    this.reporter = reporter;
-    this.totalNum = 0;
-    this.out = path.resolve(config.cwd, flags.out || 'pkg/');
-
-    if (this.out === this.config.cwd) {
-      throw new Error('On publish, you cannot write to cwd because a package.json is created');
-    }
-  }
-
-  init(options) {
-    var _this = this;
-
-    return _asyncToGenerator(function* () {
-      const out = _this.out,
-            config = _this.config,
-            reporter = _this.reporter;
-      const manifest = config.manifest;
-      const repoUrl = manifest.repository && githubUrlFromGit(manifest.repository.url, {
-        extraBaseUrls: ['gitlab.com']
-      });
-
-      if (!hasYarn() && options.yarn) {
-        throw new Error('Could not use Yarn without yarn.lock file');
-      }
-
-      const runTests = !options.yolo;
-      const runCleanup = options.cleanup && !options.yolo;
-      const runPublish = options.publish;
-      const pkgManager = options.yarn === true ? 'yarn' : 'npm';
-      const isOnGitHub = repoUrl && hostedGitInfo.fromUrl(repoUrl).type === 'github';
-      const steps = [];
-      steps.push(
-      /*#__PURE__*/
-      function () {
-        var _ref = _asyncToGenerator(function* (curr, total) {
-          _this.reporter.step(curr, total, 'Prerequisite checks', '✨');
-
-          runPublish && (yield prerequisites(manifest, options)); // title: 'Check current branch',
-
-          const _ref2 = yield execa('git', ['symbolic-ref', '--short', 'HEAD']),
-                branch = _ref2.stdout;
-
-          if (branch !== 'master' && !options.anyBranch) {
-            throw new Error('Not on `master` branch. Use --any-branch to publish anyway.');
-          } // title: 'Check local working tree',
-
-
-          const _ref3 = yield execa('git', ['status', '--porcelain']),
-                status = _ref3.stdout;
-
-          if (status !== '') {
-            throw new Error('Unclean working tree. Commit or stash changes first.');
-          } // title: 'Check remote history',
-
-
-          let stdout;
-
-          try {
-            // Gracefully handle no remote set up.
-            stdout = yield execa.stdout('git', ['rev-list', '--count', '--left-only', '@{u}...HEAD']);
-          } catch (_) {}
-
-          if (stdout && stdout !== '0') {
-            throw new Error('Remote history differs. Please pull changes.');
-          }
-        });
-
-        return function (_x, _x2) {
-          return _ref.apply(this, arguments);
-        };
-      }());
-
-      if (runCleanup) {
-        steps.push(
-        /*#__PURE__*/
-        function () {
-          var _ref4 = _asyncToGenerator(function* (curr, total) {
-            _this.reporter.step(curr, total, 'Cleanup', '✨');
-
-            yield unlink('package-lock.json');
-            yield unlink('yarn.lock');
-            yield unlink('node_modules');
-            yield unlink('pkg');
-
-            if (options.yarn) {
-              return execa('yarn', ['install', '--production=false']);
-            } else {
-              return execa('npm', ['install', '--no-production']);
-            }
-          });
-
-          return function (_x3, _x4) {
-            return _ref4.apply(this, arguments);
-          };
-        }());
-      }
-
-      steps.push(
-      /*#__PURE__*/
-      function () {
-        var _ref5 = _asyncToGenerator(function* (curr, total) {
-          _this.reporter.step(curr, total, 'Bump Version', '✨');
-
-          yield execa('npm', ['version', options.version, '--force']);
-          yield config.loadPackageManifest();
-        });
-
-        return function (_x5, _x6) {
-          return _ref5.apply(this, arguments);
-        };
-      }());
-      steps.push(
-      /*#__PURE__*/
-      function () {
-        var _ref6 = _asyncToGenerator(function* (curr, total) {
-          _this.reporter.step(curr, total, 'Building Package', '✨');
-
-          const oldIsSilent = reporter.isSilent;
-          reporter.isSilent = true;
-          const builder = new Build({
-            out,
-            publish: true,
-            silent: true
-          }, config, reporter);
-          yield builder.init(true);
-          reporter.isSilent = oldIsSilent;
-        });
-
-        return function (_x7, _x8) {
-          return _ref6.apply(this, arguments);
-        };
-      }());
-
-      if (runTests) {
-        steps.push(
-        /*#__PURE__*/
-        function () {
-          var _ref7 = _asyncToGenerator(function* (curr, total) {
-            _this.reporter.step(curr, total, 'Test', '✨');
-
-            if (!options.yarn) {
-              yield execa('npm', ['test']);
-              return;
-            }
-
-            try {
-              yield execa('yarn', ['test']);
-            } catch (err) {
-              if (err.message.includes('Command "test" not found')) {
-                return;
-              }
-
-              throw err;
-            }
-          });
-
-          return function (_x9, _x10) {
-            return _ref7.apply(this, arguments);
-          };
-        }());
-      }
-
-      if (runPublish && !manifest.private) {
-        steps.push(
-        /*#__PURE__*/
-        function () {
-          var _ref8 = _asyncToGenerator(function* (curr, total) {
-            _this.reporter.step(curr, total, 'Publishing Package', '✨');
-
-            yield publish(pkgManager, 'Publishing Package', options);
-          });
-
-          return function (_x11, _x12) {
-            return _ref8.apply(this, arguments);
-          };
-        }());
-      }
-
-      steps.push(
-      /*#__PURE__*/
-      function () {
-        var _ref9 = _asyncToGenerator(function* (curr, total) {
-          _this.reporter.step(curr, total, 'Pushing Changes', '✨');
-
-          !(yield hasUpstream()) && (yield execa('git', ['push', '--follow-tags'])); // isOnGitHub === true && release(options);
-        });
-
-        return function (_x13, _x14) {
-          return _ref9.apply(this, arguments);
-        };
-      }());
-      console.log('');
-      let currentStep = 0;
-      var _arr = steps;
-
-      for (var _i = 0; _i < _arr.length; _i++) {
-        const step = _arr[_i];
-        yield step(++currentStep, steps.length);
-      }
-    })();
-  }
-
-}
-function run$1(_x15, _x16, _x17, _x18) {
+function run$1(_x, _x2, _x3, _x4) {
   return _run$1.apply(this, arguments);
 }
 
 function _run$1() {
   _run$1 = _asyncToGenerator(function* (config, reporter, flags, args) {
-    yield config.loadPackageManifest();
-    const options = args.length > 0 ? Object.assign({
-      cleanup: true
-    }, flags, {
-      yarn: hasYarn(),
-      version: args[0]
-    }) : yield ui(Object.assign({}, flags, {
-      yarn: hasYarn()
-    }), config.manifest);
+    const contentsArg = flags.contents ? [] : ['--contents', flags.out || flags.contents || 'pkg/'];
+    const manifest = yield config.loadPackageManifest();
 
-    if (!options.confirm) {
+    if (!manifest.scripts.version) {
+      reporter.warn(`${chalk.bold('"version" script missing!')} A fresh build is required after every bump to the master package.json version.`);
+
+      if (manifest.scripts.build) {
+        config._manifest.scripts.version = 'npm run build';
+      } else {
+        config._manifest.scripts.version = 'npx @pika/pack build';
+      }
+
+      yield config.savePackageManifest(config._manifest);
+      reporter.log(`Adding the following "version" lifecycle script to your package.json... ` + chalk.bold(`"${config._manifest.scripts.version}"`));
+      reporter.log(`Please review & commit this change before publishing.`);
+      return;
+    } // TODO: Check that the "version" hook runs build or @pika/pack
+
+
+    try {
+      yield executeLifecycleScript({
+        cwd: config.cwd,
+        cmd: 'npx',
+        args: ['np', ...contentsArg, ...flags.originalArgs],
+        isInteractive: true
+      });
+    } catch (err) {
+      // swallow err, np will properly log it to the console
       return;
     }
 
-    const publish = new Publish(flags, config, reporter);
-    yield publish.init(options);
     const newManifest = yield config.loadPackageManifest();
-    console.log(chalk.bold(`\n🎉  ${newManifest.name} v${newManifest.version} published!`));
-    console.log(`You can see it at: ${chalk.underline(`https://unpkg.com/${newManifest.name}@${newManifest.version}/`)}`);
+    console.log(`If published publicly, you can see it at: ${chalk.underline(`https://unpkg.com/${newManifest.name}@${newManifest.version}/`)}`);
   });
   return _run$1.apply(this, arguments);
 }
 
-var publish$1 = /*#__PURE__*/Object.freeze({
+var publish = /*#__PURE__*/Object.freeze({
   setFlags: setFlags$1,
   hasWrapper: hasWrapper$1,
-  Publish: Publish,
   run: run$1
 });
 
 const commands = {
   build,
-  publish: publish$1
+  publish
 };
 
 /* @flow */
@@ -3828,10 +3780,8 @@ function validate (info, isRoot, reporter, warn) {
   // validate strings
 
 
-  var _arr = strings;
-
-  for (var _i = 0; _i < _arr.length; _i++) {
-    const key = _arr[_i];
+  for (var _i = 0, _strings = strings; _i < _strings.length; _i++) {
+    const key = _strings[_i];
     const val = info[key];
 
     if (val && typeof val !== 'string') {
@@ -3844,10 +3794,9 @@ function validate (info, isRoot, reporter, warn) {
 function cleanDependencies(info, isRoot, reporter, warn) {
   // get dependency objects
   const depTypes = [];
-  var _arr2 = dependencyKeys;
 
-  for (var _i2 = 0; _i2 < _arr2.length; _i2++) {
-    const type = _arr2[_i2];
+  for (var _i2 = 0, _dependencyKeys = dependencyKeys; _i2 < _dependencyKeys.length; _i2++) {
+    const type = _dependencyKeys[_i2];
     const deps = info[type];
 
     if (!deps || typeof deps !== 'object') {
@@ -3859,17 +3808,14 @@ function cleanDependencies(info, isRoot, reporter, warn) {
 
 
   const nonTrivialDeps = new Map();
-  var _arr3 = depTypes;
 
-  for (var _i3 = 0; _i3 < _arr3.length; _i3++) {
-    const _arr3$_i = _slicedToArray(_arr3[_i3], 2),
-          type = _arr3$_i[0],
-          deps = _arr3$_i[1];
+  for (var _i3 = 0, _depTypes = depTypes; _i3 < _depTypes.length; _i3++) {
+    const _depTypes$_i = _slicedToArray(_depTypes[_i3], 2),
+          type = _depTypes$_i[0],
+          deps = _depTypes$_i[1];
 
-    var _arr5 = Object.keys(deps);
-
-    for (var _i5 = 0; _i5 < _arr5.length; _i5++) {
-      const name = _arr5[_i5];
+    for (var _i5 = 0, _Object$keys = Object.keys(deps); _i5 < _Object$keys.length; _i5++) {
+      const name = _Object$keys[_i5];
       const version = deps[name];
 
       if (!nonTrivialDeps.has(name) && version && version !== '*') {
@@ -3883,17 +3829,14 @@ function cleanDependencies(info, isRoot, reporter, warn) {
 
 
   const setDeps = new Set();
-  var _arr4 = depTypes;
 
-  for (var _i4 = 0; _i4 < _arr4.length; _i4++) {
-    const _arr4$_i = _slicedToArray(_arr4[_i4], 2),
-          type = _arr4$_i[0],
-          deps = _arr4$_i[1];
+  for (var _i4 = 0, _depTypes2 = depTypes; _i4 < _depTypes2.length; _i4++) {
+    const _depTypes2$_i = _slicedToArray(_depTypes2[_i4], 2),
+          type = _depTypes2$_i[0],
+          deps = _depTypes2$_i[1];
 
-    var _arr6 = Object.keys(deps);
-
-    for (var _i6 = 0; _i6 < _arr6.length; _i6++) {
-      const name = _arr6[_i6];
+    for (var _i6 = 0, _Object$keys2 = Object.keys(deps); _i6 < _Object$keys2.length; _i6++) {
+      const name = _Object$keys2[_i6];
       let version = deps[name];
       const dep = nonTrivialDeps.get(name);
 
@@ -4563,503 +4506,12 @@ var normalizeManifest = /*#__PURE__*/
   };
 })();
 
-class ProcessSpawnError extends types.MessageError {
-  constructor(msg, code, process) {
-    super(msg);
-    this.code = code;
-    this.process = process;
-  }
-
-}
-class ProcessTermError extends types.MessageError {}
-
-class BlockingQueue {
-  constructor(alias, maxConcurrency = Infinity) {
-    this.concurrencyQueue = [];
-    this.maxConcurrency = maxConcurrency;
-    this.runningCount = 0;
-    this.warnedStuck = false;
-    this.alias = alias;
-    this.first = true;
-    this.running = nullify() || {};
-    this.queue = nullify() || {};
-    this.stuckTick = this.stuckTick.bind(this);
-  }
-
-  stillActive() {
-    if (this.stuckTimer) {
-      clearTimeout(this.stuckTimer);
-    }
-
-    this.stuckTimer = setTimeout(this.stuckTick, 5000); // We need to check the existence of unref because of https://github.com/facebook/jest/issues/4559
-    // $FlowFixMe: Node's setInterval returns a Timeout, not a Number
-
-    this.stuckTimer.unref && this.stuckTimer.unref();
-  }
-
-  stuckTick() {
-    if (this.runningCount === 1) {
-      this.warnedStuck = true;
-      console.log(`The ${JSON.stringify(this.alias)} blocking queue may be stuck. 5 seconds ` + `without any activity with 1 worker: ${Object.keys(this.running)[0]}`);
-    }
-  }
-
-  push(key, factory) {
-    if (this.first) {
-      this.first = false;
-    } else {
-      this.stillActive();
-    }
-
-    return new Promise((resolve, reject) => {
-      // we're already running so push ourselves to the queue
-      const queue = this.queue[key] = this.queue[key] || [];
-      queue.push({
-        factory,
-        resolve,
-        reject
-      });
-
-      if (!this.running[key]) {
-        this.shift(key);
-      }
-    });
-  }
-
-  shift(key) {
-    if (this.running[key]) {
-      delete this.running[key];
-      this.runningCount--;
-
-      if (this.stuckTimer) {
-        clearTimeout(this.stuckTimer);
-        this.stuckTimer = null;
-      }
-
-      if (this.warnedStuck) {
-        this.warnedStuck = false;
-        console.log(`${JSON.stringify(this.alias)} blocking queue finally resolved. Nothing to worry about.`);
-      }
-    }
-
-    const queue = this.queue[key];
-
-    if (!queue) {
-      return;
-    }
-
-    const _queue$shift = queue.shift(),
-          resolve = _queue$shift.resolve,
-          reject = _queue$shift.reject,
-          factory = _queue$shift.factory;
-
-    if (!queue.length) {
-      delete this.queue[key];
-    }
-
-    const next = () => {
-      this.shift(key);
-      this.shiftConcurrencyQueue();
-    };
-
-    const run = () => {
-      this.running[key] = true;
-      this.runningCount++;
-      factory().then(function (val) {
-        resolve(val);
-        next();
-        return null;
-      }).catch(function (err) {
-        reject(err);
-        next();
-      });
-    };
-
-    this.maybePushConcurrencyQueue(run);
-  }
-
-  maybePushConcurrencyQueue(run) {
-    if (this.runningCount < this.maxConcurrency) {
-      run();
-    } else {
-      this.concurrencyQueue.push(run);
-    }
-  }
-
-  shiftConcurrencyQueue() {
-    if (this.runningCount < this.maxConcurrency) {
-      const fn = this.concurrencyQueue.shift();
-
-      if (fn) {
-        fn();
-      }
-    }
-  }
-
-}
-
-/* global child_process$spawnOpts */
-const queue = new BlockingQueue('child', CHILD_CONCURRENCY); // TODO: this uid check is kinda whack
-
-let uid = 0;
-const spawnedProcesses = {};
-function forwardSignalToSpawnedProcesses(signal) {
-  var _arr = Object.keys(spawnedProcesses);
-
-  for (var _i = 0; _i < _arr.length; _i++) {
-    const key = _arr[_i];
-    spawnedProcesses[key].kill(signal);
-  }
-}
-function spawn(program, args, opts = {}, onData) {
-  const key = opts.cwd || String(++uid);
-  return queue.push(key, () => new Promise((resolve, reject) => {
-    const proc = child_process.spawn(program, args, opts);
-
-    spawnedProcesses[key] = proc;
-    let processingDone = false;
-    let processClosed = false;
-    let err = null;
-    let stdout = '';
-    proc.on('error', err => {
-      if (err.code === 'ENOENT') {
-        reject(new ProcessSpawnError(`Couldn't find the binary ${program}`, err.code, program));
-      } else {
-        reject(err);
-      }
-    });
-
-    function updateStdout(chunk) {
-      stdout += chunk;
-
-      if (onData) {
-        onData(chunk);
-      }
-    }
-
-    function finish() {
-      delete spawnedProcesses[key];
-
-      if (err) {
-        reject(err);
-      } else {
-        resolve(stdout.trim());
-      }
-    }
-
-    if (typeof opts.process === 'function') {
-      opts.process(proc, updateStdout, reject, function () {
-        if (processClosed) {
-          finish();
-        } else {
-          processingDone = true;
-        }
-      });
-    } else {
-      if (proc.stderr) {
-        proc.stderr.on('data', updateStdout);
-      }
-
-      if (proc.stdout) {
-        proc.stdout.on('data', updateStdout);
-      }
-
-      processingDone = true;
-    }
-
-    proc.on('close', (code, signal) => {
-      if (signal || code >= 1) {
-        err = new ProcessTermError(['Command failed.', signal ? `Exit signal: ${signal}` : `Exit code: ${code}`, `Command: ${program}`, `Arguments: ${args.join(' ')}`, `Directory: ${opts.cwd || process.cwd()}`, `Output:\n${stdout.trim()}`].join('\n'));
-        err.EXIT_SIGNAL = signal;
-        err.EXIT_CODE = code;
-      }
-
-      if (processingDone || err) {
-        finish();
-      } else {
-        processClosed = true;
-      }
-    });
-  }));
-}
-
-function fixCmdWinSlashes(cmd) {
-  function findQuotes(quoteSymbol) {
-    const quotes = [];
-
-    const addQuote = (_, index) => {
-      quotes.push({
-        from: index,
-        to: index + _.length
-      });
-      return _;
-    };
-
-    const regEx = new RegExp(quoteSymbol + '.*' + quoteSymbol);
-    cmd.replace(regEx, addQuote);
-    return quotes;
-  }
-
-  const quotes = findQuotes('"').concat(findQuotes("'"));
-
-  function isInsideQuotes(index) {
-    return quotes.reduce((result, quote) => {
-      return result || quote.from <= index && index <= quote.to;
-    }, false);
-  }
-
-  const cmdPrePattern = '((?:^|&&|&|\\|\\||\\|)\\s*)';
-  const cmdPattern = '(".*?"|\'.*?\'|\\S*)';
-  const regExp = new RegExp(`${cmdPrePattern}${cmdPattern}`, 'g');
-  return cmd.replace(regExp, (whole, pre, cmd, index) => {
-    if ((pre[0] === '&' || pre[0] === '|') && isInsideQuotes(index)) {
-      return whole;
-    }
-
-    return pre + cmd.replace(/\//g, '\\');
-  });
-}
-
-// // We treat these configs as internal, thus not expose them to process.env.
-// // This helps us avoid some gyp issues when building native modules.
-// // See https://github.com/yarnpkg/yarn/issues/2286.
-// const IGNORE_CONFIG_KEYS = ['lastUpdateCheck'];
-// async function getPnpParameters(config: Config): Promise<Array<string>> {
-//   if (await fs.exists(`${config.lockfileFolder}/${constants.PNP_FILENAME}`)) {
-//     return ['-r', `${config.lockfileFolder}/${constants.PNP_FILENAME}`];
-//   } else {
-//     return [];
-//   }
-// }
-// let wrappersFolder = null;
-// export async function getWrappersFolder(config: Config): Promise<string> {
-//   if (wrappersFolder) {
-//     return wrappersFolder;
-//   }
-//   wrappersFolder = await fs.makeTempDir();
-//   await makePortableProxyScript(process.execPath, wrappersFolder, {
-//     proxyBasename: 'node',
-//     prependArguments: [...(await getPnpParameters(config))],
-//   });
-//   await makePortableProxyScript(process.execPath, wrappersFolder, {
-//     proxyBasename: 'pika',
-//     prependArguments: [process.argv[1]],
-//   });
-//   return wrappersFolder;
-// }
-// const INVALID_CHAR_REGEX = /\W/g;
-
-function makeEnv() {
-  return _makeEnv.apply(this, arguments);
-} //   // Merge in the `env` object specified in .pikarc
-//   const customEnv = config.getOption('env');
-//   if (customEnv && typeof customEnv === 'object') {
-//     Object.assign(env, customEnv);
-//   }
-//   env.npm_lifecycle_event = stage;
-//   env.npm_node_execpath = env.NODE;
-//   env.npm_execpath = env.npm_execpath || (process.mainModule && process.mainModule.filename);
-//   // Set the env to production for npm compat if production mode.
-//   // https://github.com/npm/npm/blob/30d75e738b9cb7a6a3f9b50e971adcbe63458ed3/lib/utils/lifecycle.js#L336
-//   if (config.production) {
-//     env.NODE_ENV = 'production';
-//   }
-//   // Note: npm_config_argv environment variable contains output of nopt - command-line
-//   // parser used by npm. Since we use other parser, we just roughly emulate it's output. (See: #684)
-//   env.npm_config_argv = JSON.stringify({
-//     remain: [],
-//     cooked: config.commandName === 'run' ? [config.commandName, stage] : [config.commandName],
-//     original: process.argv.slice(2),
-//   });
-//   const manifest = await config.maybeReadManifest(cwd);
-//   if (manifest) {
-//     if (manifest.scripts && Object.prototype.hasOwnProperty.call(manifest.scripts, stage)) {
-//       env.npm_lifecycle_script = manifest.scripts[stage];
-//     }
-//     // add npm_package_*
-//     const queue = [['', manifest]];
-//     while (queue.length) {
-//       const [key, val] = queue.pop();
-//       if (typeof val === 'object') {
-//         for (const subKey in val) {
-//           const fullKey = [key, subKey].filter(Boolean).join('_');
-//           if (fullKey && fullKey[0] !== '_' && !IGNORE_MANIFEST_KEYS.has(fullKey)) {
-//             queue.push([fullKey, val[subKey]]);
-//           }
-//         }
-//       } else {
-//         let cleanVal = String(val);
-//         if (cleanVal.indexOf('\n') >= 0) {
-//           cleanVal = JSON.stringify(cleanVal);
-//         }
-//         //replacing invalid chars with underscore
-//         const cleanKey = key.replace(INVALID_CHAR_REGEX, '_');
-//         env[`npm_package_${cleanKey}`] = cleanVal;
-//       }
-//     }
-//   }
-//   // add npm_config_* and npm_package_config_* from pika config
-//   const keys: Set<string> = new Set([
-//     ...Object.keys(config.registries.pika.config),
-//     ...Object.keys(config.registries.npm.config),
-//   ]);
-//   const cleaned = Array.from(keys)
-//     .filter(key => !key.match(/:_/) && IGNORE_CONFIG_KEYS.indexOf(key) === -1)
-//     .map(key => {
-//       let val = config.getOption(key);
-//       if (!val) {
-//         val = '';
-//       } else if (typeof val === 'number') {
-//         val = '' + val;
-//       } else if (typeof val !== 'string') {
-//         val = JSON.stringify(val);
-//       }
-//       if (val.indexOf('\n') >= 0) {
-//         val = JSON.stringify(val);
-//       }
-//       return [key, val];
-//     });
-//   // add npm_config_*
-//   for (const [key, val] of cleaned) {
-//     const cleanKey = key.replace(/^_+/, '');
-//     const envKey = `npm_config_${cleanKey}`.replace(INVALID_CHAR_REGEX, '_');
-//     env[envKey] = val;
-//   }
-//   // add npm_package_config_*
-//   if (manifest && manifest.name) {
-//     const packageConfigPrefix = `${manifest.name}:`;
-//     for (const [key, val] of cleaned) {
-//       if (key.indexOf(packageConfigPrefix) !== 0) {
-//         continue;
-//       }
-//       const cleanKey = key.replace(/^_+/, '').replace(packageConfigPrefix, '');
-//       const envKey = `npm_package_config_${cleanKey}`.replace(INVALID_CHAR_REGEX, '_');
-//       env[envKey] = val;
-//     }
-//   }
-//   // split up the path
-//   const envPath = env[constants.ENV_PATH_KEY];
-//   const pathParts = envPath ? envPath.split(path.delimiter) : [];
-//   // Include the directory that contains node so that we can guarantee that the scripts
-//   // will always run with the exact same Node release than the one use to run Pika
-//   const execBin = path.dirname(process.execPath);
-//   if (pathParts.indexOf(execBin) === -1) {
-//     pathParts.unshift(execBin);
-//   }
-//   // Include node-gyp version that was bundled with the current Node.js version,
-//   // if available.
-//   pathParts.unshift(path.join(path.dirname(process.execPath), 'node_modules', 'npm', 'bin', 'node-gyp-bin'));
-//   pathParts.unshift(
-//     path.join(path.dirname(process.execPath), '..', 'lib', 'node_modules', 'npm', 'bin', 'node-gyp-bin'),
-//   );
-//   // Include node-gyp version from homebrew managed npm, if available.
-//   pathParts.unshift(
-//     path.join(path.dirname(process.execPath), '..', 'libexec', 'lib', 'node_modules', 'npm', 'bin', 'node-gyp-bin'),
-//   );
-//   // Add global bin folder if it is not present already, as some packages depend
-//   // on a globally-installed version of node-gyp.
-//   const globalBin = await getGlobalBinFolder(config, {});
-//   if (pathParts.indexOf(globalBin) === -1) {
-//     pathParts.unshift(globalBin);
-//   }
-//   // Add node_modules .bin folders to the PATH
-//   for (const registry of Object.keys(registries)) {
-//     const binFolder = path.join(config.registries[registry].folder, '.bin');
-//     if (config.workspacesEnabled && config.workspaceRootFolder) {
-//       pathParts.unshift(path.join(config.workspaceRootFolder, binFolder));
-//     }
-//     pathParts.unshift(path.join(config.linkFolder, binFolder));
-//     pathParts.unshift(path.join(cwd, binFolder));
-//     if (config.modulesFolder) {
-//       pathParts.unshift(path.join(config.modulesFolder, '.bin'));
-//     }
-//   }
-//   if (await fs.exists(`${config.lockfileFolder}/${constants.PNP_FILENAME}`)) {
-//     // TODO: Fix. import()? Do we even like that it does this?
-//     throw new Error("pnp temporarily not supported");
-//     const pnpApi = {}; //dynamicRequire(`${config.lockfileFolder}/${constants.PNP_FILENAME}`);
-//     const packageLocator = pnpApi.findPackageLocator(`${config.cwd}/`);
-//     const packageInformation = pnpApi.getPackageInformation(packageLocator);
-//     for (const [name, reference] of packageInformation.packageDependencies.entries()) {
-//       const dependencyInformation = pnpApi.getPackageInformation({name, reference});
-//       if (!dependencyInformation || !dependencyInformation.packageLocation) {
-//         continue;
-//       }
-//       pathParts.unshift(`${dependencyInformation.packageLocation}/.bin`);
-//     }
-//   }
-//   pathParts.unshift(await getWrappersFolder(config));
-//   // join path back together
-//   env[constants.ENV_PATH_KEY] = pathParts.join(path.delimiter);
-//   return env;
-// }
-
-function _makeEnv() {
-  _makeEnv = _asyncToGenerator(function* () {
-    // stage: string,
-    // cwd: string,
-    // config: Config,
-    const env = Object.assign({
-      NODE: process.execPath,
-      INIT_CWD: process.cwd()
-    }, process.env);
-    return env;
-  });
-  return _makeEnv.apply(this, arguments);
-}
-
-function executeLifecycleScript(_x) {
-  return _executeLifecycleScript.apply(this, arguments);
-}
-
-function _executeLifecycleScript() {
-  _executeLifecycleScript = _asyncToGenerator(function* ({
-    config,
-    cwd,
-    cmd,
-    isInteractive,
-    onProgress,
-    customShell
-  }) {
-    const env = yield makeEnv(); // await checkForGypIfNeeded(config, cmd, env[constants.ENV_PATH_KEY].split(path.delimiter));
-
-    if (process.platform === 'win32' && (!customShell || customShell === 'cmd')) {
-      // handle windows run scripts starting with a relative path
-      cmd = fixCmdWinSlashes(cmd);
-    } // By default (non-interactive), pipe everything to the terminal and run child process detached
-    // as long as it's not Windows (since windows does not have /dev/tty)
-
-
-    let stdio = ['ignore', 'pipe', 'pipe'];
-    let detached = process.platform !== 'win32';
-
-    if (isInteractive) {
-      stdio = 'inherit';
-      detached = false;
-    }
-
-    const shell = customShell || true;
-    const stdout = yield spawn(cmd, [], {
-      cwd,
-      env,
-      stdio,
-      detached,
-      shell
-    }, onProgress);
-    return {
-      cwd,
-      command: cmd,
-      stdout
-    };
-  });
-  return _executeLifecycleScript.apply(this, arguments);
-}
-
 class Config {
-  constructor(reporter, cwd) {
+  constructor(reporter, cwd, flags) {
     this.reporter = reporter; // Ensure the cwd is always an absolute path.
 
     this.cwd = path.resolve(cwd || process.cwd());
+    this.flags = flags;
   }
 
   loadPackageManifest() {
@@ -5070,7 +4522,7 @@ class Config {
 
       if (yield exists(loc)) {
         const info = yield _this.readJson(loc, readJsonAndFile);
-        _this._manifest = info.object;
+        _this._manifest = _objectSpread({}, info.object);
         _this.manifestIndent = detectIndent(info.content).indent || undefined;
         _this.manifest = yield normalizeManifest(info.object, _this.cwd, _this, true);
         return _this.manifest;
@@ -5097,7 +4549,9 @@ class Config {
 
     return _asyncToGenerator(function* () {
       const loc = path.join(_this2.cwd, NODE_PACKAGE_JSON);
-      const manifest = Object.assign({}, _this2._manifest, newManifestData);
+
+      const manifest = _objectSpread({}, _this2._manifest, newManifestData);
+
       yield writeFilePreservingEol(loc, JSON.stringify(manifest, null, _this2.manifestIndent || DEFAULT_INDENT) + '\n');
       return _this2.loadPackageManifest();
     })();
@@ -5108,49 +4562,42 @@ class Config {
 
     return _asyncToGenerator(function* () {
       const raw = _this3.manifest[`@pika/pack`] || {};
-      raw.defaults = raw.defaults || {};
-      raw.plugins = raw.plugins || [];
+      const override = _this3.flags.pipeline && JSON.parse(_this3.flags.pipeline);
+      const cwd = _this3.cwd;
 
-      function cleanRawDistObject(_x, _x2, _x3) {
-        return _cleanRawDistObject.apply(this, arguments);
+      function cleanRawDistObject(rawVal) {
+        if (Array.isArray(rawVal)) {
+          let importStr = rawVal[0].startsWith('./') || rawVal[0].startsWith('../') ? path.join(cwd, rawVal[0]) : rawVal[0];
+          return [_objectSpread({}, importFrom(cwd, importStr), {
+            name: rawVal[0]
+          }), rawVal[1] || {}];
+        }
+
+        if (typeof rawVal === 'string') {
+          return [{
+            build: ({
+              cwd
+            }) => {
+              return executeLifecycleScript({
+                // config: this,
+                args: [],
+                cwd,
+                cmd: rawVal,
+                isInteractive: false
+              });
+            }
+          }, {}];
+        }
+
+        if (!rawVal) {
+          throw new Error('Cannot be false');
+        }
+
+        return false;
       }
 
-      function _cleanRawDistObject() {
-        _cleanRawDistObject = _asyncToGenerator(function* (rawVal, cwd, canBeFalsey) {
-          if (Array.isArray(rawVal)) {
-            let importStr = rawVal[0].startsWith('./') || rawVal[0].startsWith('../') ? path.join(cwd, rawVal[0]) : rawVal[0];
-            return [Object.assign({}, importFrom(cwd, importStr), {
-              name: rawVal[0]
-            }), rawVal[1] || {}];
-          }
-
-          if (typeof rawVal === 'string') {
-            return [{
-              build: ({
-                cwd
-              }) => {
-                return executeLifecycleScript({
-                  config: this,
-                  cwd,
-                  cmd: rawVal,
-                  isInteractive: false
-                });
-              }
-            }, {}];
-          }
-
-          if (!rawVal && !canBeFalsey) {
-            throw new Error('Cannot be false');
-          }
-
-          return false;
-        });
-        return _cleanRawDistObject.apply(this, arguments);
-      }
-
-      return (yield Promise.all([...(raw.pipeline || []).map(rawVal => {
-        return cleanRawDistObject(rawVal, _this3.cwd, false);
-      })])).filter(Boolean);
+      const pipeline = override || raw.pipeline || [];
+      return pipeline.map(cleanRawDistObject).filter(Boolean);
     })();
   }
 
@@ -5179,7 +4626,7 @@ function boolifyWithDefault(val, defaultResult) {
 
 const commander = new commander$1.Command(); // @ts-ignore
 
-const currentFilename = uri2path(new (typeof URL !== 'undefined' ? URL : require('ur'+'l').URL)((process.browser ? '' : 'file:') + __filename, process.browser && document.baseURI).href);
+const currentFilename = uri2path((typeof document === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : (document.currentScript && document.currentScript.src || new URL('index.js', document.baseURI).href)));
 
 function getVersion() {
   const packageJsonContent = fs.readFileSync(path.resolve(currentFilename, '../../package.json'), {
@@ -5232,7 +4679,8 @@ function _main() {
     commander.option('-s, --silent', 'skip Pika console logs, other types of logs (script output) will be printed');
     commander.option('--cwd <cwd>', 'working directory to use', process.cwd());
     commander.option('--no-progress', 'disable progress bar');
-    commander.option('--no-node-version-check', 'do not warn when using a potentially unsupported Node version'); // if -v is the first command, then always exit after returning the version
+    commander.option('--no-node-version-check', 'do not warn when using a potentially unsupported Node version');
+    commander.option('--pipeline <pipeline>', 'the build pipeline to run'); // if -v is the first command, then always exit after returning the version
 
     if (args[0] === '-v') {
       console.log(version.trim());
@@ -5414,7 +4862,7 @@ function _main() {
     }
 
     const cwd = command.shouldRunInCurrentCwd ? commander.cwd : findProjectRoot(commander.cwd);
-    const config = new Config(reporter, cwd);
+    const config = new Config(reporter, cwd, commander);
     yield config.loadPackageManifest();
 
     try {

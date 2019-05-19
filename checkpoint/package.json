@@ -1,22 +1,18 @@
 {
   "name": "@pika/pack",
   "description": "package building, reimagined.",
-  "version": "0.3.6",
+  "version": "0.4.0-pre.2",
   "license": "MIT",
   "bin": {
     "pika-pack": "dist-node/index.bin.js",
     "pack": "dist-node/index.bin.js"
   },
-  "source": "dist-src/index.js",
-  "types": "dist-types/index.d.ts",
-  "main": "dist-node/index.js",
-  "pika": true,
-  "sideEffects": false,
   "files": [
     "dist-*/",
-    "assets/",
     "bin/"
   ],
+  "pika": true,
+  "sideEffects": false,
   "homepage": "https://www.pikapkg.com/blog/introducing-pika-pack/",
   "repository": {
     "type": "git",
@@ -28,23 +24,16 @@
     "chalk": "^2.1.0",
     "commander": "^2.9.0",
     "detect-indent": "~5.0.0",
-    "execa": "^1.0.0",
     "file-uri-to-path": "^1.0.0",
-    "github-url-from-git": "^1.5.0",
     "glob": "^7.1.1",
-    "has-yarn": "^1.0.0",
-    "hosted-git-info": "^2.7.1",
-    "import-from": "^2.1.0",
+    "import-from": "^3.0.0",
     "inquirer": "^3.0.1",
     "invariant": "^2.2.0",
     "is-builtin-module": "^2.0.0",
     "is-ci": "^1.0.10",
-    "is-scoped": "^1.0.0",
-    "issue-regex": "^2.0.0",
     "loud-rejection": "^1.2.0",
     "mkdirp": "^0.5.1",
-    "opn": "^5.4.0",
-    "p-timeout": "^2.0.1",
+    "np": "^5.0.2",
     "read": "^1.0.7",
     "rimraf": "^2.5.0",
     "semver": "^5.6.0",
@@ -64,5 +53,8 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "source": "dist-src/index.js",
+  "types": "dist-types/index.d.ts",
+  "main": "dist-node/index.js"
 }

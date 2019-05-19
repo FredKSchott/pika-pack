@@ -1,5 +1,3 @@
-import { MessageError } from '@pika/types';
-import { ProcessTermError } from '../errors.js';
 import * as child from './child.js';
 import { fixCmdWinSlashes } from './fix-cmd-win-slashes.js';
 // export const IGNORE_MANIFEST_KEYS: Set<string> = new Set(['readme', 'notice', 'licenseText']);
@@ -35,7 +33,14 @@ export async function makeEnv() {
     // stage: string,
     // cwd: string,
     // config: Config,
-    const env = Object.assign({ NODE: process.execPath, INIT_CWD: process.cwd() }, process.env);
+    const env = {
+        NODE: process.execPath,
+        INIT_CWD: process.cwd(),
+        // This lets `process.env.NODE` to override our `process.execPath`.
+        // This is a bit confusing but it is how `npm` was designed so we
+        // try to be compatible with that.
+        ...process.env,
+    };
     return env;
 }
 //   // Merge in the `env` object specified in .pikarc
@@ -180,7 +185,9 @@ export async function makeEnv() {
 //   env[constants.ENV_PATH_KEY] = pathParts.join(path.delimiter);
 //   return env;
 // }
-export async function executeLifecycleScript({ config, cwd, cmd, isInteractive, onProgress, customShell, }) {
+export async function executeLifecycleScript({ 
+// config,
+cwd, cmd, args, isInteractive, onProgress, customShell, }) {
     const env = await makeEnv();
     // await checkForGypIfNeeded(config, cmd, env[constants.ENV_PATH_KEY].split(path.delimiter));
     if (process.platform === 'win32' && (!customShell || customShell === 'cmd')) {
@@ -196,7 +203,7 @@ export async function executeLifecycleScript({ config, cwd, cmd, isInteractive, 
         detached = false;
     }
     const shell = customShell || true;
-    const stdout = await child.spawn(cmd, [], { cwd, env, stdio, detached, shell }, onProgress);
+    const stdout = await child.spawn(cmd, args, { cwd, env, stdio, detached, shell }, onProgress);
     return { cwd, command: cmd, stdout };
 }
 export default executeLifecycleScript;
@@ -245,21 +252,35 @@ export default executeLifecycleScript;
 //     await execCommand({stage: commandName, config, cmd, cwd, isInteractive: true});
 //   }
 // }
-export async function execCommand({ stage, config, cmd, cwd, isInteractive, customShell, }) {
-    const { reporter } = config;
-    try {
-        reporter.command(cmd);
-        await executeLifecycleScript({ config, cwd, cmd, isInteractive, customShell });
-        return Promise.resolve();
-    }
-    catch (err) {
-        if (err instanceof ProcessTermError) {
-            throw new MessageError(err.EXIT_SIGNAL
-                ? reporter.lang('commandFailedWithSignal', err.EXIT_SIGNAL)
-                : reporter.lang('commandFailedWithCode', err.EXIT_CODE));
-        }
-        else {
-            throw err;
-        }
-    }
-}
+// export async function execCommand({
+//   stage,
+//   config,
+//   cmd,
+//   cwd,
+//   isInteractive,
+//   customShell,
+// }: {
+//   stage: string;
+//   config: Config;
+//   cmd: string;
+//   cwd: string;
+//   isInteractive: boolean;
+//   customShell?: string;
+// }): Promise<void> {
+//   const {reporter} = config;
+//   try {
+//     reporter.command(cmd);
+//     await executeLifecycleScript({config, cwd, cmd, isInteractive, customShell});
+//     return Promise.resolve();
+//   } catch (err) {
+//     if (err instanceof ProcessTermError) {
+//       throw new MessageError(
+//         err.EXIT_SIGNAL
+//           ? reporter.lang('commandFailedWithSignal', err.EXIT_SIGNAL)
+//           : reporter.lang('commandFailedWithCode', err.EXIT_CODE),
+//       );
+//     } else {
+//       throw err;
+//     }
+//   }
+// }

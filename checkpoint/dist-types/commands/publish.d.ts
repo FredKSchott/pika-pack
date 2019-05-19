@@ -2,26 +2,19 @@ import { Command } from 'commander';
 import Config from '../config.js';
 import { Reporter } from '../reporters/index.js';
 declare type Flags = {
+    anyBranch: boolean;
     cleanup: boolean;
     yolo: boolean;
-    anyBranch: boolean;
     publish: boolean;
-    tag: boolean;
+    releaseDraft: boolean;
+    tag: string;
     yarn: boolean;
-    contents: boolean;
+    contents: string;
     otp?: string;
     out?: string;
+    originalArgs: string[];
 };
 export declare function setFlags(commander: Command): void;
 export declare function hasWrapper(): boolean;
-export declare class Publish {
-    constructor(flags: Flags, config: Config, reporter: Reporter);
-    out: string;
-    flags: Flags;
-    config: Config;
-    reporter: Reporter;
-    totalNum: number;
-    init(options: any): Promise<void>;
-}
-export declare function run(config: any, reporter: any, flags: any, args: any): Promise<void>;
+export declare function run(config: Config, reporter: Reporter, flags: Flags, args: Array<string>): Promise<void>;
 export {};
