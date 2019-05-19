@@ -18,6 +18,7 @@ export async function generatePublishManifest(
     authors,
     contributors,
     man,
+    sideEffects,
     repository,
     dependencies,
     peerDependencies,
@@ -37,6 +38,24 @@ export async function generatePublishManifest(
     license,
     bin,
     files: ['dist-*/', 'bin/'],
+    pika: true,
+    sideEffects: sideEffects || false,
+    keywords,
+    homepage,
+    bugs,
+    authors,
+    contributors,
+    man,
+    repository,
+    dependencies: dependencies || {},
+    peerDependencies,
+    devDependencies,
+    bundledDependencies,
+    optionalDependencies,
+    engines,
+    enginesStrict,
+    private: priv,
+    publishConfig,
   };
 
   const dists = _dists || (await config.getDistributions());
@@ -51,27 +70,8 @@ export async function generatePublishManifest(
     }
   }
 
-  return {
-    ...newManifest,
-    pika: true,
-    sideEffects: manifest.sideEffects || false,
-    keywords,
-    homepage,
-    bugs,
-    authors,
-    contributors,
-    man,
-    repository,
-    dependencies: manifest.dependencies || {},
-    peerDependencies,
-    devDependencies,
-    bundledDependencies,
-    optionalDependencies,
-    engines,
-    enginesStrict,
-    private: priv,
-    publishConfig,
-  }
+  newManifest.pika = true;
+  return newManifest;
 }
 
 export function generatePrettyManifest(manifest) {
