@@ -70,9 +70,9 @@
     "validate-npm-package-license": "^3.0.4"
   },
   "devDependencies": {
-    "@pika/plugin-build-node": "^0.3.3",
-    "@pika/plugin-simple-bin": "^0.3.3",
-    "@pika/plugin-ts-standard-pkg": "^0.3.3",
+    "@pika/plugin-build-node": "^0.4.0",
+    "@pika/plugin-simple-bin": "^0.4.0",
+    "@pika/plugin-ts-standard-pkg": "^0.4.0",
     "prettier": "^1.15.3",
     "typescript": "^3.2.2"
   }
