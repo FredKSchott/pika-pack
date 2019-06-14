@@ -45,7 +45,7 @@ export default class Config {
     const loc = path.join(this.cwd, constants.NODE_PACKAGE_JSON);
     if (await fs.exists(loc)) {
       const info = await this.readJson(loc, fs.readJsonAndFile);
-      this._manifest = info.object;
+      this._manifest = {...info.object};
       this.manifestIndent = detectIndent(info.content).indent || undefined;
       this.manifest = await normalizeManifest(info.object, this.cwd, this, true);
       return this.manifest;
@@ -89,7 +89,8 @@ export default class Config {
       if (typeof rawVal === 'string') {
         return [{build: ({cwd}) => {
           return executeLifecycleScript({
-          config: this,
+          // config: this,
+          args: [],
           cwd,
           cmd: rawVal,
           isInteractive: false});
