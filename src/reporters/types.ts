@@ -23,11 +23,6 @@ export type ReporterSpinner = {
   end: () => void;
 };
 
-export type ReporterSelectOption = {
-  name: string;
-  value: string;
-};
-
 export type ReporterSpinnerSet = {
   spinners: Array<ReporterSetSpinner>;
   end: () => void;
@@ -38,26 +33,4 @@ export type ReporterSetSpinner = {
   setPrefix: (current: number, prefix: string) => void;
   tick: (msg: string) => void;
   end: () => void;
-};
-
-export type QuestionOptions = {
-  password?: boolean;
-  required?: boolean;
-};
-
-export type InquirerPromptTypes =
-  | 'list'
-  | 'rawlist'
-  | 'expand'
-  | 'checkbox'
-  | 'confirm'
-  | 'input'
-  | 'password'
-  | 'editor';
-
-export type PromptOptions = {
-  name?: string;
-  type?: InquirerPromptTypes;
-  default?: string | boolean;
-  validate?: (input: string | Array<string>) => boolean | string;
 };

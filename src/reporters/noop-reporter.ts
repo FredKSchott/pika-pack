@@ -2,9 +2,6 @@ import BaseReporter from './base-reporter.js';
 import {LanguageKeys} from './lang/en.js';
 import {
   Package,
-  PromptOptions,
-  QuestionOptions,
-  ReporterSelectOption,
   ReporterSpinner,
   ReporterSpinnerSet,
   Trees,
@@ -32,7 +29,7 @@ export default class NoopReporter extends BaseReporter {
   log(message: string) {}
   command(command: string) {}
   inspect(value: any) {}
-  header(command: string, pkg: Package) {}
+  header(pkg: Package) {}
   footer(showPeakMemory: boolean) {}
   table(head: Array<string>, body: Array<Array<string>>) {}
 
@@ -55,28 +52,11 @@ export default class NoopReporter extends BaseReporter {
     };
   }
 
-  question(question: string, options: QuestionOptions = {}): Promise<string> {
-    return Promise.reject(new Error('Not implemented'));
-  }
-
-  async questionAffirm(question: string): Promise<boolean> {
-    await this.question(question);
-    return false;
-  }
-
-  select(header: string, question: string, options: Array<ReporterSelectOption>): Promise<string> {
-    return Promise.reject(new Error('Not implemented'));
-  }
-
   progress(total: number): () => void {
     return function() {};
   }
 
   disableProgress() {
     this.noProgress = true;
-  }
-
-  prompt<T>(message: string, choices: Array<any>, options: PromptOptions = {}): Promise<Array<T>> {
-    return Promise.reject(new Error('Not implemented'));
   }
 }

@@ -1,13 +1,10 @@
 import {
   ReporterSpinnerSet,
-  ReporterSelectOption,
   Trees,
   Stdout,
   Stdin,
   Package,
   ReporterSpinner,
-  QuestionOptions,
-  PromptOptions,
 } from './types';
 import {LanguageKeys} from './lang/en.js';
 import {Formatter} from './format.js';
@@ -216,7 +213,7 @@ export default class BaseReporter {
   inspect(value: any) {}
 
   // the screen shown at the very start of the CLI
-  header(command: string, pkg: Package) {}
+  header(pkg: Package) {}
 
   // the screen shown at the very end of the CLI
   footer(showPeakMemory: boolean) {}
@@ -245,40 +242,6 @@ export default class BaseReporter {
     };
   }
 
-  //
-  question(question: string, options: QuestionOptions = {}): Promise<string> {
-    return Promise.reject(new Error('Not implemented'));
-  }
-
-  //
-  async questionAffirm(question: string): Promise<boolean> {
-    const condition = true; // trick eslint
-    if (this.nonInteractive) {
-      return true;
-    }
-
-    while (condition) {
-      let answer = await this.question(question);
-      answer = answer.toLowerCase();
-
-      if (answer === 'y' || answer === 'yes') {
-        return true;
-      }
-      if (answer === 'n' || answer === 'no') {
-        return false;
-      }
-
-      this.error('Invalid answer for question');
-    }
-
-    return false;
-  }
-
-  // prompt the user to select an option from an array
-  select(header: string, question: string, options: Array<ReporterSelectOption>): Promise<string> {
-    return Promise.reject(new Error('Not implemented'));
-  }
-
   // render a progress bar and return a function which when called will trigger an update
   progress(total: number): () => void {
     return function() {};
@@ -287,10 +250,5 @@ export default class BaseReporter {
   // utility function to disable progress bar
   disableProgress() {
     this.noProgress = true;
-  }
-
-  //
-  prompt<T>(message: string, choices: Array<any>, options: PromptOptions = {}): Promise<Array<T>> {
-    return Promise.reject(new Error('Not implemented'));
   }
 }

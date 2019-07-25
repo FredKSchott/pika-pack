@@ -13,10 +13,10 @@
   },
   "scripts": {
     "format": "prettier --write src/**/*.ts",
-    "build": "./checkpoint/dist-node/index.bin.js build",
-    "publish": "./pkg/dist-node/index.bin.js publish",
+    "build": "./checkpoint/dist-node/index.bin.js",
+    "publish": "pika publish",
     "test": "./pkg/dist-node/index.bin.js build",
-    "version": "npm run build",
+    "version": "./pkg/dist-node/index.bin.js",
     "update-checkpoint": "rm -rf checkpoint/ && cp -r pkg/ checkpoint/"
   },
   "@pika/pack": {
@@ -47,22 +47,20 @@
     "access": "public"
   },
   "dependencies": {
-    "@pika/types": "^0.3.3",
+    "@pika/cli": "latest",
+    "@pika/types": "^0.5.0",
     "camelcase": "^4.0.0",
     "chalk": "^2.1.0",
     "commander": "^2.9.0",
-    "detect-indent": "~5.0.0",
     "file-uri-to-path": "^1.0.0",
     "glob": "^7.1.1",
     "import-from": "^3.0.0",
-    "inquirer": "^3.0.1",
     "invariant": "^2.2.0",
     "is-builtin-module": "^2.0.0",
     "is-ci": "^1.0.10",
     "loud-rejection": "^1.2.0",
     "mkdirp": "^0.5.1",
     "np": "^5.0.2",
-    "read": "^1.0.7",
     "rimraf": "^2.5.0",
     "semver": "^5.6.0",
     "strip-ansi": "^4.0.0",
@@ -70,9 +68,9 @@
     "validate-npm-package-license": "^3.0.4"
   },
   "devDependencies": {
-    "@pika/plugin-build-node": "^0.4.0",
-    "@pika/plugin-simple-bin": "^0.4.0",
-    "@pika/plugin-ts-standard-pkg": "^0.4.0",
+    "@pika/plugin-build-node": "^0.5.0",
+    "@pika/plugin-simple-bin": "^0.5.0",
+    "@pika/plugin-ts-standard-pkg": "^0.5.0",
     "prettier": "^1.15.3",
     "typescript": "^3.2.2"
   }

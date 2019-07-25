@@ -15,17 +15,12 @@ type Flags = {
   force?: boolean;
 };
 
-export function setFlags(commander: Command) {
-  commander.description('Prepares your package out directory (pkg/) for publishing.');
-  commander.usage('build [flags]');
-  commander.option('-O, --out <path>', 'Where to write to');
-  commander.option('--force', 'Whether to ignore failed build plugins and continue through errors.');
-  commander.option('-P, --publish', 'Whether to include publish-only builds like unpkg & types.');
-}
 
 export function hasWrapper(commander: Object, args: Array<string>): boolean {
   return true;
 }
+
+export const examples = null;
 
 export class Build {
   constructor(flags: Flags, config: Config, reporter: Reporter) {
@@ -226,6 +221,7 @@ export class Build {
     }
   }
 }
+
 export async function run(config: Config, reporter: Reporter, flags: Flags, args: Array<string>): Promise<void> {
   const isProduction = flags.publish;
   const builder = new Build(flags, config, reporter);
