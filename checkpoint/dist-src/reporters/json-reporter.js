@@ -97,7 +97,7 @@ export default class JSONReporter extends BaseReporter {
             };
         }
         const id = this._activityId++;
-        this._dump('activityStart', Object.assign({ id }, data));
+        this._dump('activityStart', { id, ...data });
         return {
             tick: (name) => {
                 this._dump('activityTick', { id, name });

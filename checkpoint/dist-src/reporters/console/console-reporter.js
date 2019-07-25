@@ -114,8 +114,8 @@ export default class ConsoleReporter extends BaseReporter {
             }
         }
     }
-    header(command, pkg) {
-        this.log(this.format.bold(`${pkg.name} ${command} v${pkg.version}`));
+    header(pkg) {
+        this.log(this.format.bold(`${pkg.name} v${pkg.version}`));
     }
     footer(showPeakMemory) {
         this.stopProgress();

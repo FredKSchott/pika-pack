@@ -1,4 +1,3 @@
-import { Command } from 'commander';
 import Config from '../config.js';
 import { Reporter } from '../reporters/index.js';
 declare type Flags = {
@@ -7,8 +6,8 @@ declare type Flags = {
     silent?: boolean;
     force?: boolean;
 };
-export declare function setFlags(commander: Command): void;
 export declare function hasWrapper(commander: Object, args: Array<string>): boolean;
+export declare const examples: any;
 export declare class Build {
     constructor(flags: Flags, config: Config, reporter: Reporter);
     out: string;

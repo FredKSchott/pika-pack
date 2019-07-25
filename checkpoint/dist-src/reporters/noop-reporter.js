@@ -21,7 +21,7 @@ export default class NoopReporter extends BaseReporter {
     log(message) { }
     command(command) { }
     inspect(value) { }
-    header(command, pkg) { }
+    header(pkg) { }
     footer(showPeakMemory) { }
     table(head, body) { }
     activity() {

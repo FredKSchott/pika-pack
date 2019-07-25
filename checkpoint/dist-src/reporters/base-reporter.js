@@ -143,7 +143,7 @@ export default class BaseReporter {
     // inspect and pretty-print any value
     inspect(value) { }
     // the screen shown at the very start of the CLI
-    header(command, pkg) { }
+    header(pkg) { }
     // the screen shown at the very end of the CLI
     footer(showPeakMemory) { }
     // a table structure

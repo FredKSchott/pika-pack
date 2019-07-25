@@ -1,5 +1,4 @@
 /// <reference types="node" />
-import Config from '../config.js';
 export declare type LifecycleReturn = Promise<{
     cwd: string;
     command: string;
@@ -8,20 +7,12 @@ export declare type LifecycleReturn = Promise<{
 export declare function makeEnv(): Promise<{
     [key: string]: string;
 }>;
-export declare function executeLifecycleScript({ config, cwd, cmd, isInteractive, onProgress, customShell, }: {
-    config: Config;
+export declare function executeLifecycleScript({ cwd, cmd, args, isInteractive, onProgress, customShell, }: {
     cwd: string;
+    args: string[];
     cmd: string;
     isInteractive?: boolean;
     onProgress?: (chunk: Buffer | string) => void;
     customShell?: string;
 }): LifecycleReturn;
 export default executeLifecycleScript;
-export declare function execCommand({ stage, config, cmd, cwd, isInteractive, customShell, }: {
-    stage: string;
-    config: Config;
-    cmd: string;
-    cwd: string;
-    isInteractive: boolean;
-    customShell?: string;
-}): Promise<void>;

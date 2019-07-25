@@ -66,7 +66,7 @@ export default class BaseReporter {
     }): void;
     command(command: string): void;
     inspect(value: any): void;
-    header(command: string, pkg: Package): void;
+    header(pkg: Package): void;
     footer(showPeakMemory: boolean): void;
     table(head: Array<string>, body: Array<Array<string>>): void;
     activity(): ReporterSpinner;

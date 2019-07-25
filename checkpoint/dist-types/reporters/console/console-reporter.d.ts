@@ -18,7 +18,7 @@ export default class ConsoleReporter extends BaseReporter {
     step(current: number, total: number, msg: string, emoji?: string): void;
     inspect(value: any): void;
     list(key: string, items: Array<string>, hints?: Object): void;
-    header(command: string, pkg: Package): void;
+    header(pkg: Package): void;
     footer(showPeakMemory?: boolean): void;
     log(msg: string, { force }?: {
         force?: boolean;
