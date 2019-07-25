@@ -1,9 +1,6 @@
 import chalk from 'chalk';
-import * as inquirer from 'inquirer';
-import read from 'read';
 import * as readline from 'readline';
 import stripAnsi from 'strip-ansi';
-import * as tty from 'tty';
 import { inspect } from 'util';
 import { removeSuffix } from '../../util/misc.js';
 import BaseReporter from '../base-reporter.js';
@@ -155,35 +152,6 @@ export default class ConsoleReporter extends BaseReporter {
         clearLine(this.stderr);
         this.stderr.write(`${this.format.yellow('warning')} ${msg}\n`);
     }
-    question(question, options = {}) {
-        if (!process.stdout.isTTY) {
-            return Promise.reject(new Error("Can't answer a question unless a user TTY"));
-        }
-        return new Promise((resolve, reject) => {
-            read({
-                prompt: `${this.format.dim('question')} ${question}: `,
-                silent: !!options.password,
-                output: this.stdout,
-                input: this.stdin,
-            }, (err, answer) => {
-                if (err) {
-                    if (err.message === 'canceled') {
-                        process.exitCode = 1;
-                    }
-                    reject(err);
-                }
-                else {
-                    if (!answer && options.required) {
-                        this.error(this.lang('answerRequired'));
-                        resolve(this.question(question, options));
-                    }
-                    else {
-                        resolve(answer);
-                    }
-                }
-            });
-        });
-    }
     // handles basic tree output to console
     tree(key, trees, { force = false } = {}) {
         this.stopProgress();
@@ -283,53 +251,6 @@ export default class ConsoleReporter extends BaseReporter {
             },
         };
     }
-    select(header, question, options) {
-        if (!this.isTTY) {
-            return Promise.reject(new Error("Can't answer a question unless a user TTY"));
-        }
-        const rl = readline.createInterface({
-            input: this.stdin,
-            output: this.stdout,
-            terminal: true,
-        });
-        const questions = options.map((opt) => opt.name);
-        const answers = options.map((opt) => opt.value);
-        function toIndex(input) {
-            const index = answers.indexOf(input);
-            if (index >= 0) {
-                return index;
-            }
-            else {
-                return +input;
-            }
-        }
-        return new Promise(resolve => {
-            this.info(header);
-            for (let i = 0; i < questions.length; i++) {
-                this.log(`  ${this.format.dim(`${i + 1})`)} ${questions[i]}`);
-            }
-            const ask = () => {
-                rl.question(`${question}: `, input => {
-                    let index = toIndex(input);
-                    if (isNaN(index)) {
-                        this.log('Not a number');
-                        ask();
-                        return;
-                    }
-                    if (index <= 0 || index > options.length) {
-                        this.log('Outside answer range');
-                        ask();
-                        return;
-                    }
-                    // get index
-                    index--;
-                    rl.close();
-                    resolve(answers[index]);
-                });
-            };
-            ask();
-        });
-    }
     progress(count) {
         if (this.noProgress || count <= 0) {
             return function () {
@@ -357,28 +278,5 @@ export default class ConsoleReporter extends BaseReporter {
         if (this._progressBar) {
             this._progressBar.stop();
         }
-    }
-    async prompt(message, choices, options = {}) {
-        if (!process.stdout.isTTY) {
-            return Promise.reject(new Error("Can't answer a question unless a user TTY"));
-        }
-        let pageSize;
-        if (process.stdout instanceof tty.WriteStream) {
-            pageSize = process.stdout.rows - 2;
-        }
-        const rl = readline.createInterface({
-            input: this.stdin,
-            output: this.stdout,
-            terminal: true,
-        });
-        // $FlowFixMe: Need to update the type of Inquirer
-        const prompt = inquirer.createPromptModule({
-            input: this.stdin,
-            output: this.stdout,
-        });
-        const { name = 'prompt', type = 'input', validate } = options;
-        const answers = await prompt([{ name, type, message, choices, pageSize, validate, default: options.default }]);
-        rl.close();
-        return answers[name];
     }
 }

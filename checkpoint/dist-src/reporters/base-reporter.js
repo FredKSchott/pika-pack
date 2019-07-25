@@ -167,33 +167,6 @@ export default class BaseReporter {
             end() { },
         };
     }
-    //
-    question(question, options = {}) {
-        return Promise.reject(new Error('Not implemented'));
-    }
-    //
-    async questionAffirm(question) {
-        const condition = true; // trick eslint
-        if (this.nonInteractive) {
-            return true;
-        }
-        while (condition) {
-            let answer = await this.question(question);
-            answer = answer.toLowerCase();
-            if (answer === 'y' || answer === 'yes') {
-                return true;
-            }
-            if (answer === 'n' || answer === 'no') {
-                return false;
-            }
-            this.error('Invalid answer for question');
-        }
-        return false;
-    }
-    // prompt the user to select an option from an array
-    select(header, question, options) {
-        return Promise.reject(new Error('Not implemented'));
-    }
     // render a progress bar and return a function which when called will trigger an update
     progress(total) {
         return function () { };
@@ -201,9 +174,5 @@ export default class BaseReporter {
     // utility function to disable progress bar
     disableProgress() {
         this.noProgress = true;
-    }
-    //
-    prompt(message, choices, options = {}) {
-        return Promise.reject(new Error('Not implemented'));
     }
 }

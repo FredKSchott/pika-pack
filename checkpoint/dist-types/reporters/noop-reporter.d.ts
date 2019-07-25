@@ -1,6 +1,6 @@
 import BaseReporter from './base-reporter.js';
 import { LanguageKeys } from './lang/en.js';
-import { Package, PromptOptions, QuestionOptions, ReporterSelectOption, ReporterSpinner, ReporterSpinnerSet, Trees } from './types.js';
+import { Package, ReporterSpinner, ReporterSpinnerSet, Trees } from './types.js';
 export default class NoopReporter extends BaseReporter {
     lang(key: LanguageKeys, ...args: Array<any>): string;
     verbose(msg: string): void;
@@ -24,10 +24,6 @@ export default class NoopReporter extends BaseReporter {
     table(head: Array<string>, body: Array<Array<string>>): void;
     activity(): ReporterSpinner;
     activitySet(total: number, workers: number): ReporterSpinnerSet;
-    question(question: string, options?: QuestionOptions): Promise<string>;
-    questionAffirm(question: string): Promise<boolean>;
-    select(header: string, question: string, options: Array<ReporterSelectOption>): Promise<string>;
     progress(total: number): () => void;
     disableProgress(): void;
-    prompt<T>(message: string, choices: Array<any>, options?: PromptOptions): Promise<Array<T>>;
 }

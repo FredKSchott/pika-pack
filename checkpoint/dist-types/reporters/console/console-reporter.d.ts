@@ -1,6 +1,6 @@
 import BaseReporter, { ReporterOptions } from '../base-reporter.js';
 import { FormatKeys } from '../format.js';
-import { Package, PromptOptions, QuestionOptions, ReporterSelectOption, ReporterSpinner, ReporterSpinnerSet, Trees } from '../types.js';
+import { Package, ReporterSpinner, ReporterSpinnerSet, Trees } from '../types.js';
 import Progress from './progress-bar.js';
 import Spinner from './spinner-progress.js';
 declare type Row = Array<string>;
@@ -31,15 +31,12 @@ export default class ConsoleReporter extends BaseReporter {
     info(msg: string): void;
     command(command: string): void;
     warn(msg: string): void;
-    question(question: string, options?: QuestionOptions): Promise<string>;
     tree(key: string, trees: Trees, { force }?: {
         force?: boolean;
     }): void;
     activitySet(total: number, workers: number): ReporterSpinnerSet;
     activity(): ReporterSpinner;
-    select(header: string, question: string, options: Array<ReporterSelectOption>): Promise<string>;
     progress(count: number): () => void;
     stopProgress(): void;
-    prompt<T>(message: string, choices: Array<any>, options?: PromptOptions): Promise<Array<T>>;
 }
 export {};

@@ -1,5 +1,5 @@
 /// <reference types="node" />
-import { ReporterSpinnerSet, ReporterSelectOption, Trees, Stdout, Stdin, Package, ReporterSpinner, QuestionOptions, PromptOptions } from './types';
+import { ReporterSpinnerSet, Trees, Stdout, Stdin, Package, ReporterSpinner } from './types';
 import { LanguageKeys } from './lang/en.js';
 import { Formatter } from './format.js';
 import * as languages from './lang/index.js';
@@ -71,11 +71,7 @@ export default class BaseReporter {
     table(head: Array<string>, body: Array<Array<string>>): void;
     activity(): ReporterSpinner;
     activitySet(total: number, workers: number): ReporterSpinnerSet;
-    question(question: string, options?: QuestionOptions): Promise<string>;
-    questionAffirm(question: string): Promise<boolean>;
-    select(header: string, question: string, options: Array<ReporterSelectOption>): Promise<string>;
     progress(total: number): () => void;
     disableProgress(): void;
-    prompt<T>(message: string, choices: Array<any>, options?: PromptOptions): Promise<Array<T>>;
 }
 export {};

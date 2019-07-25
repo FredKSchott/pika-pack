@@ -11,16 +11,14 @@ var fs = require('fs');
 var invariant = _interopDefault(require('invariant'));
 var loudRejection = _interopDefault(require('loud-rejection'));
 var semver = _interopDefault(require('semver'));
-var inquirer = require('inquirer');
-var read = _interopDefault(require('read'));
 var readline = require('readline');
 var stripAnsi = _interopDefault(require('strip-ansi'));
-var tty = require('tty');
 var util = require('util');
 require('camelcase');
 var isCI = require('is-ci');
 var os = require('os');
 var events = require('events');
+var tty = require('tty');
 var _rimraf = _interopDefault(require('rimraf'));
 var _mkdirp = _interopDefault(require('mkdirp'));
 var _glob = _interopDefault(require('glob'));
@@ -647,42 +645,6 @@ class BaseReporter {
       end() {}
 
     };
-  } //
-
-
-  question(question, options = {}) {
-    return Promise.reject(new Error('Not implemented'));
-  } //
-
-
-  async questionAffirm(question) {
-    const condition = true; // trick eslint
-
-    if (this.nonInteractive) {
-      return true;
-    }
-
-    while (condition) {
-      let answer = await this.question(question);
-      answer = answer.toLowerCase();
-
-      if (answer === 'y' || answer === 'yes') {
-        return true;
-      }
-
-      if (answer === 'n' || answer === 'no') {
-        return false;
-      }
-
-      this.error('Invalid answer for question');
-    }
-
-    return false;
-  } // prompt the user to select an option from an array
-
-
-  select(header, question, options) {
-    return Promise.reject(new Error('Not implemented'));
   } // render a progress bar and return a function which when called will trigger an update
 
 
@@ -693,11 +655,6 @@ class BaseReporter {
 
   disableProgress() {
     this.noProgress = true;
-  } //
-
-
-  prompt(message, choices, options = {}) {
-    return Promise.reject(new Error('Not implemented'));
   }
 
 }
@@ -1099,36 +1056,6 @@ class ConsoleReporter extends BaseReporter {
   warn(msg) {
     clearLine(this.stderr);
     this.stderr.write(`${this.format.yellow('warning')} ${msg}\n`);
-  }
-
-  question(question, options = {}) {
-    if (!process.stdout.isTTY) {
-      return Promise.reject(new Error("Can't answer a question unless a user TTY"));
-    }
-
-    return new Promise((resolve, reject) => {
-      read({
-        prompt: `${this.format.dim('question')} ${question}: `,
-        silent: !!options.password,
-        output: this.stdout,
-        input: this.stdin
-      }, (err, answer) => {
-        if (err) {
-          if (err.message === 'canceled') {
-            process.exitCode = 1;
-          }
-
-          reject(err);
-        } else {
-          if (!answer && options.required) {
-            this.error(this.lang('answerRequired'));
-            resolve(this.question(question, options));
-          } else {
-            resolve(answer);
-          }
-        }
-      });
-    });
   } // handles basic tree output to console
 
 
@@ -1261,63 +1188,6 @@ class ConsoleReporter extends BaseReporter {
     };
   }
 
-  select(header, question, options) {
-    if (!this.isTTY) {
-      return Promise.reject(new Error("Can't answer a question unless a user TTY"));
-    }
-
-    const rl = readline.createInterface({
-      input: this.stdin,
-      output: this.stdout,
-      terminal: true
-    });
-    const questions = options.map(opt => opt.name);
-    const answers = options.map(opt => opt.value);
-
-    function toIndex(input) {
-      const index = answers.indexOf(input);
-
-      if (index >= 0) {
-        return index;
-      } else {
-        return +input;
-      }
-    }
-
-    return new Promise(resolve => {
-      this.info(header);
-
-      for (let i = 0; i < questions.length; i++) {
-        this.log(`  ${this.format.dim(`${i + 1})`)} ${questions[i]}`);
-      }
-
-      const ask = () => {
-        rl.question(`${question}: `, input => {
-          let index = toIndex(input);
-
-          if (isNaN(index)) {
-            this.log('Not a number');
-            ask();
-            return;
-          }
-
-          if (index <= 0 || index > options.length) {
-            this.log('Outside answer range');
-            ask();
-            return;
-          } // get index
-
-
-          index--;
-          rl.close();
-          resolve(answers[index]);
-        });
-      };
-
-      ask();
-    });
-  }
-
   progress(count) {
     if (this.noProgress || count <= 0) {
       return function () {// noop
@@ -1346,45 +1216,6 @@ class ConsoleReporter extends BaseReporter {
     if (this._progressBar) {
       this._progressBar.stop();
     }
-  }
-
-  async prompt(message, choices, options = {}) {
-    if (!process.stdout.isTTY) {
-      return Promise.reject(new Error("Can't answer a question unless a user TTY"));
-    }
-
-    let pageSize;
-
-    if (process.stdout instanceof tty.WriteStream) {
-      pageSize = process.stdout.rows - 2;
-    }
-
-    const rl = readline.createInterface({
-      input: this.stdin,
-      output: this.stdout,
-      terminal: true
-    }); // $FlowFixMe: Need to update the type of Inquirer
-
-    const prompt = inquirer.createPromptModule({
-      input: this.stdin,
-      output: this.stdout
-    });
-    const {
-      name = 'prompt',
-      type = 'input',
-      validate
-    } = options;
-    const answers = await prompt([{
-      name,
-      type,
-      message,
-      choices,
-      pageSize,
-      validate,
-      default: options.default
-    }]);
-    rl.close();
-    return answers[name];
   }
 
 }

@@ -41,23 +41,10 @@ export default class NoopReporter extends BaseReporter {
             end() { },
         };
     }
-    question(question, options = {}) {
-        return Promise.reject(new Error('Not implemented'));
-    }
-    async questionAffirm(question) {
-        await this.question(question);
-        return false;
-    }
-    select(header, question, options) {
-        return Promise.reject(new Error('Not implemented'));
-    }
     progress(total) {
         return function () { };
     }
     disableProgress() {
         this.noProgress = true;
-    }
-    prompt(message, choices, options = {}) {
-        return Promise.reject(new Error('Not implemented'));
     }
 }
