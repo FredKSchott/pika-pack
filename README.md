@@ -86,14 +86,3 @@ This is all possible because **@pika/pack** builds your entire package: code, as
 ## Lerna Support
 
 Curious about integrating @pika/pack with Lerna? Our official collection of plugins is a Lerna repo that uses @pika/pack to build each package! [Check it out](https://github.com/pikapkg/builders) to see how easy it is to use the two tools together.
-
-
-## Bonus Command: `publish`
-
-<p align="center" style="margin-bottom: 0rem;">
-  <img alt="Demo" src="https://next.pikapkg.com/static/img/publish-demo.gif" width="720">
-</p>
-
-We've brought our favorite parts of [np](https://github.com/sindresorhus/np) (a self-described "better npm publish") into **@pika/pack**. With the `publish` command there's no need to worry about how to publish your package once you've built it.
-
-Run `pack publish` in your project and **@pika/pack** will walk you through version bumping, tagging your release, generating a fresh build, and finally publishing your package.
