@@ -11,19 +11,29 @@ import BaseReporter from './reporters/base-reporter.js';
 import executeLifecycleScript from './util/execute-lifecycle-script.js';
 import importFrom from 'import-from';
 
-export type ConfigOptions = {
-  pipeline?: string;
+
+export interface BuildFlags {
+  publish?: boolean;
+  out?: string;
+  silent?: boolean;
+  force?: boolean;
 };
 
+export interface GlobalFlags extends BuildFlags {
+  cwd?: string;
+  pipeline?: string;
+  verbose?: boolean;
+  json?: boolean;
+};
 
 export default class Config {
   cwd: string;
   reporter: BaseReporter;
   _manifest: any;
   manifest: Manifest;
-  flags: ConfigOptions;
+  flags: GlobalFlags;
 
-  constructor(reporter: BaseReporter, cwd: string, flags: ConfigOptions) {
+  constructor(reporter: BaseReporter, cwd: string, flags: GlobalFlags) {
     this.reporter = reporter;
     // Ensure the cwd is always an absolute path.
     this.cwd = path.resolve(cwd || process.cwd());

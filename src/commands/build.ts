@@ -1,28 +1,20 @@
 import {BuilderOptions} from '@pika/types';
 import chalk from 'chalk';
-import {Command} from 'commander';
 import * as path from 'path';
-import Config from '../config.js';
+import Config, { BuildFlags } from '../config.js';
 import {DEFAULT_INDENT} from '../constants.js';
 import {Reporter} from '../reporters/index.js';
 import * as fs from '../util/fs.js';
 import {generatePrettyManifest, generatePublishManifest} from '../util/normalize-manifest/for-publish.js';
 
-type Flags = {
-  publish?: boolean;
-  out?: string;
-  silent?: boolean;
-  force?: boolean;
-};
-
-export function hasWrapper(commander: Object, args: Array<string>): boolean {
+export function hasWrapper(): boolean {
   return true;
 }
 
 export const examples = null;
 
 export class Build {
-  constructor(flags: Flags, config: Config, reporter: Reporter) {
+  constructor(flags: BuildFlags, config: Config, reporter: Reporter) {
     this.flags = flags;
     this.config = config;
     this.reporter = reporter;
@@ -34,7 +26,7 @@ export class Build {
   }
 
   out: string;
-  flags: Flags;
+  flags: BuildFlags;
   config: Config;
   reporter: Reporter;
   totalNum: number;
@@ -222,7 +214,7 @@ export class Build {
   }
 }
 
-export async function run(config: Config, reporter: Reporter, flags: Flags, args: Array<string>): Promise<void> {
+export async function run(config: Config, reporter: Reporter, flags: BuildFlags, args: Array<string>): Promise<void> {
   const isProduction = flags.publish;
   const builder = new Build(flags, config, reporter);
   await builder.init(isProduction);
