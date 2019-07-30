@@ -44,7 +44,6 @@ function findProjectRoot(base: string): string {
   return base;
 }
 
-
 export async function cli(args: string[]) {
   const version = getVersion();
   loudRejection();

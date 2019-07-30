@@ -34,13 +34,6 @@
           "minNodeVersion": 8
         }
       ],
-      [
-        "@pika/plugin-simple-bin",
-        {
-          "bin": "pack",
-          "minNodeVersion": 8
-        }
-      ]
     ]
   },
   "publishConfig": {

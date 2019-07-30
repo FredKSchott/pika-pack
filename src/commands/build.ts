@@ -15,7 +15,6 @@ type Flags = {
   force?: boolean;
 };
 
-
 export function hasWrapper(commander: Object, args: Array<string>): boolean {
   return true;
 }
@@ -51,6 +50,7 @@ export class Build {
     const outPretty = path.relative(cwd, out) + path.sep;
 
     const manifest = await config.manifest;
+    const {sourcemap} = manifest['@pika/pack'] || {sourcemap: false};
     const distRunners = await config.getDistributions();
     const builderConfig: Partial<BuilderOptions> = {
       out,
@@ -92,7 +92,7 @@ export class Build {
         if (runner.validate) {
           const result = await runner.validate({
             ...builderConfig,
-            options,
+            options: {sourcemap, ...options},
           });
           if (result instanceof Error) {
             throw result;
@@ -109,7 +109,7 @@ export class Build {
         await (runner.beforeBuild &&
           runner.beforeBuild({
             ...builderConfig,
-            options,
+            options: {sourcemap, ...options},
           }));
       }
     });
@@ -132,17 +132,17 @@ export class Build {
           await (runner.beforeJob &&
             runner.beforeJob({
               ...builderConfig,
-              options,
+              options: {sourcemap, ...options},
             }));
           await (runner.build &&
             runner.build({
               ...builderConfig,
-              options,
+              options: {sourcemap, ...options},
             }));
           await (runner.afterJob &&
             runner.afterJob({
               ...builderConfig,
-              options,
+              options: {sourcemap, ...options},
             }));
         } catch (err) {
           if (flags.force) {
@@ -172,7 +172,7 @@ export class Build {
         await (runner.afterBuild &&
           runner.afterBuild({
             ...builderConfig,
-            options,
+            options: {sourcemap, ...options},
           }));
       }
 
