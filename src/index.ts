@@ -34,6 +34,8 @@ ${chalk.bold('Options:')}
     --json              Log output as JSON.
     --verbose           Log additional debugging information.
     --silent            Log almost nothing.
+    --help              Print help.
+    --version, -v       Print version.
     `.trim());
 }
 
@@ -43,12 +45,18 @@ export async function cli(args: string[]) {
   loudRejection();
   handleSignals();
 
-  // if -v is the first command, then always exit after returning the version
-  if (args[2] === '-v') {
+  // Handle special flags
+  if (args.find(arg => arg === '--version' || arg === '-v')) {
     console.log(version.trim());
     process.exitCode = 0;
     return;
   }
+  if (args.find(arg => arg === '--help')) {
+    printHelp();
+    process.exitCode = 0;
+    return;
+  }
+
 
   // Handle the legacy CLI interface
   if (args[2] === 'publish') {
@@ -58,18 +66,9 @@ Update your publish script to: ${chalk.bold('pika publish [flags]')}
     process.exitCode = 1;
     return;
   }
-
-  // Handle the legacy CLI interface
   if (args[2] === 'build') {
     console.log(chalk.yellow(`Note: This CLI was recently deprecated. Update your build script to: ${chalk.bold('pika build [flags]')}`));
     args.splice(2, 1);
-  }
-
-  const isHelp = arg => arg === '--help' || arg === '-h';
-  if (args.find(isHelp)) {
-    printHelp();
-    process.exitCode = 0;
-    return;
   }
 
   const flags: GlobalFlags = yargs(args);
