@@ -1,14 +1,10 @@
 import * as path from 'path';
 import chalk from 'chalk';
-import { Command } from 'commander';
 import * as fs from 'fs';
 import invariant from 'invariant';
 import loudRejection from 'loud-rejection';
-import semver from 'semver';
 import { ConsoleReporter, JSONReporter } from './reporters/index.js';
 import * as buildCommand from './commands/build.js';
-import * as helpCommand from './commands/help.js';
-import * as constants from './constants.js';
 import { MessageError } from '@pika/types';
 import Config from './config.js';
 import handleSignals from './util/signal-handler.js';
@@ -16,7 +12,7 @@ import { boolifyWithDefault } from './util/conversion.js';
 import map from './util/map.js';
 import stripBOM from 'strip-bom';
 import uri2path from 'file-uri-to-path';
-const commander = new Command();
+import yargs from 'yargs-parser';
 // @ts-ignore
 const currentFilename = uri2path(import.meta.url);
 function getVersion() {
@@ -24,51 +20,37 @@ function getVersion() {
     const { version } = map(JSON.parse(stripBOM(packageJsonContent)));
     return version;
 }
-function findProjectRoot(base) {
-    let prev = null;
-    let dir = base;
-    do {
-        if (fs.existsSync(path.join(dir, constants.NODE_PACKAGE_JSON))) {
-            return dir;
-        }
-        prev = dir;
-        dir = path.dirname(dir);
-    } while (dir !== prev);
-    return base;
+function printHelp() {
+    console.log(`
+${chalk.bold(`@pika/pack`)} - Build npm packages without the mess.
+${chalk.bold('Options:')}
+    --cwd               Set the current working directory.
+    --out               Set the output directory. Defaults to "pkg/".
+    --pipeline          Set a build pipeline via JSON string.
+    --force             Continue with the build when a build plugin fails or throws an exception.
+    --json              Log output as JSON.
+    --verbose           Log additional debugging information.
+    --silent            Log almost nothing.
+    --help              Print help.
+    --version, -v       Print version.
+    `.trim());
 }
 export async function cli(args) {
     const version = getVersion();
     loudRejection();
     handleSignals();
-    // set global options
-    commander.version(version, '-v, --version');
-    commander.usage('[command] [flags]');
-    commander.option('--verbose', 'output verbose messages on internal operations');
-    commander.option('--json', 'format Pika log messages as lines of JSON (see jsonlines.org)');
-    // commander.option('--force', 'install and build packages even if they were built before, overwrite lockfile');
-    // commander.option('--prod, --production [prod]', '', boolify);
-    // commander.option(
-    //   '--emoji [bool]',
-    //   'enable emoji in output',
-    //   boolify,
-    //   process.platform === 'darwin' || process.env.TERM_PROGRAM === 'Hyper' || process.env.TERM_PROGRAM === 'HyperTerm',
-    // );
-    commander.description('Prepares your package out directory (pkg/) for publishing.');
-    commander.usage('pika build [flags]');
-    commander.option('-s, --silent', 'skip Pika console logs, other types of logs (script output) will be printed');
-    commander.option('--cwd <cwd>', 'working directory to use', process.cwd());
-    commander.option('--no-progress', 'disable progress bar');
-    commander.option('--no-node-version-check', 'do not warn when using a potentially unsupported Node version');
-    commander.option('--pipeline <pipeline>', 'the build pipeline to run');
-    commander.option('-O, --out <path>', 'Where to write to');
-    commander.option('--force', 'Whether to ignore failed build plugins and continue through errors.');
-    commander.option('-P, --publish', 'Whether to include publish-only builds like unpkg & types.');
-    // if -v is the first command, then always exit after returning the version
-    if (args[2] === '-v') {
+    // Handle special flags
+    if (args.find(arg => arg === '--version' || arg === '-v')) {
         console.log(version.trim());
         process.exitCode = 0;
         return;
     }
+    if (args.find(arg => arg === '--help')) {
+        printHelp();
+        process.exitCode = 0;
+        return;
+    }
+    // Handle the legacy CLI interface
     if (args[2] === 'publish') {
         console.log(`The publish flow has moved to the @pika/cli package (included with this package).
 Update your publish script to: ${chalk.bold('pika publish [flags]')}
@@ -80,33 +62,28 @@ Update your publish script to: ${chalk.bold('pika publish [flags]')}
         console.log(chalk.yellow(`Note: This CLI was recently deprecated. Update your build script to: ${chalk.bold('pika build [flags]')}`));
         args.splice(2, 1);
     }
-    commander.parse(args);
-    const Reporter = commander.json ? JSONReporter : ConsoleReporter;
+    const flags = yargs(args);
+    const cwd = flags.cwd || process.cwd();
+    const Reporter = flags.json ? JSONReporter : ConsoleReporter;
     const reporter = new Reporter({
-        emoji: process.stdout.isTTY && commander.emoji,
-        verbose: commander.verbose,
-        noProgress: !commander.progress,
-        isSilent: boolifyWithDefault(process.env.PIKA_SILENT, false) || commander.silent,
-        nonInteractive: commander.nonInteractive,
+        emoji: true,
+        verbose: flags.verbose,
+        isSilent: boolifyWithDefault(process.env.PIKA_SILENT, false) || flags.silent,
     });
     const exit = (exitCode = 0) => {
         process.exitCode = exitCode;
         reporter.close();
     };
-    const isHelp = arg => arg === '--help' || arg === '-h';
-    const command = args.find(isHelp) ? helpCommand : buildCommand;
+    const command = buildCommand;
     reporter.initPeakMemoryCounter();
     const outputWrapperEnabled = boolifyWithDefault(process.env.PIKA_WRAP_OUTPUT, true);
-    const shouldWrapOutput = outputWrapperEnabled && !commander.json && command.hasWrapper(commander, commander.args);
+    const shouldWrapOutput = outputWrapperEnabled && !flags.json && command.hasWrapper();
     if (shouldWrapOutput) {
         reporter.header({ name: '@pika/pack', version });
     }
-    if (commander.nodeVersionCheck && !semver.satisfies(process.versions.node, constants.SUPPORTED_NODE_VERSIONS)) {
-        reporter.warn(reporter.lang('unsupportedNodeVersion', process.versions.node, constants.SUPPORTED_NODE_VERSIONS));
-    }
     const run = () => {
         invariant(command, 'missing command');
-        return command.run(config, reporter, commander, commander.args).then(exitCode => {
+        return command.run(config, reporter, flags, args).then(exitCode => {
             if (shouldWrapOutput) {
                 reporter.footer(false);
             }
@@ -126,8 +103,7 @@ Update your publish script to: ${chalk.bold('pika publish [flags]')}
         log.push(`Trace: ${indent(err.stack)}`);
         reporter.error(reporter.lang('unexpectedError', err.message));
     }
-    const cwd = findProjectRoot(commander.cwd);
-    const config = new Config(reporter, cwd, commander);
+    const config = new Config(reporter, cwd, flags);
     await config.loadPackageManifest();
     try {
         // option "no-progress" stored in pika config

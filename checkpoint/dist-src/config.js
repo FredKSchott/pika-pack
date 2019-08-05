@@ -5,6 +5,8 @@ import * as fs from './util/fs.js';
 import normalizeManifest from './util/normalize-manifest/index.js';
 import executeLifecycleScript from './util/execute-lifecycle-script.js';
 import importFrom from 'import-from';
+;
+;
 export default class Config {
     constructor(reporter, cwd, flags) {
         this.reporter = reporter;

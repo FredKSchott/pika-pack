@@ -3,7 +3,7 @@ import * as path from 'path';
 import { DEFAULT_INDENT } from '../constants.js';
 import * as fs from '../util/fs.js';
 import { generatePrettyManifest, generatePublishManifest } from '../util/normalize-manifest/for-publish.js';
-export function hasWrapper(commander, args) {
+export function hasWrapper() {
     return true;
 }
 export const examples = null;
@@ -27,6 +27,7 @@ export class Build {
         const { cwd } = config;
         const outPretty = path.relative(cwd, out) + path.sep;
         const manifest = await config.manifest;
+        const { sourcemap } = manifest['@pika/pack'] || { sourcemap: true };
         const distRunners = await config.getDistributions();
         const builderConfig = {
             out,
@@ -65,7 +66,7 @@ export class Build {
                 if (runner.validate) {
                     const result = await runner.validate({
                         ...builderConfig,
-                        options,
+                        options: { sourcemap, ...options },
                     });
                     if (result instanceof Error) {
                         throw result;
@@ -81,7 +82,7 @@ export class Build {
                 await (runner.beforeBuild &&
                     runner.beforeBuild({
                         ...builderConfig,
-                        options,
+                        options: { sourcemap, ...options },
                     }));
             }
         });
@@ -98,17 +99,17 @@ export class Build {
                     await (runner.beforeJob &&
                         runner.beforeJob({
                             ...builderConfig,
-                            options,
+                            options: { sourcemap, ...options },
                         }));
                     await (runner.build &&
                         runner.build({
                             ...builderConfig,
-                            options,
+                            options: { sourcemap, ...options },
                         }));
                     await (runner.afterJob &&
                         runner.afterJob({
                             ...builderConfig,
-                            options,
+                            options: { sourcemap, ...options },
                         }));
                 }
                 catch (err) {
@@ -140,7 +141,7 @@ export class Build {
                 await (runner.afterBuild &&
                     runner.afterBuild({
                         ...builderConfig,
-                        options,
+                        options: { sourcemap, ...options },
                     }));
             }
             if (await fs.exists(path.join(cwd, 'CHANGELOG'))) {

@@ -6,11 +6,9 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 
 var path = require('path');
 var chalk = _interopDefault(require('chalk'));
-var commander$1 = require('commander');
 var fs = require('fs');
 var invariant = _interopDefault(require('invariant'));
 var loudRejection = _interopDefault(require('loud-rejection'));
-var semver = _interopDefault(require('semver'));
 var readline = require('readline');
 var stripAnsi = _interopDefault(require('strip-ansi'));
 var util = require('util');
@@ -26,32 +24,14 @@ var stripBOM = _interopDefault(require('strip-bom'));
 var types = require('@pika/types');
 var isBuiltinModule = _interopDefault(require('is-builtin-module'));
 var validateLicense = _interopDefault(require('validate-npm-package-license'));
+var semver = _interopDefault(require('semver'));
 var nodeUrl = require('url');
 var child_process = require('child_process');
 var importFrom = _interopDefault(require('import-from'));
 var uri2path = _interopDefault(require('file-uri-to-path'));
+var yargs = _interopDefault(require('yargs-parser'));
 
 /* @flow */
-function sortAlpha(a, b) {
-  // sort alphabetically in a deterministic way
-  const shortLen = Math.min(a.length, b.length);
-
-  for (let i = 0; i < shortLen; i++) {
-    const aChar = a.charCodeAt(i);
-    const bChar = b.charCodeAt(i);
-
-    if (aChar !== bChar) {
-      return aChar - bChar;
-    }
-  }
-
-  return a.length - b.length;
-}
-function sortOptionsByFlags(a, b) {
-  const aOpt = a.flags.replace(/-/g, '');
-  const bOpt = b.flags.replace(/-/g, '');
-  return sortAlpha(aOpt, bOpt);
-}
 function removeSuffix(pattern, suffix) {
   if (pattern.endsWith(suffix)) {
     return pattern.slice(0, -suffix.length);
@@ -1481,7 +1461,6 @@ const DEPENDENCY_TYPES = ['devDependencies', 'dependencies', 'legacyDependencies
 
 const RESOLUTIONS = 'resolutions';
 const MANIFEST_FIELDS = [RESOLUTIONS, ...DEPENDENCY_TYPES];
-const SUPPORTED_NODE_VERSIONS = '>=8.5.0'; // export const PIKA_REGISTRY = 'https://registry.npmjs.org';
 // export const NPM_REGISTRY_RE = /https?:\/\/registry\.npmjs\.org/g;
 // export const PIKA_DOCS = 'https://yarnpkg.com/en/docs/cli/';
 // export const PIKA_INSTALLER_SH = 'https://yarnpkg.com/install.sh';
@@ -2274,7 +2253,7 @@ function generatePrettyManifest(manifest) {
   }), null, 2);
 }
 
-function hasWrapper(commander, args) {
+function hasWrapper() {
   return true;
 }
 const examples = null;
@@ -2310,6 +2289,11 @@ class Build {
     } = config;
     const outPretty = path.relative(cwd, out) + path.sep;
     const manifest = await config.manifest;
+    const {
+      sourcemap
+    } = manifest['@pika/pack'] || {
+      sourcemap: true
+    };
     const distRunners = await config.getDistributions();
     const builderConfig = {
       out,
@@ -2348,7 +2332,9 @@ class Build {
       for (const [runner, options] of distRunners) {
         if (runner.validate) {
           const result = await runner.validate(_objectSpread2({}, builderConfig, {
-            options
+            options: _objectSpread2({
+              sourcemap
+            }, options)
           }));
 
           if (result instanceof Error) {
@@ -2364,7 +2350,9 @@ class Build {
 
       for (const [runner, options] of distRunners) {
         await (runner.beforeBuild && runner.beforeBuild(_objectSpread2({}, builderConfig, {
-          options
+          options: _objectSpread2({
+            sourcemap
+          }, options)
         })));
       }
     });
@@ -2381,13 +2369,19 @@ class Build {
 
         try {
           await (runner.beforeJob && runner.beforeJob(_objectSpread2({}, builderConfig, {
-            options
+            options: _objectSpread2({
+              sourcemap
+            }, options)
           })));
           await (runner.build && runner.build(_objectSpread2({}, builderConfig, {
-            options
+            options: _objectSpread2({
+              sourcemap
+            }, options)
           })));
           await (runner.afterJob && runner.afterJob(_objectSpread2({}, builderConfig, {
-            options
+            options: _objectSpread2({
+              sourcemap
+            }, options)
           })));
         } catch (err) {
           if (flags.force) {
@@ -2417,7 +2411,9 @@ class Build {
 
       for (const [runner, options] of distRunners) {
         await (runner.afterBuild && runner.afterBuild(_objectSpread2({}, builderConfig, {
-          options
+          options: _objectSpread2({
+            sourcemap
+          }, options)
         })));
       }
 
@@ -2477,41 +2473,6 @@ var buildCommand = /*#__PURE__*/Object.freeze({
     examples: examples,
     Build: Build,
     run: run
-});
-
-/* @flow */
-function hasWrapper$1(flags, args) {
-  return false;
-}
-function run$1(config, reporter, commander, args) {
-  if (args.length) {
-    const commandName = args.shift();
-    const command = buildCommand;
-
-    if (command) {
-      const examples = (command && command.examples || []).map(example => `    $ pika ${example}`);
-
-      if (examples.length) {
-        commander.on('--help', () => {
-          reporter.log(reporter.lang('helpExamples', reporter.rawText(examples.join('\n'))));
-        });
-      } // eslint-disable-next-line pika-internal/warn-language
-      // commander.on('--help', () => reporter.log('  ' + getDocsInfo(commandName) + '\n'));
-
-
-      commander.help();
-      return Promise.resolve();
-    }
-  }
-
-  commander.options.sort(sortOptionsByFlags);
-  commander.help();
-  return Promise.resolve();
-}
-
-var helpCommand = /*#__PURE__*/Object.freeze({
-    hasWrapper: hasWrapper$1,
-    run: run$1
 });
 
 var typos = {
@@ -3816,8 +3777,6 @@ function boolifyWithDefault(val, defaultResult) {
   return val === '' || val === null || val === undefined ? defaultResult : boolify(val);
 }
 
-const commander = new commander$1.Command(); // @ts-ignore
-
 const currentFilename = uri2path((typeof document === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : (document.currentScript && document.currentScript.src || new URL('index.js', document.baseURI).href)));
 
 function getVersion() {
@@ -3830,55 +3789,39 @@ function getVersion() {
   return version;
 }
 
-function findProjectRoot(base) {
-  let prev = null;
-  let dir = base;
-
-  do {
-    if (fs.existsSync(path.join(dir, NODE_PACKAGE_JSON))) {
-      return dir;
-    }
-
-    prev = dir;
-    dir = path.dirname(dir);
-  } while (dir !== prev);
-
-  return base;
+function printHelp() {
+  console.log(`
+${chalk.bold(`@pika/pack`)} - Build npm packages without the mess.
+${chalk.bold('Options:')}
+    --cwd               Set the current working directory.
+    --out               Set the output directory. Defaults to "pkg/".
+    --pipeline          Set a build pipeline via JSON string.
+    --force             Continue with the build when a build plugin fails or throws an exception.
+    --json              Log output as JSON.
+    --verbose           Log additional debugging information.
+    --silent            Log almost nothing.
+    --help              Print help.
+    --version, -v       Print version.
+    `.trim());
 }
 
 async function cli(args) {
   const version = getVersion();
   loudRejection();
-  handleSignals(); // set global options
+  handleSignals(); // Handle special flags
 
-  commander.version(version, '-v, --version');
-  commander.usage('[command] [flags]');
-  commander.option('--verbose', 'output verbose messages on internal operations');
-  commander.option('--json', 'format Pika log messages as lines of JSON (see jsonlines.org)'); // commander.option('--force', 'install and build packages even if they were built before, overwrite lockfile');
-  // commander.option('--prod, --production [prod]', '', boolify);
-  // commander.option(
-  //   '--emoji [bool]',
-  //   'enable emoji in output',
-  //   boolify,
-  //   process.platform === 'darwin' || process.env.TERM_PROGRAM === 'Hyper' || process.env.TERM_PROGRAM === 'HyperTerm',
-  // );
-
-  commander.description('Prepares your package out directory (pkg/) for publishing.');
-  commander.usage('pika build [flags]');
-  commander.option('-s, --silent', 'skip Pika console logs, other types of logs (script output) will be printed');
-  commander.option('--cwd <cwd>', 'working directory to use', process.cwd());
-  commander.option('--no-progress', 'disable progress bar');
-  commander.option('--no-node-version-check', 'do not warn when using a potentially unsupported Node version');
-  commander.option('--pipeline <pipeline>', 'the build pipeline to run');
-  commander.option('-O, --out <path>', 'Where to write to');
-  commander.option('--force', 'Whether to ignore failed build plugins and continue through errors.');
-  commander.option('-P, --publish', 'Whether to include publish-only builds like unpkg & types.'); // if -v is the first command, then always exit after returning the version
-
-  if (args[2] === '-v') {
+  if (args.find(arg => arg === '--version' || arg === '-v')) {
     console.log(version.trim());
     process.exitCode = 0;
     return;
   }
+
+  if (args.find(arg => arg === '--help')) {
+    printHelp();
+    process.exitCode = 0;
+    return;
+  } // Handle the legacy CLI interface
+
 
   if (args[2] === 'publish') {
     console.log(`The publish flow has moved to the @pika/cli package (included with this package).
@@ -3893,14 +3836,13 @@ Update your publish script to: ${chalk.bold('pika publish [flags]')}
     args.splice(2, 1);
   }
 
-  commander.parse(args);
-  const Reporter = commander.json ? JSONReporter : ConsoleReporter;
+  const flags = yargs(args);
+  const cwd = flags.cwd || process.cwd();
+  const Reporter = flags.json ? JSONReporter : ConsoleReporter;
   const reporter = new Reporter({
-    emoji: process.stdout.isTTY && commander.emoji,
-    verbose: commander.verbose,
-    noProgress: !commander.progress,
-    isSilent: boolifyWithDefault(process.env.PIKA_SILENT, false) || commander.silent,
-    nonInteractive: commander.nonInteractive
+    emoji: true,
+    verbose: flags.verbose,
+    isSilent: boolifyWithDefault(process.env.PIKA_SILENT, false) || flags.silent
   });
 
   const exit = (exitCode = 0) => {
@@ -3908,12 +3850,10 @@ Update your publish script to: ${chalk.bold('pika publish [flags]')}
     reporter.close();
   };
 
-  const isHelp = arg => arg === '--help' || arg === '-h';
-
-  const command = args.find(isHelp) ? helpCommand : buildCommand;
+  const command = buildCommand;
   reporter.initPeakMemoryCounter();
   const outputWrapperEnabled = boolifyWithDefault(process.env.PIKA_WRAP_OUTPUT, true);
-  const shouldWrapOutput = outputWrapperEnabled && !commander.json && command.hasWrapper(commander, commander.args);
+  const shouldWrapOutput = outputWrapperEnabled && !flags.json && command.hasWrapper();
 
   if (shouldWrapOutput) {
     reporter.header({
@@ -3922,13 +3862,9 @@ Update your publish script to: ${chalk.bold('pika publish [flags]')}
     });
   }
 
-  if (commander.nodeVersionCheck && !semver.satisfies(process.versions.node, SUPPORTED_NODE_VERSIONS)) {
-    reporter.warn(reporter.lang('unsupportedNodeVersion', process.versions.node, SUPPORTED_NODE_VERSIONS));
-  }
-
   const run = () => {
     invariant(command, 'missing command');
-    return command.run(config, reporter, commander, commander.args).then(exitCode => {
+    return command.run(config, reporter, flags, args).then(exitCode => {
       if (shouldWrapOutput) {
         reporter.footer(false);
       }
@@ -3952,8 +3888,7 @@ Update your publish script to: ${chalk.bold('pika publish [flags]')}
     reporter.error(reporter.lang('unexpectedError', err.message));
   }
 
-  const cwd = findProjectRoot(commander.cwd);
-  const config = new Config(reporter, cwd, commander);
+  const config = new Config(reporter, cwd, flags);
   await config.loadPackageManifest();
 
   try {
@@ -3981,3 +3916,4 @@ Update your publish script to: ${chalk.bold('pika publish [flags]')}
 }
 
 exports.cli = cli;
+//# sourceMappingURL=index.js.map

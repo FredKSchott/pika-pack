@@ -4,8 +4,7 @@
   "version": "0.4.0",
   "license": "MIT",
   "bin": {
-    "pika-pack": "dist-node/index.bin.js",
-    "pack": "dist-node/index.bin.js"
+    "pika-pack": "dist-node/index.bin.js"
   },
   "files": [
     "dist-*/",
@@ -34,10 +33,10 @@
     "mkdirp": "^0.5.1",
     "np": "^5.0.2",
     "rimraf": "^2.5.0",
-    "semver": "^5.6.0",
     "strip-ansi": "^4.0.0",
     "strip-bom": "^3.0.0",
-    "validate-npm-package-license": "^3.0.4"
+    "validate-npm-package-license": "^3.0.4",
+    "yargs-parser": "^13.1.1"
   },
   "devDependencies": {
     "@pika/plugin-build-node": "^0.5.0",

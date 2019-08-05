@@ -39,7 +39,6 @@ export const lstat = util.promisify(fs.lstat);
 export const chmod = util.promisify(fs.chmod);
 export const link = util.promisify(fs.link);
 export const copyFile = util.promisify(fs.copyFile);
-export const existsSync = fs.existsSync;
 const readFileBuffer = util.promisify(fs.readFile);
 export const readFile = (path) => {
     return util.promisify(fs.readFile)(path, { encoding: 'utf-8' });

@@ -1,22 +1,15 @@
-import Config from '../config.js';
+import Config, { BuildFlags } from '../config.js';
 import { Reporter } from '../reporters/index.js';
-declare type Flags = {
-    publish?: boolean;
-    out?: string;
-    silent?: boolean;
-    force?: boolean;
-};
-export declare function hasWrapper(commander: Object, args: Array<string>): boolean;
+export declare function hasWrapper(): boolean;
 export declare const examples: any;
 export declare class Build {
-    constructor(flags: Flags, config: Config, reporter: Reporter);
+    constructor(flags: BuildFlags, config: Config, reporter: Reporter);
     out: string;
-    flags: Flags;
+    flags: BuildFlags;
     config: Config;
     reporter: Reporter;
     totalNum: number;
     cleanup(): Promise<void>;
     init(isFull?: boolean): Promise<void>;
 }
-export declare function run(config: Config, reporter: Reporter, flags: Flags, args: Array<string>): Promise<void>;
-export {};
+export declare function run(config: Config, reporter: Reporter, flags: BuildFlags, args: Array<string>): Promise<void>;

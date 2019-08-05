@@ -16,7 +16,6 @@ export declare const lstat: typeof fs.lstat.__promisify__;
 export declare const chmod: typeof fs.chmod.__promisify__;
 export declare const link: (arg1: fs.PathLike, arg2: fs.PathLike) => Promise<void>;
 export declare const copyFile: typeof fs.copyFile.__promisify__;
-export declare const existsSync: typeof fs.existsSync;
 export declare const readFile: (path: string) => Promise<string>;
 export declare function readJson(loc: string): Promise<Object>;
 export declare function readJsonAndFile(loc: string): Promise<{
