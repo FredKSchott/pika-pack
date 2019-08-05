@@ -1,7 +1,5 @@
 /* @flow */
 
-import _camelCase from 'camelcase';
-
 export function sortAlpha(a: string, b: string): number {
   // sort alphabetically in a deterministic way
   const shortLen = Math.min(a.length, b.length);
@@ -59,14 +57,6 @@ export function hyphenate(str: string): string {
   return str.replace(/[A-Z]/g, match => {
     return '-' + match.charAt(0).toLowerCase();
   });
-}
-
-export function camelCase(str: string): string | null {
-  if (/[A-Z]/.test(str)) {
-    return null;
-  } else {
-    return _camelCase(str);
-  }
 }
 
 export function compareSortedArrays<T>(array1: Array<T>, array2: Array<T>): boolean {
