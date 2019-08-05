@@ -20,22 +20,13 @@
 
 ## Quickstart
 
-Getting started is easy:
-
-```js
-// 1. Install it!
-$ npm install -g @pika/pack
-// 2. Add this to your package.json manifest:
-"@pika/pack": {
-  "pipeline": []
-}
-// 3. Run it!
-$ pack build
+```bash
+npx @pika/pack                                   # Run once
+npm install --dev @pika/pack && npx pika pack    # Run multiple times
+# Note: Once installed locally, "pika pack" can be used in package.json scripts
 ```
 
-### 😎 🆒
-
-So now what? If you run `pack build` with an empty pipeline, you'll get an empty package build. **@pika/pack** lets you connect pre-configured plugins to build and optimize your package for you. Plugins wrap already-popular tools like Babel and Rollup with npm-optimized config options, removing the need to fiddle with much (if any) configuration yourself. You even get a generated package.json manifest configured for you ***automatically***.
+😎🆒! So now what? If you run `pack build` with an empty pipeline, you'll get an empty package build. **@pika/pack** lets you connect pre-configured plugins to build and optimize your package for you. Plugins wrap already-popular tools like Babel and Rollup with npm-optimized config options, removing the need to fiddle with much (if any) configuration yourself. You even get a generated package.json manifest configured for you ***automatically***.
 
 ### 1. Create a project pipeline out of simple, pluggable builders.
 
