@@ -42,7 +42,7 @@ export class Build {
     const outPretty = path.relative(cwd, out) + path.sep;
 
     const manifest = await config.manifest;
-    const {sourcemap} = manifest['@pika/pack'] || {sourcemap: false};
+    const {sourcemap} = manifest['@pika/pack'] || {sourcemap: true};
     const distRunners = await config.getDistributions();
     const builderConfig: Partial<BuilderOptions> = {
       out,
