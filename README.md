@@ -22,7 +22,7 @@
 
 ```bash
 npx @pika/pack                                   # Run once
-npm install --dev @pika/pack && npx pika pack    # Run multiple times
+npm install --dev @pika/pack && npx pika-pack    # Run multiple times
 # Note: Once installed locally, "pika pack" can be used in package.json scripts
 ```
 
