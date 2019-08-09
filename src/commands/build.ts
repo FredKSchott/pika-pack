@@ -138,8 +138,13 @@ export class Build {
             }));
         } catch (err) {
           if (flags.force) {
-            console.log('      ❗️  ', chalk.red(err.message), chalk.dim('--force, continuing...'));
+            console.error('      ❗️  ', chalk.red(err.message), chalk.dim('--force, continuing...'));
           } else {
+            console.error('      ❗️  ', chalk.red(err.message));
+            if (err.all) {
+              console.error('      ❗️  ', chalk.bold('ERROR OUTPUT:'));
+              console.error(err.all);
+            }
             throw err;
           }
         }
