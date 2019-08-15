@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="Logo" src="https://next.pikapkg.com/static/img/new-logo1.png" width="280">
+  <img alt="Logo" src="https://next.pikapkg.com/static/img/pika-pack-logo.jpg" width="280">
 </p>
 
 <p align="center">
@@ -21,9 +21,9 @@
 ## Quickstart
 
 ```bash
-npx @pika/pack                                   # Run once
-npm install --dev @pika/pack && npx pika pack    # Run multiple times
-# Note: Once installed locally, "pika pack" can be used in package.json scripts
+npx @pika/pack                           # Run once.
+npm install -g @pika/cli && pika pack    # Run multiple.
+npm install --dev @pika/pack             # Optional: Install locally to use "pika pack" in any package.json scripts
 ```
 
 😎🆒! So now what? If you run `pack build` with an empty pipeline, you'll get an empty package build. **@pika/pack** lets you connect pre-configured plugins to build and optimize your package for you. Plugins wrap already-popular tools like Babel and Rollup with npm-optimized config options, removing the need to fiddle with much (if any) configuration yourself. You even get a generated package.json manifest configured for you ***automatically***.
