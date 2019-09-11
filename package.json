@@ -13,10 +13,10 @@
   },
   "scripts": {
     "format": "prettier --write src/**/*.ts",
-    "build": "./checkpoint/dist-node/index.bin.js",
+    "build": "node checkpoint/dist-node/index.bin.js",
     "publish": "pika publish",
-    "test": "./pkg/dist-node/index.bin.js",
-    "version": "./pkg/dist-node/index.bin.js",
+    "test": "node pkg/dist-node/index.bin.js",
+    "version": "node  pkg/dist-node/index.bin.js",
     "update-checkpoint": "rm -rf checkpoint/ && cp -r pkg/ checkpoint/"
   },
   "@pika/pack": {
