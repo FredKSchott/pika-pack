@@ -141,6 +141,11 @@ export class Build {
             console.error('      ❗️  ', chalk.red(err.message), chalk.dim('--force, continuing...'));
           } else {
             console.error('      ❗️  ', chalk.red(err.message));
+            if (err.loc && err.frame) {
+              console.error('      ❗️  ', chalk.bold('ERROR OUTPUT:'), '\n');
+              err.loc.file && console.error(err.loc.file);
+              console.error(err.frame, '\n');
+            }
             if (err.all) {
               console.error('      ❗️  ', chalk.bold('ERROR OUTPUT:'));
               console.error(err.all);
