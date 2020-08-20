@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="Logo" src="https://next.pikapkg.com/static/img/pika-pack-logo.jpg" width="280">
+  <img alt="Logo" src="https://www.pika.dev/static/img/pika-pack-logo.jpg" width="280">
 </p>
 
 <p align="center">
@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-  <img alt="Demo" src="https://next.pikapkg.com/static/img/pack-build-demo.gif?" width="720">
+  <img alt="Demo" src="https://www.pika.dev/static/img/pack-build-demo.gif" width="720">
 </p>
 
 
