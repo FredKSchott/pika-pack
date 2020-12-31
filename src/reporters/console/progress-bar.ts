@@ -1,5 +1,3 @@
-
-
 import {Stdout} from '../types.js';
 import {clearLine, toStartOfLine} from './util.js';
 
@@ -20,7 +18,7 @@ export default class ProgressBar {
   width: number;
   chars: [string, string];
   delay: number;
-  id?:  NodeJS.Timeout;
+  id?: NodeJS.Timeout;
   _callback?: (progressBar: ProgressBar) => void;
 
   static bars: [string, string][] = [['#', '-']];

@@ -1,5 +1,3 @@
-
-
 import * as tty from 'tty';
 import {Stdout} from '../types.js';
 

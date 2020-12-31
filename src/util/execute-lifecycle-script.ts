@@ -53,9 +53,9 @@ export type LifecycleReturn = Promise<{
 // const INVALID_CHAR_REGEX = /\W/g;
 
 export async function makeEnv(): Promise<{[key: string]: string}> {
-// stage: string,
-// cwd: string,
-// config: Config,
+  // stage: string,
+  // cwd: string,
+  // config: Config,
   const env = {
     NODE: process.execPath,
     INIT_CWD: process.cwd(),

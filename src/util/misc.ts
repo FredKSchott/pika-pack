@@ -54,7 +54,7 @@ export function addSuffix(pattern: string, suffix: string): string {
 }
 
 export function hyphenate(str: string): string {
-  return str.replace(/[A-Z]/g, match => {
+  return str.replace(/[A-Z]/g, (match) => {
     return '-' + match.charAt(0).toLowerCase();
   });
 }
@@ -72,7 +72,7 @@ export function compareSortedArrays<T>(array1: Array<T>, array2: Array<T>): bool
 }
 
 export function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
 }

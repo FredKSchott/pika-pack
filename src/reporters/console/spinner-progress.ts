@@ -1,5 +1,3 @@
-
-
 import {Stdout} from '../types.js';
 import {writeOnNthLine, clearNthLine} from './util.js';
 

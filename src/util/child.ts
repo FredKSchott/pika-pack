@@ -73,7 +73,7 @@ export function spawn(
         }
 
         if (typeof opts.process === 'function') {
-          opts.process(proc, updateStdout, reject, function() {
+          opts.process(proc, updateStdout, reject, function () {
             if (processClosed) {
               finish();
             } else {

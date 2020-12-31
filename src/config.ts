@@ -1,30 +1,28 @@
-
 declare function __non_webpack_require__(m: string): any;
 
 import * as path from 'path';
 import * as constants from './constants.js';
-import { MessageError } from '@pika/types';
-import { Manifest } from './types.js';
+import {MessageError} from '@pika/types';
+import {Manifest} from './types.js';
 import * as fs from './util/fs.js';
 import normalizeManifest from './util/normalize-manifest/index.js';
 import BaseReporter from './reporters/base-reporter.js';
 import executeLifecycleScript from './util/execute-lifecycle-script.js';
 import importFrom from 'import-from';
 
-
 export interface BuildFlags {
   publish?: boolean;
   out?: string;
   silent?: boolean;
   force?: boolean;
-};
+}
 
 export interface GlobalFlags extends BuildFlags {
   cwd?: string;
   pipeline?: string;
   verbose?: boolean;
   json?: boolean;
-};
+}
 
 export default class Config {
   cwd: string;
@@ -70,18 +68,26 @@ export default class Config {
     const cwd = this.cwd;
     function cleanRawDistObject(rawVal): false | [any, any] {
       if (Array.isArray(rawVal)) {
-        let importStr = (rawVal[0].startsWith('./') ||rawVal[0].startsWith('../')) ? path.join(cwd, rawVal[0]) : rawVal[0];
-        return [{...importFrom(cwd, importStr), name: rawVal[0]}, rawVal[1] || {}];
+        let importStr =
+          rawVal[0].startsWith('./') || rawVal[0].startsWith('../') ? path.join(cwd, rawVal[0]) : rawVal[0];
+        const importResult = importFrom(cwd, importStr) as any;
+        return [{...importResult, name: rawVal[0]}, rawVal[1] || {}];
       }
       if (typeof rawVal === 'string') {
-        return [{build: ({cwd}) => {
-          return executeLifecycleScript({
-          // config: this,
-          args: [],
-          cwd,
-          cmd: rawVal,
-          isInteractive: false});
-        }}, {}];
+        return [
+          {
+            build: ({cwd}) => {
+              return executeLifecycleScript({
+                // config: this,
+                args: [],
+                cwd,
+                cmd: rawVal,
+                isInteractive: false,
+              });
+            },
+          },
+          {},
+        ];
       }
       if (!rawVal) {
         throw new Error('Cannot be false');
@@ -92,4 +98,3 @@ export default class Config {
     return pipeline.map(cleanRawDistObject).filter(Boolean) as [any, any][];
   }
 }
-

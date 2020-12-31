@@ -91,7 +91,7 @@ export default class JSONReporter extends BaseReporter {
           current = _current;
           header = _header;
         },
-        tick: msg => {
+        tick: (msg) => {
           this._dump('activitySetTick', {
             id,
             header,
@@ -140,7 +140,7 @@ export default class JSONReporter extends BaseReporter {
 
   progress(total: number): () => void {
     if (this.noProgress) {
-      return function() {
+      return function () {
         // noop
       };
     }

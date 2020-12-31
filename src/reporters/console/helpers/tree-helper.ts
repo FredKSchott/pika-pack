@@ -1,19 +1,17 @@
-
-
 // types
 import {Trees} from '../../types.js';
 
 export type FormattedOutput = {
-  prefix: string,
-  hint: any,
-  color: string,
-  name: string,
-  formatter: any,
+  prefix: string;
+  hint: any;
+  color: string;
+  name: string;
+  formatter: any;
 };
 
 // public
 export function sortTrees(trees: Trees): Trees {
-  return trees.sort(function(tree1, tree2): number {
+  return trees.sort(function (tree1, tree2): number {
     return tree1.name.localeCompare(tree2.name);
   });
 }

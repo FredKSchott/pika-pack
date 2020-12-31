@@ -1,5 +1,3 @@
-
-
 import {PersonObject} from '../../types.js';
 
 import validateLicense from 'validate-npm-package-license';
@@ -67,7 +65,10 @@ export function extractDescription(readme: any): string {
   }
 
   // split into lines
-  const lines = readme.trim().split('\n').map((line): string => line.trim());
+  const lines = readme
+    .trim()
+    .split('\n')
+    .map((line): string => line.trim());
 
   // find the start of the first paragraph, ignore headings
   let start = 0;

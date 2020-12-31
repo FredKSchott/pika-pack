@@ -111,12 +111,12 @@ export default class BlockingQueue {
       this.runningCount++;
 
       factory()
-        .then(function(val): null {
+        .then(function (val): null {
           resolve(val);
           next();
           return null;
         })
-        .catch(function(err) {
+        .catch(function (err) {
           reject(err);
           next();
         });
