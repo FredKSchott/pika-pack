@@ -1,7 +1,7 @@
 import {BuilderOptions} from '@pika/types';
 import chalk from 'chalk';
 import * as path from 'path';
-import Config, { BuildFlags } from '../config.js';
+import Config, {BuildFlags} from '../config.js';
 import {DEFAULT_INDENT} from '../constants.js';
 import {Reporter} from '../reporters/index.js';
 import * as fs from '../util/fs.js';
@@ -48,9 +48,9 @@ export class Build {
       out,
       cwd,
       reporter: {
-        info: msg => reporter.log(chalk.dim(`      » ${msg}`)),
-        warning: msg => reporter.log(chalk.yellow(`      » ${msg}`)),
-        success: msg => reporter.log(chalk.green(`      » ${msg}`)),
+        info: (msg) => reporter.log(chalk.dim(`      » ${msg}`)),
+        warning: (msg) => reporter.log(chalk.yellow(`      » ${msg}`)),
+        success: (msg) => reporter.log(chalk.green(`      » ${msg}`)),
         created: (filename: string, entrypoint?: string) =>
           reporter.log(
             `      📝  ${chalk.green(path.relative(cwd, filename))} ${entrypoint ? chalk.dim(`[${entrypoint}]`) : ''}`,
@@ -71,9 +71,9 @@ export class Build {
             cwd,
             nodir: true,
             absolute: true,
-            ignore: Array.from(ignoreSet).map(g => path.join('src', g)),
+            ignore: Array.from(ignoreSet).map((g) => path.join('src', g)),
           });
-          return files.filter(fileAbs => !fileAbs.endsWith('.d.ts'));
+          return files.filter((fileAbs) => !fileAbs.endsWith('.d.ts'));
         })(),
       },
     };

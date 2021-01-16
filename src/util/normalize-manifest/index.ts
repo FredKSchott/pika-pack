@@ -1,5 +1,3 @@
-
-
 import {Manifest} from '../../types.js';
 import Config from '../../config.js';
 import validate from './validate.js';
@@ -7,7 +5,7 @@ import fix from './fix.js';
 
 import * as path from 'path';
 
-export default (async function(info: any, moduleLoc: string, config: Config, isRoot: boolean): Promise<Manifest> {
+export default (async function (info: any, moduleLoc: string, config: Config, isRoot: boolean): Promise<Manifest> {
   // Append dependencies
   // if (depInfo) {
   //   info.dependencies = depInfo.main;

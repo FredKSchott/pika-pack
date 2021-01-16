@@ -1,5 +1,3 @@
-
-
 export default {
   autohr: 'author',
   autor: 'author',

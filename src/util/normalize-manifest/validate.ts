@@ -1,7 +1,5 @@
-
-
 import {Reporter} from '../../reporters/index.js';
-import { MessageError } from '@pika/types';
+import {MessageError} from '@pika/types';
 import typos from './typos.js';
 
 import isBuiltinModule from 'is-builtin-module';
@@ -40,7 +38,7 @@ export function isValidPackageName(name: string): boolean {
 
 type WarnFunction = (msg: string) => void;
 
-export default function(info: any, isRoot: boolean, reporter: Reporter, warn: WarnFunction) {
+export default function (info: any, isRoot: boolean, reporter: Reporter, warn: WarnFunction) {
   if (isRoot) {
     for (const key in typos) {
       if (key in info) {
@@ -109,7 +107,7 @@ export function cleanDependencies(info: Object, isRoot: boolean, reporter: Repor
   }
 
   // aggregate all non-trivial deps (not '' or '*')
-  const nonTrivialDeps: Map<string, {type: string, version: string}> = new Map();
+  const nonTrivialDeps: Map<string, {type: string; version: string}> = new Map();
   for (const [type, deps] of depTypes) {
     for (const name of Object.keys(deps)) {
       const version = deps[name];

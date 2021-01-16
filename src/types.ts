@@ -1,5 +1,3 @@
-
-
 import {Reporter} from './reporters/index.js';
 import Config from './config.js';
 
@@ -10,115 +8,114 @@ export type CLIFunctionReturn = _CLIFunctionReturn | Promise<_CLIFunctionReturn>
 
 // person object, the exploded version of a `maintainers`/`authors` field
 export type PersonObject = {
-  email?: string,
-  name?: string,
-  url?: string,
+  email?: string;
+  name?: string;
+  url?: string;
 };
 
 // `dependencies` field in package info
 type Dependencies = {
-  [key: string]: string,
+  [key: string]: string;
 };
 
 // package.json
 export type Manifest = {
-  name: string,
-  version: string,
-  description?: string,
-  keywords?: string[],
-  sideEffects?: boolean,
+  name: string;
+  version: string;
+  description?: string;
+  keywords?: string[];
+  sideEffects?: boolean;
 
-  private?: boolean,
+  private?: boolean;
 
-  distributions?: any,
+  distributions?: any;
 
   author?: {
-    name?: string,
-    email?: string,
-    url?: string,
-  },
+    name?: string;
+    email?: string;
+    url?: string;
+  };
 
-  homepage?: string,
-  flat?: boolean,
-  license?: string,
-  licenseText?: string,
-  noticeText?: string,
+  homepage?: string;
+  flat?: boolean;
+  license?: string;
+  licenseText?: string;
+  noticeText?: string;
 
-  readme?: string,
-  readmeFilename?: string,
+  readme?: string;
+  readmeFilename?: string;
 
   repository?: {
-    type: 'git',
-    url: string,
-  },
+    type: 'git';
+    url: string;
+  };
 
   bugs?: {
-    url: string,
-  },
+    url: string;
+  };
 
   // the package reference that
   dist?: {
-    tarball: string,
-    shasum: string,
-  },
+    tarball: string;
+    shasum: string;
+  };
 
   directories?: {
-    man: string,
-    bin: string,
-  },
+    man: string;
+    bin: string;
+  };
 
-  man?: Array<string>,
+  man?: Array<string>;
 
   bin?: {
-    [name: string]: string,
-  },
+    [name: string]: string;
+  };
 
   scripts?: {
-    [name: string]: string,
-  },
+    [name: string]: string;
+  };
 
   engines?: {
-    [engineName: string]: string,
-  },
+    [engineName: string]: string;
+  };
 
-  os?: Array<string>,
-  cpu?: Array<string>,
+  os?: Array<string>;
+  cpu?: Array<string>;
 
-  dependencies?: Dependencies,
-  devDependencies?: Dependencies,
-  peerDependencies?: Dependencies,
-  optionalDependencies?: Dependencies,
+  dependencies?: Dependencies;
+  devDependencies?: Dependencies;
+  peerDependencies?: Dependencies;
+  optionalDependencies?: Dependencies;
 
-  bundleDependencies?: Array<string>,
-  bundledDependencies?: Array<string>,
+  bundleDependencies?: Array<string>;
+  bundledDependencies?: Array<string>;
 
   installConfig?: {
-    pnp?: boolean,
-  },
+    pnp?: boolean;
+  };
 
-  deprecated?: string,
-  files?: Array<string>,
-  main?: string,
+  deprecated?: string;
+  files?: Array<string>;
+  main?: string;
 
   // This flag is true when we add a new package with `pika add <mypackage>`.
   // We need to preserve the flag because we print a list of new packages in
   // the end of the add command
-  fresh?: boolean,
+  fresh?: boolean;
 
-  prebuiltVariants?: {[filename: string]: string},
+  prebuiltVariants?: {[filename: string]: string};
 };
-
 
 // Used by outdated and upgrade-interactive
 export type Dependency = {
-  name: string,
-  current: string,
-  wanted: string,
-  latest: string,
-  url: string,
-  hint?: string,
-  range: string,
-  upgradeTo: string,
-  workspaceName: string,
-  workspaceLoc: string,
+  name: string;
+  current: string;
+  wanted: string;
+  latest: string;
+  url: string;
+  hint?: string;
+  range: string;
+  upgradeTo: string;
+  workspaceName: string;
+  workspaceLoc: string;
 };

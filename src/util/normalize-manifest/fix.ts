@@ -1,5 +1,3 @@
-
-
 import {MANIFEST_FIELDS} from '../../constants.js';
 import {Reporter} from '../../reporters/index.js';
 import {isValidLicense} from './util.js';
@@ -17,12 +15,12 @@ const LICENSE_RENAMES = {
 };
 
 type Dict<T> = {
-  [key: string]: T,
+  [key: string]: T;
 };
 
 type WarnFunction = (msg: string) => void;
 
-export default (async function(
+export default (async function (
   info: Dict<any>,
   moduleLoc: string,
   reporter: Reporter,

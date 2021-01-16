@@ -734,7 +734,7 @@ export async function walk(
 
   let filenames = await readdir(dir);
   if (ignoreBasenames.size) {
-    filenames = filenames.filter(name => !ignoreBasenames.has(name));
+    filenames = filenames.filter((name) => !ignoreBasenames.has(name));
   }
 
   for (const name of filenames) {

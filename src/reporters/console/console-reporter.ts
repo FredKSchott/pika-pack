@@ -1,18 +1,15 @@
-
-
 import chalk from 'chalk';
 import * as readline from 'readline';
 import stripAnsi from 'strip-ansi';
-import { inspect } from 'util';
-import { removeSuffix } from '../../util/misc.js';
-import BaseReporter, { ReporterOptions } from '../base-reporter.js';
-import { FormatKeys, Formatter } from '../format.js';
-import { Package, ReporterSetSpinner, ReporterSpinner, ReporterSpinnerSet, Trees } from '../types.js';
-import { getFormattedOutput, recurseTree, sortTrees } from './helpers/tree-helper.js';
+import {inspect} from 'util';
+import {removeSuffix} from '../../util/misc.js';
+import BaseReporter, {ReporterOptions} from '../base-reporter.js';
+import {FormatKeys, Formatter} from '../format.js';
+import {Package, ReporterSetSpinner, ReporterSpinner, ReporterSpinnerSet, Trees} from '../types.js';
+import {getFormattedOutput, recurseTree, sortTrees} from './helpers/tree-helper.js';
 import Progress from './progress-bar.js';
 import Spinner from './spinner-progress.js';
-import { clearLine } from './util.js';
-
+import {clearLine} from './util.js';
 
 const AUDIT_COL_WIDTHS = [15, 62];
 
@@ -33,7 +30,6 @@ if (process.platform === 'win32' && !(process.env.TERM && /^xterm/i.test(process
 }
 
 export default class ConsoleReporter extends BaseReporter {
-
   _lastCategorySize: number;
   _progressBar?: Progress;
   _spinners: Set<Spinner>;
@@ -43,7 +39,7 @@ export default class ConsoleReporter extends BaseReporter {
 
     this._lastCategorySize = 0;
     this._spinners = new Set();
-    this.format = chalk as any as Formatter;
+    this.format = (chalk as any) as Formatter;
     this.format.stripColor = stripAnsi;
     this.isSilent = !!opts.isSilent;
   }
@@ -311,16 +307,15 @@ export default class ConsoleReporter extends BaseReporter {
     };
   }
 
-
   progress(count: number): () => void {
     if (this.noProgress || count <= 0) {
-      return function() {
+      return function () {
         // noop
       };
     }
 
     if (!this.isTTY) {
-      return function() {
+      return function () {
         // TODO what should the behaviour here be? we could buffer progress messages maybe
       };
     }
@@ -336,7 +331,7 @@ export default class ConsoleReporter extends BaseReporter {
 
     bar.render();
 
-    return function() {
+    return function () {
       bar.tick();
     };
   }

@@ -1,11 +1,4 @@
-import {
-  ReporterSpinnerSet,
-  Trees,
-  Stdout,
-  Stdin,
-  Package,
-  ReporterSpinner,
-} from './types';
+import {ReporterSpinnerSet, Trees, Stdout, Stdin, Package, ReporterSpinner} from './types';
 import {LanguageKeys} from './lang/en.js';
 import {Formatter} from './format.js';
 
@@ -33,7 +26,7 @@ export type ReporterOptions = {
 };
 
 export function stringifyLangArgs(args: Array<any>): Array<string> {
-  return args.map(function(val): string {
+  return args.map(function (val): string {
     if (val != null && val.inspect) {
       return val.inspect();
     } else {
@@ -244,7 +237,7 @@ export default class BaseReporter {
 
   // render a progress bar and return a function which when called will trigger an update
   progress(total: number): () => void {
-    return function() {};
+    return function () {};
   }
 
   // utility function to disable progress bar
