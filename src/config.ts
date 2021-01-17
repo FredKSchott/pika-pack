@@ -45,9 +45,9 @@ export default class Config {
       this._manifest = {...info.object};
       this.manifest = await normalizeManifest(info.object, this.cwd, this, true);
       return this.manifest;
-    } else {
-      return null;
     }
+
+    throw new Error('No top-level package.json manifest found.')
   }
 
   readJson(loc: string, factory: (filename: string) => Promise<any> = fs.readJson): Promise<any> {
